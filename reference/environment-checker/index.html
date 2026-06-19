@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.">
+        <meta name="description" content="Pre-deployment endpoint and network readiness validation for Azure Local.">
       
       
         <meta name="author" content="Azure Local Cloud">
       
       
-        <link rel="canonical" href="https://azurelocal.github.io/azurelocal-beacon/reference/environment-checker/">
+        <link rel="canonical" href="https://azurelocal.cloud/azurelocal-beacon/reference/environment-checker/">
       
       
         <link rel="prev" href="../endpoints/">
@@ -805,17 +805,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssl-inspection-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SSL inspection behavior
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#post-os-environment-checker-stage-2" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -985,17 +974,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssl-inspection-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SSL inspection behavior
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#post-os-environment-checker-stage-2" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1045,22 +1023,17 @@
 <tr>
 <td>Connectivity</td>
 <td><code>Invoke-AzStackHciConnectivityValidation</code></td>
-<td>Category 9, all paths</td>
+<td>Category 6, all paths</td>
 </tr>
 <tr>
 <td>Network</td>
 <td><code>Invoke-AzStackHciNetworkValidation</code></td>
-<td>Category 9, Local Identity path</td>
-</tr>
-<tr>
-<td>Hardware</td>
-<td><code>Invoke-AzStackHciHardwareValidation</code></td>
-<td>Category 12 (partial — CIM-based)</td>
+<td>Category 6, all paths</td>
 </tr>
 <tr>
 <td>Arc integration</td>
 <td><code>Invoke-AzStackHciArcIntegrationValidation</code></td>
-<td>Optional — requires Azure sign-in</td>
+<td>Category 7 — optional, requires Azure sign-in</td>
 </tr>
 </tbody>
 </table>
@@ -1082,8 +1055,10 @@
 </tr>
 </tbody>
 </table>
-<h2 id="ssl-inspection-behavior">SSL inspection behavior<a class="headerlink" href="#ssl-inspection-behavior" title="Permanent link">&para;</a></h2>
-<p>The Environment Checker detects SSL deep-inspection before testing connectivity. If the TLS chain contains a private/unknown root CA, <code>Invoke-AzStackHciConnectivityValidation</code> raises an error and aborts. Beacon's Category 10 (SSL inspection detection) runs the same check independently so you know before invoking the module.</p>
+<div class="admonition warning">
+<p class="admonition-title">SSL inspection — note</p>
+<p><code>Invoke-AzStackHciConnectivityValidation</code> raises an error if it detects SSL deep-inspection (private root CA in the TLS chain). If you see this failure, work with your network team to exempt Azure Local node IPs from SSL inspection before re-running.</p>
+</div>
 <h2 id="post-os-environment-checker-stage-2">Post-OS environment checker (Stage 2)<a class="headerlink" href="#post-os-environment-checker-stage-2" title="Permanent link">&para;</a></h2>
 <p>After the OS is installed on each node, run the full suite locally on each node:</p>
 <div class="highlight"><span class="filename">Run on each Azure Local node (Stage 2)</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Import-Module</span> <span class="n">AzStackHci</span><span class="p">.</span><span class="n">EnvironmentChecker</span>

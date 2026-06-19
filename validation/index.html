@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.">
+        <meta name="description" content="Pre-deployment endpoint and network readiness validation for Azure Local.">
       
       
         <meta name="author" content="Azure Local Cloud">
       
       
-        <link rel="canonical" href="https://azurelocal.github.io/azurelocal-beacon/validation/">
+        <link rel="canonical" href="https://azurelocal.cloud/azurelocal-beacon/validation/">
       
       
         <link rel="prev" href="../getting-started/boot/">
@@ -881,10 +881,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#all-12-validation-categories" class="md-nav__link">
+  <a href="#7-validation-categories" class="md-nav__link">
     <span class="md-ellipsis">
       
-        All 12 validation categories
+        7 validation categories
       
     </span>
   </a>
@@ -963,7 +963,7 @@
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  │  0)  Exit to command prompt                         │
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  └─────────────────────────────────────────────────────┘
 </code></pre></div>
-<h2 id="all-12-validation-categories">All 12 validation categories<a class="headerlink" href="#all-12-validation-categories" title="Permanent link">&para;</a></h2>
+<h2 id="7-validation-categories">7 validation categories<a class="headerlink" href="#7-validation-categories" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -980,7 +980,7 @@
 </tr>
 <tr>
 <td>2</td>
-<td>DNS (forward/reverse/UDP)</td>
+<td>DNS (forward/reverse/TCP/UDP)</td>
 <td>All</td>
 </tr>
 <tr>
@@ -995,46 +995,27 @@
 </tr>
 <tr>
 <td>5</td>
-<td>Azure endpoint sweep (121 endpoints)</td>
+<td>Azure endpoint sweep</td>
 <td>All</td>
 </tr>
 <tr>
 <td>6</td>
-<td>Infrastructure device reachability</td>
-<td>Networking, Full</td>
-</tr>
-<tr>
-<td>7</td>
-<td>Service Bus WebSocket probe</td>
-<td>Networking, Full</td>
-</tr>
-<tr>
-<td>8</td>
-<td>NTP UDP port 123</td>
-<td>Networking, Full</td>
-</tr>
-<tr>
-<td>9</td>
 <td>AzStackHci.EnvironmentChecker (connectivity + network validators)</td>
 <td>All</td>
 </tr>
 <tr>
-<td>10</td>
-<td>SSL deep-inspection detection</td>
-<td>All</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Deployment prerequisite sanity (IP pool, Kubernetes subnet)</td>
-<td>Local Identity, Full</td>
-</tr>
-<tr>
-<td>12</td>
-<td>Hardware self-checks (TPM, Secure Boot, NIC, CPU, storage)</td>
-<td>Networking, Full</td>
+<td>7</td>
+<td>Arc integration (optional — requires Azure device-code login)</td>
+<td>Optional on all paths</td>
 </tr>
 </tbody>
 </table>
+<p>All test targets derive from the three Microsoft/Dell source documents:</p>
+<ul>
+<li><a href="https://github.com/MicrosoftDocs/azure-stack-docs/blob/main/azure-local/concepts/firewall-requirements.md">Azure Local firewall requirements</a></li>
+<li><a href="https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md">EastUS HCI endpoints</a></li>
+<li><a href="https://github.com/Azure/AzureStack-Tools/blob/master/HCI/OEMEndpoints/Dell/DellAzureLocalEndpoints.md">Dell OEM endpoints</a></li>
+</ul>
 
 
 

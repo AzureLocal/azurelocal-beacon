@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.">
+        <meta name="description" content="Pre-deployment endpoint and network readiness validation for Azure Local.">
       
       
         <meta name="author" content="Azure Local Cloud">
       
       
-        <link rel="canonical" href="https://azurelocal.github.io/azurelocal-beacon/validation/local-identity/">
+        <link rel="canonical" href="https://azurelocal.cloud/azurelocal-beacon/validation/local-identity/">
       
       
         <link rel="prev" href="../active-directory/">
@@ -1127,16 +1127,6 @@
 <td><code>kv-iic-beacon.vault.azure.net</code></td>
 <td>Optional (enables KV endpoint probe)</td>
 </tr>
-<tr>
-<td>Node IP pool start</td>
-<td><code>10.10.1.100</code></td>
-<td>Optional (enables squatter scan)</td>
-</tr>
-<tr>
-<td>Node IP pool end</td>
-<td><code>10.10.1.120</code></td>
-<td>Optional</td>
-</tr>
 </tbody>
 </table>
 <h2 id="tests-run">Tests run<a class="headerlink" href="#tests-run" title="Permanent link">&para;</a></h2>
@@ -1165,20 +1155,12 @@
 <td>Azure Local, Arc, and Key Vault service endpoints</td>
 </tr>
 <tr>
-<td><strong>9 — EnvChecker</strong></td>
+<td><strong>6 — EnvChecker</strong></td>
 <td><code>Invoke-AzStackHciConnectivityValidation</code> + <code>Invoke-AzStackHciNetworkValidation</code></td>
 </tr>
 <tr>
-<td><strong>10 — SSL inspection</strong></td>
-<td>TLS chain root-CA check (FortiGate detection)</td>
-</tr>
-<tr>
-<td><strong>11 — Prereq sanity</strong></td>
-<td>IP pool squatter scan, DNS-not-in-Kubernetes-reserved-range check</td>
-</tr>
-<tr>
-<td><strong>Key Vault</strong></td>
-<td>Manual TCP 443 probe to the Key Vault FQDN (if provided)</td>
+<td><strong>7 — Arc</strong></td>
+<td>Optional: <code>Invoke-AzStackHciArcIntegrationValidation</code></td>
 </tr>
 </tbody>
 </table>

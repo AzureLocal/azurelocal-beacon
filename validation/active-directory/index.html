@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.">
+        <meta name="description" content="Pre-deployment endpoint and network readiness validation for Azure Local.">
       
       
         <meta name="author" content="Azure Local Cloud">
       
       
-        <link rel="canonical" href="https://azurelocal.github.io/azurelocal-beacon/validation/active-directory/">
+        <link rel="canonical" href="https://azurelocal.cloud/azurelocal-beacon/validation/active-directory/">
       
       
         <link rel="prev" href="../">
@@ -1113,11 +1113,15 @@
 </tr>
 <tr>
 <td><strong>5 — Endpoint sweep</strong></td>
-<td>All 121 Azure Local + Arc + Dell endpoints (TCP + HTTPS for critical)</td>
+<td>Azure Local + Arc + Dell endpoints (TCP + HTTPS for critical)</td>
 </tr>
 <tr>
-<td><strong>9 — EnvChecker</strong></td>
-<td><code>Invoke-AzStackHciConnectivityValidation</code> (Microsoft's connectivity validator)</td>
+<td><strong>6 — EnvChecker</strong></td>
+<td><code>Invoke-AzStackHciConnectivityValidation</code> + <code>Invoke-AzStackHciNetworkValidation</code></td>
+</tr>
+<tr>
+<td><strong>7 — Arc</strong></td>
+<td>Optional: <code>Invoke-AzStackHciArcIntegrationValidation</code> (requires Azure device-code sign-in)</td>
 </tr>
 </tbody>
 </table>
