@@ -1,0 +1,48 @@
+# Secrets / credentials — never commit
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+credentials.json
+secrets/
+**/secrets/
+
+# Per-engagement config (contains site-specific IPs, domain names)
+# Commit validation-config.example.json; never commit validation-config.json
+src/config/validation-config.json
+
+# Build output — ISOs and USB images are too large for git
+src/output/
+*.iso
+
+# PowerShell artifacts
+*.ps1xml
+
+# Visual Studio Code — keep extensions.json, ignore per-user settings
+.vscode/
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp / scratch
+temp/
+tmp/
+*.tmp
+*.bak
+*.swp
+~$*
+
+# Claude Code local settings and logs
+.claude/settings.local.json
+.claude/logs/

@@ -1,0 +1,89 @@
+{
+  "_comment": "AzL Beacon — per-engagement validation config. Copy to validation-config.json and populate all fields. validation-config.json is gitignored.",
+  "_generated": "FILL-IN",
+  "_engagement": "FILL-IN (e.g. customer-name-poc-2026)",
+
+  "dnsServers": [
+    "10.x.x.x",
+    "10.x.x.x"
+  ],
+
+  "ntpServers": {
+    "primary": "10.x.x.x",
+    "secondary": "time.windows.com"
+  },
+
+  "adDomainFqdn": "yourdomain.local",
+  "adNetbios": "YOURDOMAIN",
+
+  "dcIps": [
+    "10.x.x.x",
+    "10.x.x.x"
+  ],
+
+  "dcFqdns": [
+    "dc-01.yourdomain.local",
+    "dc-02.yourdomain.local"
+  ],
+
+  "managementGateway": "10.x.x.1",
+  "managementSubnetCidr": "10.x.x.0/24",
+  "managementVlan": 0,
+
+  "managementIpPoolStart": "10.x.x.x",
+  "managementIpPoolEnd": "10.x.x.x",
+
+  "nodeFqdns": [
+    "node-01.yourdomain.local",
+    "node-02.yourdomain.local"
+  ],
+
+  "nodeIps": [
+    "10.x.x.x",
+    "10.x.x.x"
+  ],
+
+  "infraDeviceIps": [
+    { "label": "firewall-active",  "ip": "x.x.x.x", "description": "Active firewall OOB management" },
+    { "label": "firewall-standby", "ip": "x.x.x.x", "description": "Standby firewall OOB management" },
+    { "label": "switch-primary",   "ip": "x.x.x.x", "description": "Primary ToR switch OOB management" },
+    { "label": "switch-secondary", "ip": "x.x.x.x", "description": "Secondary ToR switch OOB management" },
+    { "label": "idrac-node1",      "ip": "x.x.x.x", "description": "iDRAC for cluster node 1" },
+    { "label": "idrac-node2",      "ip": "x.x.x.x", "description": "iDRAC for cluster node 2" },
+    { "label": "oob-console",      "ip": "x.x.x.x", "description": "OOB console server" }
+  ],
+
+  "keyVaultFqdn": "kv-your-vault-name.vault.azure.net",
+  "keyVaultName": "kv-your-vault-name",
+
+  "azureRegion": "eastus",
+  "azureTenantId": "00000000-0000-0000-0000-000000000000",
+  "clusterName": "your-cluster-name",
+
+  "kubernetesReservedCidrs": [
+    "10.96.0.0/12",
+    "10.244.0.0/16"
+  ],
+
+  "sslInspectionProbeEndpoints": [
+    "login.microsoftonline.com",
+    "management.azure.com",
+    "mcr.microsoft.com"
+  ],
+
+  "oobSubnetCidr": "x.x.x.0/24",
+  "oobGateway": "x.x.x.1",
+
+  "storageVlans": [711, 712],
+
+  "_arcGatewayNote": "Arc gateway endpoint URLs are deployment-generated (<guid>.gw.arc.azure.com). Fill arcGatewayFqdn from the deployed gateway resource. Empty = not probed.",
+  "arcGatewayFqdn": "",
+
+  "_serviceBusNote": "*.servicebus.windows.net hostnames are instance-specific, created by ARB at deploy time. Empty = DNS-only check + manual firewall note. Set a real hostname to enable TCP probe.",
+  "serviceBusProbeHost": "",
+
+  "ntpUdpProbeHost": "time.windows.com",
+  "ntpMaxSkewSeconds": 300,
+  "tcpConnectTimeoutMs": 5000,
+  "pingTimeoutMs": 2000
+}
