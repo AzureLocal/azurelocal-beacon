@@ -1,6 +1,6 @@
 # AzL Beacon
 
-**Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.**
+**Pre-deployment endpoint and network readiness validation for Azure Local.**
 
 Boots from iDRAC Virtual Media or USB — no installed OS, no domain join, no licensing required.
 Boot it on bare metal before you touch the deployment wizard. Know your environment is ready.
@@ -9,22 +9,17 @@ Boot it on bare metal before you touch the deployment wizard. Know your environm
 
 ## What it does
 
-On boot, `Start-AzlValidation.ps1` runs automatically and sweeps 12 validation categories:
+On boot, `Start-AzlValidation.ps1` runs 7 validation categories grounded in Microsoft and Dell source documents:
 
 | # | Category | What it checks |
 |---|---|---|
 | 1 | Basic network | NIC up, IP assigned, gateway reachable |
 | 2 | DNS | Forward/reverse lookups, TCP/UDP port 53, AD domain resolution |
 | 3 | NTP | w32tm stripchart + clock skew check (5-minute limit) |
-| 4 | Active Directory ports | LDAP 389, LDAPS 636, Kerberos 88, RPC 135, DNS 53, SRV records |
-| 5 | Azure endpoint sweep | TCP + HTTPS probe for 120+ Arc, AKS, auth, monitoring, CRL endpoints |
-| 6 | Infrastructure devices | Firewall, switches, iDRAC, OpenGear reachability |
-| 7 | Service Bus WebSocket | TCP 443 to `*.servicebus.windows.net` (Arc resource bridge) |
-| 8 | NTP UDP 123 | Raw UDP NTP packet probe |
-| 9 | Environment Checker | Microsoft's `Invoke-AzStackHciConnectivityValidation` (official validator) |
-| 10 | SSL inspection | Cert chain root authority — detects FortiGate deep inspection (deployment blocker) |
-| 11 | Deployment prerequisites | IP pool squatter scan, DNS-not-in-K8s-range sanity check |
-| 12 | Hardware self-checks | TPM 2.0, Secure Boot, disk count, storage pools, NIC count, CPU virt, memory |
+| 4 | Active Directory ports | LDAP 389, LDAPS 636, Kerberos 88, RPC 135, DNS 53, SRV records (AD path only) |
+| 5 | Azure endpoint sweep | TCP + HTTPS probe — Azure Local firewall requirements + EastUS HCI + Dell OEM endpoints |
+| 6 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` (Microsoft's official validators) |
+| 7 | Arc integration | `Invoke-AzStackHciArcIntegrationValidation` (optional — requires Azure device-code sign-in) |
 
 Results land at `X:\results\` on the WinPE RAM drive in JSON format. Copy off before reboot.
 

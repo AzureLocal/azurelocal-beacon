@@ -1,7 +1,7 @@
 site_name: AzL Beacon
-site_description: Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.
+site_description: Pre-deployment endpoint and network readiness validation for Azure Local.
 site_author: Azure Local Cloud
-site_url: https://azurelocal.github.io/azurelocal-beacon/
+site_url: https://azurelocal.cloud/azurelocal-beacon/
 repo_url: https://github.com/AzureLocal/azurelocal-beacon
 repo_name: AzureLocal/azurelocal-beacon
 

@@ -12,10 +12,9 @@ AzL Beacon bundles and calls the Microsoft `AzStackHci.EnvironmentChecker` Power
 
 | Validator | Cmdlet | When called |
 |---|---|---|
-| Connectivity | `Invoke-AzStackHciConnectivityValidation` | Category 9, all paths |
-| Network | `Invoke-AzStackHciNetworkValidation` | Category 9, Local Identity path |
-| Hardware | `Invoke-AzStackHciHardwareValidation` | Category 12 (partial — CIM-based) |
-| Arc integration | `Invoke-AzStackHciArcIntegrationValidation` | Optional — requires Azure sign-in |
+| Connectivity | `Invoke-AzStackHciConnectivityValidation` | Category 6, all paths |
+| Network | `Invoke-AzStackHciNetworkValidation` | Category 6, all paths |
+| Arc integration | `Invoke-AzStackHciArcIntegrationValidation` | Category 7 — optional, requires Azure sign-in |
 
 ## WinPE limitations
 
@@ -25,9 +24,8 @@ The following validators **cannot run in WinPE** and are deferred to post-OS (St
 |---|---|---|
 | Active Directory | Requires RSAT AD/GPO modules | Run `Invoke-AzStackHciExternalActiveDirectoryValidation` from a domain-joined staging server |
 
-## SSL inspection behavior
-
-The Environment Checker detects SSL deep-inspection before testing connectivity. If the TLS chain contains a private/unknown root CA, `Invoke-AzStackHciConnectivityValidation` raises an error and aborts. Beacon's Category 10 (SSL inspection detection) runs the same check independently so you know before invoking the module.
+!!! warning "SSL inspection — note"
+    `Invoke-AzStackHciConnectivityValidation` raises an error if it detects SSL deep-inspection (private root CA in the TLS chain). If you see this failure, work with your network team to exempt Azure Local node IPs from SSL inspection before re-running.
 
 ## Post-OS environment checker (Stage 2)
 

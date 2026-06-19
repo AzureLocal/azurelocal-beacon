@@ -129,7 +129,7 @@ function Show-Banner {
     Write-BeaconLine '    Azure Local Pre-Deployment Validation' -Color White
     Write-BeaconLine '    v1.0.0-pre  |  Dell AX 16G  |  HCS Platform' -Color DarkGray
     Write-BeaconLine ''
-    Write-BeaconLine '    Pre-deployment endpoint, network, and hardware' -Color DarkGray
+    Write-BeaconLine '    Pre-deployment endpoint and network' -Color DarkGray
     Write-BeaconLine '    readiness validation for Azure Local.' -Color DarkGray
     Write-BeaconLine ''
 }
@@ -221,8 +221,8 @@ function Invoke-ADMenu {
     Write-BeaconLine '  Running Active Directory validation (Categories 1-4 + Connectivity)...' -Color Cyan
     Write-BeaconLine ''
 
-    # Categories: 1=Network, 2=DNS, 3=NTP, 4=AD ports, 5=Endpoint sweep, 9=EnvChecker(connectivity)
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '4', '5', '9')
+    # Categories: 1=Network, 2=DNS, 3=NTP, 4=AD ports, 5=Endpoint sweep, 6=EnvChecker, 7=Arc(optional)
+    Invoke-ValidationEngine -Categories @('1', '2', '3', '4', '5', '6')
 
     Write-BeaconLine ''
     Write-BeaconLine '  AD validation complete. Results in X:\results\' -Color Green
@@ -248,11 +248,7 @@ function Invoke-LocalIdentityMenu {
     $kvFqdn     = Prompt-Optional 'Azure Key Vault FQDN (e.g. kv-beacon-01.vault.azure.net)' -Default ''
     Write-BeaconLine ''
 
-    $ipPoolStart = Prompt-Optional 'Planned node IP pool start (for squatter scan, optional)'
-    $ipPoolEnd   = Prompt-Optional 'Planned node IP pool end  (for squatter scan, optional)'
-    Write-BeaconLine ''
-
-    Write-BeaconLine '  Running Local Identity validation (Categories 1-3, 5, 9-11)...' -Color Cyan
+    Write-BeaconLine '  Running Local Identity validation (Categories 1-3, 5-6)...' -Color Cyan
     Write-BeaconLine '  Skipping AD port tests (Category 4) — not needed for Local Identity.' -Color DarkGray
     Write-BeaconLine ''
 
@@ -260,14 +256,10 @@ function Invoke-LocalIdentityMenu {
         dnsServers    = $dnsServers
         adDomainFqdn  = ''   # Not needed — suppresses DNS domain lookup in Cat-2
     }
-    if ($ipPoolStart -and $ipPoolEnd) {
-        $overrides['ipPoolStart'] = $ipPoolStart
-        $overrides['ipPoolEnd']   = $ipPoolEnd
-    }
     Write-ValidationConfigOverrides -Overrides $overrides
 
-    # Categories: 1=Network, 2=DNS, 3=NTP, 5=Endpoint sweep, 9=EnvChecker(connectivity), 10=SSL, 11=Prereq sanity
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '9', '10', '11')
+    # Categories: 1=Network, 2=DNS, 3=NTP, 5=Endpoint sweep, 6=EnvChecker(connectivity+network), 7=Arc(optional)
+    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '6')
 
     # Key Vault endpoint check — manual TCP probe if FQDN provided
     if ($kvFqdn) {
@@ -306,31 +298,24 @@ function Invoke-LocalIdentityMenu {
 function Invoke-NetworkFirewallMenu {
     Write-BeaconHeader 'Networking and Firewall Validation'
     Write-BeaconLine '  Validates physical network, endpoint reachability (Azure Local + Arc + Dell),' -Color White
-    Write-BeaconLine '  SSL deep-inspection detection, IP-pool squatter scan, and hardware.' -Color White
+    Write-BeaconLine '  DNS, NTP, and the Microsoft Environment Checker.' -Color White
     Write-BeaconLine ''
 
     $gwIp       = Prompt-Optional 'Management gateway IP (leave blank to use DHCP-detected)'
     $dnsRaw     = Prompt-Optional 'DNS server IP(s) — comma-separated (leave blank to use current)'
     $dnsServers = if ($dnsRaw) { @($dnsRaw -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }) } else { @() }
     Write-BeaconLine ''
-    $ipPoolStart = Prompt-Optional 'IP pool start for squatter scan (optional)'
-    $ipPoolEnd   = Prompt-Optional 'IP pool end   for squatter scan (optional)'
-    Write-BeaconLine ''
 
     $overrides = @{}
     if ($gwIp)                    { $overrides['managementGateway'] = $gwIp }
     if ($dnsServers.Count -gt 0)  { $overrides['dnsServers']        = $dnsServers }
-    if ($ipPoolStart -and $ipPoolEnd) {
-        $overrides['ipPoolStart'] = $ipPoolStart
-        $overrides['ipPoolEnd']   = $ipPoolEnd
-    }
     if ($overrides.Count -gt 0) { Write-ValidationConfigOverrides -Overrides $overrides }
 
-    Write-BeaconLine '  Running Networking/Firewall validation (Categories 1-3, 5-12)...' -Color Cyan
+    Write-BeaconLine '  Running Networking/Firewall validation (Categories 1-3, 5-6)...' -Color Cyan
     Write-BeaconLine ''
 
     # All categories except Cat-4 (AD ports — not relevant for a network-focused run)
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '6', '7', '8', '9', '10', '11', '12')
+    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '6')
 
     Write-BeaconLine ''
     Write-BeaconLine '  Networking and Firewall validation complete. Results in X:\results\' -Color Green
@@ -377,8 +362,8 @@ Invoke-AzStackHciArcIntegrationValidation ``
 #region  ── Full Sweep ──
 
 function Invoke-FullSweep {
-    Write-BeaconHeader 'Full Readiness Sweep — All Categories'
-    Write-BeaconLine '  Runs all 12 validation categories plus the Microsoft Environment Checker.' -Color White
+    Write-BeaconHeader 'Full Readiness Sweep — All 7 Categories'
+    Write-BeaconLine '  Runs all 7 validation categories including the Microsoft Environment Checker.' -Color White
     Write-BeaconLine '  Choose deployment path to include the correct identity tests:' -Color DarkGray
     Write-BeaconLine ''
     Write-BeaconLine '    A) Active Directory (includes Category 4 AD port tests)' -Color White
@@ -390,10 +375,10 @@ function Invoke-FullSweep {
 
     $sweepCategories = if ($pathChoice -eq 'L' -or $pathChoice -eq 'l') {
         Write-BeaconLine '  Running full sweep — Local Identity path (skipping AD port tests)...' -Color Cyan
-        @('1', '2', '3', '5', '6', '7', '8', '9', '10', '11', '12')
+        @('1', '2', '3', '5', '6', '7')
     } else {
         Write-BeaconLine '  Running full sweep — Active Directory path (all categories)...' -Color Cyan
-        @('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12')
+        @('1', '2', '3', '4', '5', '6', '7')
     }
 
     Write-BeaconLine ''

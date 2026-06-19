@@ -26,8 +26,6 @@ Local Identity deployment uses a local administrator account and Azure Key Vault
 |---|---|---|
 | DNS server IP(s) | `10.10.0.10, 8.8.8.8` | Yes |
 | Azure Key Vault FQDN | `kv-iic-beacon.vault.azure.net` | Optional (enables KV endpoint probe) |
-| Node IP pool start | `10.10.1.100` | Optional (enables squatter scan) |
-| Node IP pool end | `10.10.1.120` | Optional |
 
 ## Tests run
 
@@ -37,10 +35,8 @@ Local Identity deployment uses a local administrator account and Azure Key Vault
 | **2 — DNS** | DNS TCP/UDP 53, forward resolution of Azure management endpoints |
 | **3 — NTP** | Clock skew |
 | **5 — Endpoint sweep** | Azure Local, Arc, and Key Vault service endpoints |
-| **9 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **10 — SSL inspection** | TLS chain root-CA check (FortiGate detection) |
-| **11 — Prereq sanity** | IP pool squatter scan, DNS-not-in-Kubernetes-reserved-range check |
-| **Key Vault** | Manual TCP 443 probe to the Key Vault FQDN (if provided) |
+| **6 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
+| **7 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` |
 
 !!! note "Category 4 (AD ports) is skipped"
     AD port tests are not applicable and not run in the Local Identity path.

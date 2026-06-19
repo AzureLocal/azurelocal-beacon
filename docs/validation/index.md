@@ -27,19 +27,20 @@ AzL Beacon presents a **split menu** at boot. Choose the path that matches your 
   └─────────────────────────────────────────────────────┘
 ```
 
-## All 12 validation categories
+## 7 validation categories
 
 | Category | Name | Paths |
 |---|---|---|
 | 1 | Basic network connectivity (NIC, IP, gateway) | All |
-| 2 | DNS (forward/reverse/UDP) | All |
+| 2 | DNS (forward/reverse/TCP/UDP) | All |
 | 3 | NTP time-skew | All |
 | 4 | Active Directory ports (LDAP/Kerberos/RPC/DNS/LDAPS + SRV) | AD, Full-AD |
-| 5 | Azure endpoint sweep (121 endpoints) | All |
-| 6 | Infrastructure device reachability | Networking, Full |
-| 7 | Service Bus WebSocket probe | Networking, Full |
-| 8 | NTP UDP port 123 | Networking, Full |
-| 9 | AzStackHci.EnvironmentChecker (connectivity + network validators) | All |
-| 10 | SSL deep-inspection detection | All |
-| 11 | Deployment prerequisite sanity (IP pool, Kubernetes subnet) | Local Identity, Full |
-| 12 | Hardware self-checks (TPM, Secure Boot, NIC, CPU, storage) | Networking, Full |
+| 5 | Azure endpoint sweep | All |
+| 6 | AzStackHci.EnvironmentChecker (connectivity + network validators) | All |
+| 7 | Arc integration (optional — requires Azure device-code login) | Optional on all paths |
+
+All test targets derive from the three Microsoft/Dell source documents:
+
+- [Azure Local firewall requirements](https://github.com/MicrosoftDocs/azure-stack-docs/blob/main/azure-local/concepts/firewall-requirements.md)
+- [EastUS HCI endpoints](https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md)
+- [Dell OEM endpoints](https://github.com/Azure/AzureStack-Tools/blob/master/HCI/OEMEndpoints/Dell/DellAzureLocalEndpoints.md)
