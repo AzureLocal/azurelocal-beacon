@@ -7,7 +7,7 @@ hide:
 
 ![AzL Beacon Banner](assets/images/azurelocal-beacon-banner.svg)
 
-**Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.**
+**Pre-deployment endpoint and network readiness validation for Azure Local.**
 
 AzL Beacon boots directly from an iDRAC virtual media session or USB drive — no OS, no domain join, no licensing — and verifies that the environment meets every Microsoft requirement before you begin an Azure Local deployment.
 
@@ -17,31 +17,30 @@ AzL Beacon boots directly from an iDRAC virtual media session or USB drive — n
 
 === "Active Directory"
 
+    - Basic network and NIC status
+    - DNS resolution (forward + reverse, TCP/UDP port 53)
+    - NTP time-skew check (Azure Local requires < 5 min skew)
     - AD port reachability: LDAP 389/636, Kerberos 88, RPC 135, DNS 53
     - DNS SRV record: `_ldap._tcp.dc._msdcs.<domain>`
-    - NTP time-skew check (Azure Local requires &lt; 5 min skew)
-    - Azure endpoint sweep (critical + informational)
-    - SSL deep-inspection detection
-    - IP pool squatter scan
+    - Azure endpoint sweep (firewall requirements + EastUS HCI endpoints + Dell OEM)
+    - Environment Checker: connectivity + network validation
 
 === "Local Identity (AD-less)"
 
-    - DNS resolution of management endpoints
-    - Azure Key Vault endpoint reachability (TCP 443)
-    - Azure endpoint sweep: Arc, HCI, Key Vault service endpoints
-    - Networking subnet / reserved-range check
-    - SSL deep-inspection detection
-    - IP pool squatter scan
+    - Basic network and NIC status
+    - DNS resolution
+    - NTP time-skew check
+    - Azure endpoint sweep including Key Vault endpoints
+    - Environment Checker: connectivity + network validation
+    - No AD checks — nodes use static IP + Azure Key Vault for identity
 
 === "Networking & Firewall"
 
-    - Gateway reachability and physical NIC status
-    - Full 121-endpoint sweep: Azure Local, Arc, Dell OEM
-    - Service Bus WebSocket probe (Arc resource bridge)
-    - NTP UDP port 123 probe
-    - SSL/TLS deep-inspection detection (FortiGate)
-    - Infrastructure device reachability (firewall, switch, iDRAC, OpenGear)
-    - Hardware self-checks: TPM 2.0, Secure Boot, storage, NIC, CPU, memory
+    - Basic network (gateway reachability, NIC status)
+    - DNS resolution
+    - NTP time-skew check
+    - Full endpoint sweep: Azure Local firewall requirements + EastUS HCI endpoints + Dell OEM endpoints
+    - Environment Checker: connectivity + network validation
 
 ---
 

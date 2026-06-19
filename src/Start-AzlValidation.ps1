@@ -1,26 +1,24 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     Boot-time Azure Local pre-deployment validation engine for WinPE and full Windows.
 
 .DESCRIPTION
-    Runs all 12 categories of pre-deployment validation defined in
-    docs/index.md. Designed to run from WinPE (PS 5.1 subset)
-    or PowerShell 7 on any machine connected to the management network.
+    Runs 7 validation categories grounded in Microsoft and Dell documentation.
+    Designed to run from WinPE (PS 5.1 subset) or PowerShell 7 on any machine
+    connected to the management network.
 
     Validation categories:
       1  Basic network: NIC up, IP assigned, gateway reachable
       2  DNS: forward and reverse lookups, TCP/UDP port 53 reachability
       3  NTP: w32tm stripchart + clock skew check
-      4  Active Directory ports: LDAP, Kerberos, RPC, LDAPS, DNS + SRV record
-      5  Azure endpoint sweep: TCP connect + HTTPS GET for critical endpoints
-      6  Infrastructure device reachability: firewall, switches, iDRAC, OpenGear
-      7  Service Bus WebSocket probe: TCP 443 to servicebus host
-      8  NTP UDP port 123: raw UDP NTP packet to time.windows.com
-      9  Environment Checker: AzStackHci.EnvironmentChecker module (load + run)
-      10 SSL inspection detection: certificate chain root authority check
-      11 Deployment prerequisite sanity: IP pool scan, DNS-not-in-K8s-range
-      12 Hardware self-checks: TPM, Secure Boot, storage, NICs, CPU, memory
+      4  Active Directory ports: LDAP, Kerberos, RPC, LDAPS, DNS + SRV record (AD path only)
+      5  Azure endpoint sweep: TCP connect + HTTPS GET — sourced from Azure Local firewall
+         requirements, EastUS HCI endpoints, and Dell OEM endpoints
+      6  Environment Checker: Invoke-AzStackHciConnectivityValidation +
+         Invoke-AzStackHciNetworkValidation (AzStackHci.EnvironmentChecker module)
+      7  Arc integration: Invoke-AzStackHciArcIntegrationValidation (optional; requires
+         Connect-AzAccount login — skipped gracefully if not authenticated)
 
     All test targets are read from config\validation-config.json and
     config\endpoints.json — no values are hardcoded in this script.
@@ -28,6 +26,7 @@
     Exit codes:
       0 — all categories pass (no critical failures)
       1 — one or more critical failures
+      2 — no checks ran
 
 .PARAMETER ConfigPath
     Path to the config directory containing validation-config.json and endpoints.json.
@@ -38,34 +37,37 @@
     Default: X:\results (WinPE RAM drive). Falls back to $env:TEMP if X: is absent.
 
 .PARAMETER Categories
-    One or more category numbers (1-12) to run. Default: all.
+    One or more category numbers (1-7) to run. Default: all.
     Example: -Categories 1,2,5
 
 .PARAMETER SkipEnvironmentChecker
-    Skip Category 9 (AzStackHci.EnvironmentChecker). Use when the module is
-    not bundled in the image or when running from a laptop without connectivity.
+    Skip Category 6 (AzStackHci.EnvironmentChecker connectivity + network validation).
+    Use when the module is not bundled in the image or connectivity is unavailable.
+
+.PARAMETER SkipArc
+    Skip Category 7 (Arc integration validation).
+    Use when not authenticated to Azure or Arc is not in scope.
 
 .EXAMPLE
     .\Start-AzlValidation.ps1
-    Runs all 12 categories with defaults.
+    Runs all 7 categories with defaults.
 
 .EXAMPLE
     .\Start-AzlValidation.ps1 -Categories 1,2,3,4 -ResultsPath C:\Temp\results
     Runs network/DNS/NTP/AD categories only and saves results to C:\Temp\results.
 
 .EXAMPLE
-    .\Start-AzlValidation.ps1 -SkipEnvironmentChecker -Verbose
-    Runs all categories except the MS Environment Checker with verbose output.
+    .\Start-AzlValidation.ps1 -SkipEnvironmentChecker -SkipArc
+    Runs categories 1-5 only (network probes, no MS module required).
 
 .NOTES
-    Version:      1.0
-    Last Updated: 2026-06-10
+    Version:      2.0
+    Last Updated: 2026-06-19
     Prerequisites:
       - config\validation-config.json and config\endpoints.json must exist.
       - curl.exe must be on PATH for HTTPS GET probes (built-in to WinPE and Win10+).
       - w32tm.exe must be on PATH for NTP checks (built-in to WinPE).
-      - No external PowerShell modules required (except AzStackHci.EnvironmentChecker
-        for Category 9, which is optional).
+      - AzStackHci.EnvironmentChecker required for Cat-6/7 (bundled at ISO build time).
     PSScriptAnalyzer: passes at Warning/Error severity.
     Compatibility: PowerShell 5.1 (WinPE) and PowerShell 7. No PS7-only syntax used.
 #>
@@ -82,7 +84,10 @@ param(
     [string[]]$Categories = @(),
 
     [Parameter(Mandatory = $false)]
-    [switch]$SkipEnvironmentChecker
+    [switch]$SkipEnvironmentChecker,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$SkipArc
 )
 
 Set-StrictMode -Version Latest
@@ -92,7 +97,7 @@ $ErrorActionPreference = 'Continue'
 #  CONSTANTS AND SCRIPT-LEVEL VARIABLES
 #================================================================
 
-$script:VERSION      = '1.0'
+$script:VERSION      = '2.0'
 $script:StartTime    = Get-Date
 $script:AllResults   = [System.Collections.Generic.List[object]]::new()
 $script:CriticalFail = $false
@@ -101,9 +106,6 @@ $script:CriticalFail = $false
 
 #region ================================================================
 #  CONSOLE OUTPUT HELPER
-#  Write-Information goes to stream 6; callers set $InformationPreference
-#  or use -InformationAction Continue for interactive boot sessions.
-#  Color information is embedded in the message tag for capture/replay.
 #================================================================
 
 $InformationPreference = 'Continue'
@@ -113,8 +115,6 @@ function Out-ConsoleLine {
         [string]$Message,
         [System.ConsoleColor]$Color = [System.ConsoleColor]::White
     )
-    # Emit to Information stream (stream 6) — visible at boot, capturable in tests.
-    # Color tag is advisory; WinPE console renders it via the calling context.
     Write-Information -MessageData $Message -Tags @('AzlValidation', $Color.ToString()) -InformationAction Continue
 }
 
@@ -329,7 +329,7 @@ function Test-DnsSrvRecord {
     $resolveDnsAvailable = $null -ne (Get-Command Resolve-DnsName -ErrorAction SilentlyContinue)
     if ($resolveDnsAvailable) {
         try {
-            $records = Resolve-DnsName -Name $SrvName -Type SRV -Server $DnsServer -ErrorAction Stop
+            $records  = Resolve-DnsName -Name $SrvName -Type SRV -Server $DnsServer -ErrorAction Stop
             $srvCount = @($records | Where-Object { $_.QueryType -eq 'SRV' }).Count
             return @{ Success = ($srvCount -gt 0); Detail = "SRV records: $srvCount"; Error = '' }
         } catch {
@@ -373,61 +373,6 @@ function Test-HttpsGet {
         $sw.Stop()
         return @{ Success = $false; HttpCode = 0; DurationMs = $sw.ElapsedMilliseconds; Error = $_.Exception.Message }
     }
-}
-
-function Test-CidrMembership {
-    <#
-    Returns $true if $IpAddress is within the CIDR block. PS 5.1 compatible.
-    #>
-    param([string]$IpAddress, [string]$CidrBlock)
-    try {
-        $parts   = $CidrBlock.Split('/')
-        $netAddr = [System.Net.IPAddress]::Parse($parts[0])
-        $prefix  = [int]$parts[1]
-
-        $netBytes = $netAddr.GetAddressBytes()
-        $ipBytes  = ([System.Net.IPAddress]::Parse($IpAddress)).GetAddressBytes()
-        if ($netBytes.Length -ne $ipBytes.Length) { return $false }
-
-        $maskUint = if ($prefix -eq 0) {
-            [uint32]0
-        } else {
-            [uint32]([System.Math]::Pow(2, 32) - [System.Math]::Pow(2, 32 - $prefix))
-        }
-
-        $netInt = ([uint32]$netBytes[0] -shl 24) -bor ([uint32]$netBytes[1] -shl 16) -bor
-                  ([uint32]$netBytes[2] -shl 8)  -bor [uint32]$netBytes[3]
-        $ipInt  = ([uint32]$ipBytes[0] -shl 24)  -bor ([uint32]$ipBytes[1] -shl 16) -bor
-                  ([uint32]$ipBytes[2] -shl 8)   -bor [uint32]$ipBytes[3]
-
-        return (($ipInt -band $maskUint) -eq ($netInt -band $maskUint))
-    } catch {
-        return $false
-    }
-}
-
-function Get-IpRangeList {
-    <#
-    Returns all IPs between startIp and endIp inclusive. PS 5.1 compatible.
-    #>
-    param([string]$StartIp, [string]$EndIp)
-    $startBytes = [System.Net.IPAddress]::Parse($StartIp).GetAddressBytes()
-    $endBytes   = [System.Net.IPAddress]::Parse($EndIp).GetAddressBytes()
-
-    $startInt = ([uint32]$startBytes[0] -shl 24) -bor ([uint32]$startBytes[1] -shl 16) -bor
-                ([uint32]$startBytes[2] -shl 8)  -bor [uint32]$startBytes[3]
-    $endInt   = ([uint32]$endBytes[0] -shl 24) -bor ([uint32]$endBytes[1] -shl 16) -bor
-                ([uint32]$endBytes[2] -shl 8)  -bor [uint32]$endBytes[3]
-
-    $ips = [System.Collections.Generic.List[string]]::new()
-    for ($i = $startInt; $i -le $endInt; $i++) {
-        $b = [byte[]]([int](($i -shr 24) -band 0xFF),
-                      [int](($i -shr 16) -band 0xFF),
-                      [int](($i -shr 8)  -band 0xFF),
-                      [int]($i -band 0xFF))
-        $ips.Add([System.Net.IPAddress]::new($b).ToString())
-    }
-    return $ips
 }
 
 #endregion
@@ -598,7 +543,7 @@ function Invoke-Category5EndpointSweep {
                 $probeTarget = $ep.probeHost
             } else {
                 Add-ValidationResult -Category $cat -Name "EP-$($ep.host)" -Target "$($ep.host):$($ep.port)" `
-                    -Status 'Skip' -Detail 'Wildcard -- no representative probe host; validate at FortiGate'
+                    -Status 'Skip' -Detail 'Wildcard -- no representative probe host; validate at firewall'
                 continue
             }
         }
@@ -627,84 +572,10 @@ function Invoke-Category5EndpointSweep {
     }
 }
 
-function Invoke-Category6InfraDevice {
-    param([object]$ValidationConfig)
-    $cat = 'Cat-6-InfraDevice'
-    Out-ConsoleLine -Message "`n[Category 6] Infrastructure Device Reachability" -Color ([System.ConsoleColor]::Cyan)
-
-    foreach ($device in $ValidationConfig.infraDeviceIps) {
-        $ping = Test-PingAddress -Address $device.ip -TimeoutMs $ValidationConfig.pingTimeoutMs
-        $st   = if ($ping.Success) { 'Pass' } else { 'Warn' }
-        $dt   = if ($ping.Success) { "$($ping.RoundtripMs)ms" } else { "Unreachable: $($ping.Error)" }
-        Add-ValidationResult -Category $cat -Name "Ping-$($device.label)" -Target $device.ip `
-            -Status $st -Detail "$($device.description) -- $dt" -DurationMs $ping.DurationMs
-    }
-}
-
-function Invoke-Category7ServiceBus {
-    param([object]$ValidationConfig)
-    $cat        = 'Cat-7-ServiceBus'
-    $probeHost  = $ValidationConfig.serviceBusProbeHost
-    Out-ConsoleLine -Message "`n[Category 7] Service Bus / WebSocket Probe" -Color ([System.ConsoleColor]::Cyan)
-
-    if ([string]::IsNullOrWhiteSpace($probeHost)) {
-        # *.servicebus.windows.net hostnames are instance-specific and only exist
-        # after ARB/guest-notification provisioning -- no generic host to probe.
-        Add-ValidationResult -Category $cat -Name 'ServiceBus-TCP443' -Target '*.servicebus.windows.net:443' `
-            -Status 'Skip' -DurationMs 0 -Detail ('No instance-specific Service Bus hostname configured (serviceBusProbeHost). ' +
-            'Manually verify the firewall allows outbound 443 incl. WebSocket (wss) to *.servicebus.windows.net -- ' +
-            'required by the Arc resource bridge.')
-        return
-    }
-
-    $r  = Test-TcpConnect -TargetHost $probeHost -Port 443 -TimeoutMs $ValidationConfig.tcpConnectTimeoutMs
-    $st = if ($r.Success) { 'Pass' } else { 'Fail' }
-    $dt = if ($r.Success) {
-        "$($r.DurationMs)ms -- TCP 443 reachable. Verify FortiGate app-control allows wss on *.servicebus.windows.net."
-    } else {
-        $r.Error
-    }
-    Add-ValidationResult -Category $cat -Name 'ServiceBus-TCP443' -Target "$probeHost`:443" `
-        -Status $st -Detail $dt -DurationMs $r.DurationMs
-}
-
-function Invoke-Category8NtpUdp {
-    param([object]$ValidationConfig)
-    $cat      = 'Cat-8-NTP-UDP'
-    $ntpProbe = $ValidationConfig.ntpUdpProbeHost
-    Out-ConsoleLine -Message "`n[Category 8] NTP UDP Port 123 Probe" -Color ([System.ConsoleColor]::Cyan)
-
-    $sw = [System.Diagnostics.Stopwatch]::StartNew()
-    try {
-        $ntpPacket    = [byte[]]::new(48)
-        $ntpPacket[0] = 0x1B   # LI=0, VN=3, Mode=3 (client)
-
-        $udpClient = New-Object System.Net.Sockets.UdpClient
-        $udpClient.Connect($ntpProbe, 123)
-        $udpClient.Client.ReceiveTimeout = 5000
-        $null = $udpClient.Send($ntpPacket, 48)
-
-        $remoteEp = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
-        $response = $udpClient.Receive([ref]$remoteEp)
-        $udpClient.Close()
-        $sw.Stop()
-
-        $ok = $response.Length -ge 48
-        $st = if ($ok) { 'Pass' } else { 'Warn' }
-        $dt = if ($ok) { "NTP response $($response.Length) bytes from $($remoteEp.Address)" } else { "Short response: $($response.Length) bytes" }
-        Add-ValidationResult -Category $cat -Name 'NTP-UDP123' -Target "$ntpProbe`:123/udp" `
-            -Status $st -Detail $dt -DurationMs $sw.ElapsedMilliseconds
-    } catch {
-        $sw.Stop()
-        Add-ValidationResult -Category $cat -Name 'NTP-UDP123' -Target "$ntpProbe`:123/udp" `
-            -Status 'Warn' -Detail "UDP NTP probe failed: $($_.Exception.Message)" -DurationMs $sw.ElapsedMilliseconds
-    }
-}
-
-function Invoke-Category9EnvironmentChecker {
+function Invoke-Category6EnvironmentChecker {
     param([string]$DestResultsPath, [switch]$SkipChecks)
-    $cat = 'Cat-9-EnvChecker'
-    Out-ConsoleLine -Message "`n[Category 9] Azure Local Environment Checker (Official Microsoft Validator)" -Color ([System.ConsoleColor]::Cyan)
+    $cat = 'Cat-6-EnvChecker'
+    Out-ConsoleLine -Message "`n[Category 6] Azure Local Environment Checker (Official Microsoft Validator)" -Color ([System.ConsoleColor]::Cyan)
 
     if ($SkipChecks) {
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Module' -Target 'AzStackHci.EnvironmentChecker' `
@@ -742,250 +613,90 @@ function Invoke-Category9EnvironmentChecker {
                 -Status 'Pass' -Detail 'Loaded from PSModulePath'
         } catch {
             Add-ValidationResult -Category $cat -Name 'EnvChecker-Module' -Target 'AzStackHci.EnvironmentChecker' `
-                -Status 'Warn' -Detail 'Module not found in image. Run from staging server. Custom sweep (categories 1-8) is the validation engine.'
+                -Status 'Warn' -Detail 'Module not found. Bundle via Build-WinPEImage.ps1 or run on staging server.'
         }
     }
 
     if (-not $moduleLoaded) { return }
 
+    # Connectivity validation
     try {
         $sw         = [System.Diagnostics.Stopwatch]::StartNew()
         $envResults = Invoke-AzStackHciConnectivityValidation -PassThru -ErrorAction Stop
         $sw.Stop()
-
         $failCount  = @($envResults | Where-Object { $_.Status -ne 'Succeeded' }).Count
         $totalCount = $envResults.Count
         $st         = if ($failCount -eq 0) { 'Pass' } else { 'Fail' }
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Connectivity' -Target 'Invoke-AzStackHciConnectivityValidation' `
             -Status $st -Detail "$($totalCount - $failCount)/$totalCount endpoints Succeeded" -DurationMs $sw.ElapsedMilliseconds
-
-        $reportSrc = Join-Path $HOME '.AzStackHci\AzStackHciEnvironmentReport.json'
-        if (Test-Path $reportSrc) {
-            try {
-                Copy-Item $reportSrc (Join-Path $DestResultsPath 'AzStackHciEnvironmentReport.json') -Force -ErrorAction Stop
-            } catch {
-                Write-Warning "Could not copy Environment Checker report: $_"
-            }
-        }
     } catch {
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Connectivity' -Target 'Invoke-AzStackHciConnectivityValidation' `
-            -Status 'Warn' -Detail "Validator threw exception (WinPE compat issue?): $($_.Exception.Message)"
+            -Status 'Warn' -Detail "Validator threw: $($_.Exception.Message)"
     }
-}
 
-function Invoke-Category10SslInspection {
-    param([object]$ValidationConfig)
-    $cat = 'Cat-10-SSL'
-    Out-ConsoleLine -Message "`n[Category 10] SSL Inspection / TLS Interception Detection" -Color ([System.ConsoleColor]::Cyan)
-    Out-ConsoleLine -Message '  NOTE: Private CA root detected = FortiGate SSL deep inspection active. This blocks Azure Local deployment.' -Color ([System.ConsoleColor]::DarkYellow)
+    # Network validation
+    try {
+        $sw2        = [System.Diagnostics.Stopwatch]::StartNew()
+        $netResults = Invoke-AzStackHciNetworkValidation -PassThru -ErrorAction Stop
+        $sw2.Stop()
+        $netFail    = @($netResults | Where-Object { $_.Status -ne 'Succeeded' }).Count
+        $netTotal   = $netResults.Count
+        $netSt      = if ($netFail -eq 0) { 'Pass' } else { 'Fail' }
+        Add-ValidationResult -Category $cat -Name 'EnvChecker-Network' -Target 'Invoke-AzStackHciNetworkValidation' `
+            -Status $netSt -Detail "$($netTotal - $netFail)/$netTotal checks Succeeded" -DurationMs $sw2.ElapsedMilliseconds
+    } catch {
+        Add-ValidationResult -Category $cat -Name 'EnvChecker-Network' -Target 'Invoke-AzStackHciNetworkValidation' `
+            -Status 'Warn' -Detail "Validator threw: $($_.Exception.Message)"
+    }
 
-    foreach ($sslEndpoint in $ValidationConfig.sslInspectionProbeEndpoints) {
-        $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    $reportSrc = Join-Path $HOME '.AzStackHci\AzStackHciEnvironmentReport.json'
+    if (Test-Path $reportSrc) {
         try {
-            $tcpClient = New-Object System.Net.Sockets.TcpClient($sslEndpoint, 443)
-            $sslStream = New-Object System.Net.Security.SslStream(
-                $tcpClient.GetStream(), $false, { $true }
-            )
-            $sslStream.AuthenticateAsClient($sslEndpoint)
-
-            $certObj  = $sslStream.RemoteCertificate
-            $chain    = New-Object System.Security.Cryptography.X509Certificates.X509Chain
-            $null     = $chain.Build($certObj)
-            $rootCert = $chain.ChainElements[$chain.ChainElements.Count - 1].Certificate
-            $rootSubj = $rootCert.Subject
-
-            $sslStream.Close()
-            $tcpClient.Close()
-            $sw.Stop()
-
-            $trusted = $rootSubj -match 'DigiCert|Microsoft|GlobalSign|Symantec|Entrust'
-            $st      = if ($trusted) { 'Pass' } else { 'Fail' }
-            $dt      = if ($trusted) {
-                "Root: $rootSubj"
-            } else {
-                "PRIVATE/UNKNOWN ROOT CA -- root: $rootSubj -- disable SSL inspection for Azure Local traffic"
-            }
-            Add-ValidationResult -Category $cat -Name "SSL-Chain-$sslEndpoint" -Target "https://$sslEndpoint" `
-                -Status $st -Detail $dt -DurationMs $sw.ElapsedMilliseconds
+            Copy-Item $reportSrc (Join-Path $DestResultsPath 'AzStackHciEnvironmentReport.json') -Force -ErrorAction Stop
         } catch {
-            $sw.Stop()
-            Add-ValidationResult -Category $cat -Name "SSL-Chain-$sslEndpoint" -Target "https://$sslEndpoint" `
-                -Status 'Warn' -Detail "TLS probe failed (no internet?): $($_.Exception.Message)" -DurationMs $sw.ElapsedMilliseconds
+            Write-Warning "Could not copy Environment Checker report: $_"
         }
     }
 }
 
-function Invoke-Category11DeployPrerequisite {
-    param([object]$ValidationConfig)
-    $cat = 'Cat-11-DeployPrereq'
-    Out-ConsoleLine -Message "`n[Category 11] Deployment Prerequisite Sanity Checks" -Color ([System.ConsoleColor]::Cyan)
+function Invoke-Category7Arc {
+    param([string]$DestResultsPath, [switch]$SkipChecks)
+    $cat = 'Cat-7-Arc'
+    Out-ConsoleLine -Message "`n[Category 7] Arc Integration (Optional)" -Color ([System.ConsoleColor]::Cyan)
 
-    Out-ConsoleLine -Message '  Scanning management IP pool for active hosts (may take ~30s) ...' -Color ([System.ConsoleColor]::DarkGray)
-    $poolIps   = Get-IpRangeList -StartIp $ValidationConfig.managementIpPoolStart -EndIp $ValidationConfig.managementIpPoolEnd
-    $squatters = [System.Collections.Generic.List[string]]::new()
-
-    foreach ($poolIp in $poolIps) {
-        $ping = Test-PingAddress -Address $poolIp -TimeoutMs 1000
-        if ($ping.Success) {
-            $squatters.Add($poolIp)
-            continue
-        }
-        foreach ($probePort in @(5985, 5986, 22)) {
-            $tcpR = Test-TcpConnect -TargetHost $poolIp -Port $probePort -TimeoutMs 1000
-            if ($tcpR.Success) {
-                $squatters.Add("$poolIp`:$probePort")
-                break
-            }
-        }
+    if ($SkipChecks) {
+        Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
+            -Status 'Skip' -Detail '-SkipArc switch set'
+        return
     }
 
-    if ($squatters.Count -eq 0) {
-        Add-ValidationResult -Category $cat -Name 'MgmtPool-Free' `
-            -Target "$($ValidationConfig.managementIpPoolStart)-$($ValidationConfig.managementIpPoolEnd)" `
-            -Status 'Pass' -Detail "All $($poolIps.Count) IPs in pool are free"
-    } else {
-        $squatterStr = $squatters -join ', '
-        Add-ValidationResult -Category $cat -Name 'MgmtPool-Free' `
-            -Target "$($ValidationConfig.managementIpPoolStart)-$($ValidationConfig.managementIpPoolEnd)" `
-            -Status 'Fail' -Detail "ACTIVE HOSTS IN RESERVED POOL: $squatterStr -- clear before deployment"
+    $modLoaded = $null -ne (Get-Module -Name 'AzStackHci.EnvironmentChecker' -ErrorAction SilentlyContinue)
+    if (-not $modLoaded) {
+        Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
+            -Status 'Skip' -Detail 'AzStackHci.EnvironmentChecker not loaded -- run Category 6 first'
+        return
     }
 
-    foreach ($dnsIp in $ValidationConfig.dnsServers) {
-        $inK8s = $false
-        foreach ($cidr in $ValidationConfig.kubernetesReservedCidrs) {
-            if (Test-CidrMembership -IpAddress $dnsIp -CidrBlock $cidr) {
-                $inK8s = $true
-                Add-ValidationResult -Category $cat -Name "DNS-NotInK8s-$dnsIp" -Target $dnsIp `
-                    -Status 'Fail' -Detail "DNS server inside Kubernetes reserved range $cidr -- cannot be changed after deployment"
-                break
-            }
-        }
-        if (-not $inK8s) {
-            Add-ValidationResult -Category $cat -Name "DNS-NotInK8s-$dnsIp" -Target $dnsIp `
-                -Status 'Pass' -Detail "Not in Kubernetes reserved ranges ($($ValidationConfig.kubernetesReservedCidrs -join ', '))"
-        }
+    $azCtx = $null
+    try { $azCtx = Get-AzContext -ErrorAction SilentlyContinue } catch { }
+    if (-not $azCtx) {
+        Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
+            -Status 'Skip' -Detail 'No Azure context -- sign in with Connect-AzAccount -DeviceCode first'
+        return
     }
 
-    $domR = Invoke-DnsLookup -DnsHostname $ValidationConfig.adDomainFqdn
-    $st   = if ($domR.Success) { 'Pass' } else { 'Fail' }
-    $dt   = if ($domR.Success) { "Resolves to: $($domR.Addresses)" } else { "Required before deployment: $($domR.Error)" }
-    Add-ValidationResult -Category $cat -Name 'ADDomain-Resolves' -Target $ValidationConfig.adDomainFqdn `
-        -Status $st -Detail $dt -DurationMs $domR.DurationMs
-
-    $vlanStr = ($ValidationConfig.storageVlans | ForEach-Object { $_.ToString() }) -join ', '
-    Add-ValidationResult -Category $cat -Name 'StorageVLANs-Echo' -Target 'switch config' `
-        -Status 'Skip' -Detail "Storage VLANs per plan: $vlanStr -- verify switch VLAN tagging manually; not probeable from WinPE"
-}
-
-function Invoke-Category12HardwareSelfCheck {
-    $cat = 'Cat-12-Hardware'
-    Out-ConsoleLine -Message "`n[Category 12] Hardware Self-Checks" -Color ([System.ConsoleColor]::Cyan)
-
-    # TPM 2.0
     try {
-        $tpmInst = Get-CimInstance -Namespace 'root\cimv2\Security\MicrosoftTpm' -ClassName 'Win32_Tpm' -ErrorAction Stop
-        if ($tpmInst) {
-            $tpmSpec = if ($tpmInst.SpecVersion) { $tpmInst.SpecVersion } else { 'unknown' }
-            $st      = if ($tpmSpec -match '^2\.') { 'Pass' } else { 'Fail' }
-            Add-ValidationResult -Category $cat -Name 'TPM-2.0' -Target 'root\cimv2\Security\MicrosoftTpm' `
-                -Status $st -Detail "SpecVersion: $tpmSpec"
-        } else {
-            Add-ValidationResult -Category $cat -Name 'TPM-2.0' -Target 'root\cimv2\Security\MicrosoftTpm' `
-                -Status 'Fail' -Detail 'Win32_Tpm returned null'
-        }
+        $sw         = [System.Diagnostics.Stopwatch]::StartNew()
+        $arcResults = Invoke-AzStackHciArcIntegrationValidation -PassThru -ErrorAction Stop
+        $sw.Stop()
+        $failCount  = @($arcResults | Where-Object { $_.Status -ne 'Succeeded' }).Count
+        $totalCount = $arcResults.Count
+        $st         = if ($failCount -eq 0) { 'Pass' } else { 'Fail' }
+        Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
+            -Status $st -Detail "$($totalCount - $failCount)/$totalCount checks Succeeded" -DurationMs $sw.ElapsedMilliseconds
     } catch {
-        Add-ValidationResult -Category $cat -Name 'TPM-2.0' -Target 'root\cimv2\Security\MicrosoftTpm' `
-            -Status 'Skip' -Detail "WMI namespace unavailable (WinPE-WMI not loaded, or not a physical node): $($_.Exception.Message)"
-    }
-
-    # Secure Boot
-    try {
-        $sb = Confirm-SecureBootUEFI -ErrorAction Stop
-        $st = if ($sb) { 'Pass' } else { 'Fail' }
-        $dt = if ($sb) { 'Secure Boot enabled' } else { 'Secure Boot DISABLED -- required for Azure Local' }
-        Add-ValidationResult -Category $cat -Name 'SecureBoot' -Target 'UEFI' -Status $st -Detail $dt
-    } catch [System.PlatformNotSupportedException] {
-        Add-ValidationResult -Category $cat -Name 'SecureBoot' -Target 'UEFI' `
-            -Status 'Skip' -Detail 'Not supported on this platform (non-UEFI or VM without UEFI pass-through)'
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'SecureBoot' -Target 'UEFI' `
-            -Status 'Skip' -Detail "Cmdlet unavailable in this environment: $($_.Exception.Message)"
-    }
-
-    # Physical disk count
-    try {
-        $diskInsts = Get-CimInstance -ClassName MSFT_Disk -Namespace root\Microsoft\Windows\Storage -ErrorAction Stop
-        $diskCount = if ($diskInsts) { @($diskInsts).Count } else { 0 }
-        $st        = if ($diskCount -ge 3) { 'Pass' } else { 'Warn' }
-        Add-ValidationResult -Category $cat -Name 'DiskCount' -Target 'MSFT_Disk' `
-            -Status $st -Detail "$diskCount disk(s) visible (need boot + >=2 data disks)"
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'DiskCount' -Target 'MSFT_Disk' `
-            -Status 'Skip' -Detail "Storage WMI unavailable (add WinPE-StorageWMI component): $($_.Exception.Message)"
-    }
-
-    # Existing storage pools -- S2D stale metadata check
-    try {
-        $pools     = Get-CimInstance -ClassName MSFT_StoragePool -Namespace root\Microsoft\Windows\Storage `
-                         -ErrorAction Stop | Where-Object { $_.IsPrimordial -eq $false }
-        $poolCount = if ($pools) { @($pools).Count } else { 0 }
-        if ($poolCount -gt 0) {
-            $poolNames = ($pools | ForEach-Object { $_.FriendlyName }) -join ', '
-            Add-ValidationResult -Category $cat -Name 'NoStoragePools' -Target 'MSFT_StoragePool' `
-                -Status 'Fail' -Detail "EXISTING STORAGE POOLS: $poolNames -- must be removed before S2D deployment"
-        } else {
-            Add-ValidationResult -Category $cat -Name 'NoStoragePools' -Target 'MSFT_StoragePool' `
-                -Status 'Pass' -Detail 'No pre-existing non-primordial storage pools'
-        }
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'NoStoragePools' -Target 'MSFT_StoragePool' `
-            -Status 'Warn' -Detail "Could not query storage pools (WinPE-StorageWMI optional): $($_.Exception.Message)"
-    }
-
-    # Physical NIC count
-    try {
-        $nicInsts  = Get-CimInstance -ClassName Win32_NetworkAdapter -Filter 'PhysicalAdapter=True' -ErrorAction Stop
-        $nicCount  = if ($nicInsts) { @($nicInsts).Count } else { 0 }
-        $st        = if ($nicCount -ge 2) { 'Pass' } else { 'Fail' }
-        Add-ValidationResult -Category $cat -Name 'NIC-PhysicalCount' -Target 'Win32_NetworkAdapter' `
-            -Status $st -Detail "$nicCount physical NIC(s) (Azure Local requires >=2)"
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'NIC-PhysicalCount' -Target 'Win32_NetworkAdapter' `
-            -Status 'Skip' -Detail "WMI unavailable: $($_.Exception.Message)"
-    }
-
-    # CPU virtualisation
-    try {
-        $cpuInst = Get-CimInstance -ClassName Win32_Processor -ErrorAction Stop | Select-Object -First 1
-        if ($cpuInst) {
-            $virtOk = $cpuInst.VirtualizationFirmwareEnabled
-            $st     = if ($virtOk) { 'Pass' } else { 'Fail' }
-            Add-ValidationResult -Category $cat -Name 'CPU-Virtualization' -Target 'Win32_Processor' `
-                -Status $st -Detail "VirtualizationFirmwareEnabled=$virtOk -- $($cpuInst.Name)"
-        } else {
-            Add-ValidationResult -Category $cat -Name 'CPU-Virtualization' -Target 'Win32_Processor' `
-                -Status 'Skip' -Detail 'No Win32_Processor instance'
-        }
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'CPU-Virtualization' -Target 'Win32_Processor' `
-            -Status 'Skip' -Detail "WMI unavailable: $($_.Exception.Message)"
-    }
-
-    # Memory >= 32 GB
-    try {
-        $csInst = Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop
-        if ($csInst) {
-            $ramGb = [math]::Round($csInst.TotalPhysicalMemory / 1GB, 1)
-            $st    = if ($ramGb -ge 32) { 'Pass' } else { 'Fail' }
-            Add-ValidationResult -Category $cat -Name 'Memory-32GB' -Target 'Win32_ComputerSystem' `
-                -Status $st -Detail "${ramGb}GB (minimum 32GB ECC)"
-        } else {
-            Add-ValidationResult -Category $cat -Name 'Memory-32GB' -Target 'Win32_ComputerSystem' `
-                -Status 'Skip' -Detail 'No Win32_ComputerSystem instance'
-        }
-    } catch {
-        Add-ValidationResult -Category $cat -Name 'Memory-32GB' -Target 'Win32_ComputerSystem' `
-            -Status 'Skip' -Detail "WMI unavailable: $($_.Exception.Message)"
+        Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
+            -Status 'Warn' -Detail "Arc validator threw: $($_.Exception.Message)"
     }
 }
 
@@ -1109,28 +820,21 @@ $endpoints = $epWrapper.endpoints
 Out-ConsoleLine -Message "  Config loaded: $($cfg.clusterName) / $($cfg.azureRegion)" -Color ([System.ConsoleColor]::DarkGray)
 Out-ConsoleLine -Message "  Endpoints    : $($endpoints.Count) entries" -Color ([System.ConsoleColor]::DarkGray)
 
-$allCategoryNums = @(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
-# pwsh -File (the startnet.cmd launch path) passes array args as plain strings,
-# so accept "2,10", "2 10", or repeated values and normalize to ints here.
+$allCategoryNums  = @(1, 2, 3, 4, 5, 6, 7)
 $parsedCategories = @($Categories | ForEach-Object { $_ -split '[,\s]+' } |
     Where-Object { $_ -match '^\d+$' } | ForEach-Object { [int]$_ } |
     Where-Object { $allCategoryNums -contains $_ } | Select-Object -Unique)
-$runCategories   = if ($parsedCategories.Count -gt 0) { $parsedCategories } else { $allCategoryNums }
+$runCategories    = if ($parsedCategories.Count -gt 0) { $parsedCategories } else { $allCategoryNums }
 
 Out-ConsoleLine -Message "  Categories   : $($runCategories -join ', ')" -Color ([System.ConsoleColor]::DarkGray)
 
-if ($runCategories -contains 1)  { Invoke-Category1Network              -ValidationConfig $cfg }
-if ($runCategories -contains 2)  { Invoke-Category2DnsCheck             -ValidationConfig $cfg }
-if ($runCategories -contains 3)  { Invoke-Category3Ntp                  -ValidationConfig $cfg }
-if ($runCategories -contains 4)  { Invoke-Category4ActiveDirectory       -ValidationConfig $cfg }
-if ($runCategories -contains 5)  { Invoke-Category5EndpointSweep         -ValidationConfig $cfg -EndpointList $endpoints }
-if ($runCategories -contains 6)  { Invoke-Category6InfraDevice           -ValidationConfig $cfg }
-if ($runCategories -contains 7)  { Invoke-Category7ServiceBus            -ValidationConfig $cfg }
-if ($runCategories -contains 8)  { Invoke-Category8NtpUdp                -ValidationConfig $cfg }
-if ($runCategories -contains 9)  { Invoke-Category9EnvironmentChecker    -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipEnvironmentChecker }
-if ($runCategories -contains 10) { Invoke-Category10SslInspection        -ValidationConfig $cfg }
-if ($runCategories -contains 11) { Invoke-Category11DeployPrerequisite   -ValidationConfig $cfg }
-if ($runCategories -contains 12) { Invoke-Category12HardwareSelfCheck }
+if ($runCategories -contains 1) { Invoke-Category1Network            -ValidationConfig $cfg }
+if ($runCategories -contains 2) { Invoke-Category2DnsCheck           -ValidationConfig $cfg }
+if ($runCategories -contains 3) { Invoke-Category3Ntp                -ValidationConfig $cfg }
+if ($runCategories -contains 4) { Invoke-Category4ActiveDirectory    -ValidationConfig $cfg }
+if ($runCategories -contains 5) { Invoke-Category5EndpointSweep      -ValidationConfig $cfg -EndpointList $endpoints }
+if ($runCategories -contains 6) { Invoke-Category6EnvironmentChecker -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipEnvironmentChecker }
+if ($runCategories -contains 7) { Invoke-Category7Arc                -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipArc }
 
 Write-ValidationSummary -Results $script:AllResults
 $null = Save-ValidationResult -Results $script:AllResults -ResultsDir $resolvedResultsPath
