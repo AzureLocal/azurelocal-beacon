@@ -17,6 +17,23 @@ Detailed reference for all 12 validation categories in `Start-AzlValidation.ps1`
 | 11 | **Prereq Sanity** | IP pool squatter (ICMP + TCP 5985/5986/22), DNS-not-in-K8s-CIDR (`10.96.0.0/12`, `10.244.0.0/16`) | Yes for K8s overlap |
 | 12 | **Hardware** | TPM 2.0 presence, Secure Boot enabled, storage pool absence, NIC consistency, CPU virtualization | Yes for TPM/Secure Boot |
 
+## Which categories run per path
+
+| Category | AD | Local Identity | Networking & Firewall | Full sweep |
+|---|---|---|---|---|
+| 1 Network | ✅ | ✅ | ✅ | ✅ |
+| 2 DNS | ✅ | ✅ | ✅ | ✅ |
+| 3 NTP | ✅ | ✅ | ✅ | ✅ |
+| 4 AD ports | ✅ | ❌ | ❌ | AD sub-path only |
+| 5 Endpoint sweep | ✅ | ✅ | ✅ | ✅ |
+| 6 Infra devices | ❌ | ❌ | ✅ | ✅ |
+| 7 Service Bus | ❌ | ❌ | ✅ | ✅ |
+| 8 NTP UDP | ❌ | ❌ | ✅ | ✅ |
+| 9 EnvChecker | ✅ | ✅ | ✅ | ✅ |
+| 10 SSL inspection | ❌ | ✅ | ✅ | ✅ |
+| 11 Prereq sanity | ❌ | ✅ | ✅ | ✅ |
+| 12 Hardware | ❌ | ❌ | ✅ | ✅ |
+
 ## Config keys (validation-config.json)
 
 | Key | Used by | Example |
