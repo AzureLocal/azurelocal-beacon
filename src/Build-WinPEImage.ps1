@@ -107,7 +107,7 @@ param(
     [string]$OutputPath = (Join-Path $PSScriptRoot 'output'),
 
     [Parameter(Mandatory = $false)]
-    [string]$DriverPath = '',
+    [string]$DriverPath = (Join-Path $PSScriptRoot '..\drivers\dell-ax'),
 
     [Parameter(Mandatory = $false)]
     [string]$PS7ZipPath = '',
@@ -426,16 +426,36 @@ try {
 
     # --- Step 4: Inject drivers ---
     Write-Step 'Step 4: Driver injection...'
-    if ($DriverPath -and (Test-Path $DriverPath)) {
-        Invoke-DismCommand -Arguments @("/Image:$MOUNT_PATH", '/Add-Driver', "/Driver:$DriverPath", '/Recurse') `
-                           -Description "Inject drivers from $DriverPath"
+    $resolvedDriverPath = if ($DriverPath) { $DriverPath } else { '' }
+    if ($resolvedDriverPath -and (Test-Path $resolvedDriverPath)) {
+        # Enumerate the INF files so we can log what is being injected
+        $infFiles = Get-ChildItem -Path $resolvedDriverPath -Filter '*.inf' -Recurse -ErrorAction SilentlyContinue
+        if ($infFiles) {
+            Write-Step "  Found $($infFiles.Count) INF file(s) to inject:"
+            foreach ($inf in $infFiles) {
+                # Read DriverVer from the INF for a build-log summary
+                $driverVer = ''
+                try {
+                    $infContent = Get-Content $inf.FullName -ErrorAction SilentlyContinue
+                    $verLine = $infContent | Where-Object { $_ -match '^\s*DriverVer\s*=' } | Select-Object -First 1
+                    if ($verLine -and $verLine -match '=\s*(.+)$') { $driverVer = $Matches[1].Trim() }
+                } catch { }
+                $logLine = "    $($inf.Name)"
+                if ($driverVer) { $logLine += "  [DriverVer=$driverVer]" }
+                Write-Step $logLine
+            }
+        }
+        Invoke-DismCommand -Arguments @("/Image:$MOUNT_PATH", '/Add-Driver', "/Driver:$resolvedDriverPath", '/Recurse') `
+                           -Description "Inject drivers from $resolvedDriverPath"
+        Write-Step "Driver injection complete ($($infFiles.Count) INF(s))." -Level Success
     }
-    elseif ($DriverPath -and -not (Test-Path $DriverPath)) {
-        Write-Warning "DriverPath '$DriverPath' not found. Skipping driver injection."
+    elseif ($resolvedDriverPath -and -not (Test-Path $resolvedDriverPath)) {
+        Write-Warning "DriverPath '$resolvedDriverPath' not found. Skipping driver injection."
+        Write-Warning 'Run the build from the repo root so drivers/dell-ax/ is discoverable, or supply -DriverPath.'
         Write-Step 'Driver injection skipped.' -Level Warning
     }
     else {
-        Write-Warning 'No -DriverPath supplied. Image will use WinPE default NIC driver set only.'
+        Write-Warning 'No DriverPath resolved. Image will use WinPE default NIC driver set only.'
         Write-Step 'Driver injection skipped.' -Level Warning
     }
 
@@ -495,16 +515,27 @@ try {
     $toolsDest = Join-Path $MOUNT_PATH $TOOLS_DIR
     New-Item -ItemType Directory -Path $toolsDest -Force | Out-Null
 
-    $validationScript = Join-Path $PSScriptRoot 'Start-AzlValidation.ps1'
-    if (Test-Path $validationScript) {
-        if ($PSCmdlet.ShouldProcess($toolsDest, 'Copy Start-AzlValidation.ps1')) {
-            Copy-Item -Path $validationScript -Destination $toolsDest -Force
-            Write-Step 'Copied Start-AzlValidation.ps1.' -Level Success
+    # Copy all PowerShell scripts that run inside the image
+    $inImageScripts = @(
+        'Start-AzlValidation.ps1',
+        'Start-AzlBeacon.ps1',
+        'Start-NetworkBootstrap.ps1'
+    )
+    foreach ($scriptName in $inImageScripts) {
+        $scriptSrc = Join-Path $PSScriptRoot $scriptName
+        if (Test-Path $scriptSrc) {
+            if ($PSCmdlet.ShouldProcess($toolsDest, "Copy $scriptName")) {
+                Copy-Item -Path $scriptSrc -Destination $toolsDest -Force
+                Write-Step "Copied $scriptName." -Level Success
+            }
+        } else {
+            $warnMsg = "$scriptName not found at $scriptSrc."
+            if ($scriptName -eq 'Start-AzlValidation.ps1') {
+                Write-Warning "$warnMsg Rebuild will not boot correctly without this file."
+            } else {
+                Write-Warning "$warnMsg The interactive menu may not function."
+            }
         }
-    }
-    else {
-        Write-Warning "Start-AzlValidation.ps1 not found at $validationScript."
-        Write-Warning 'Add the script to src/winpe/ and rebuild before booting.'
     }
 
     $configDest = Join-Path $toolsDest 'config'

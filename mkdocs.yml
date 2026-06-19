@@ -1,0 +1,101 @@
+site_name: AzL Beacon
+site_description: Pre-deployment endpoint, network, and hardware readiness validation for Azure Local.
+site_author: Azure Local Cloud
+site_url: https://azurelocal.github.io/azurelocal-beacon/
+repo_url: https://github.com/AzureLocal/azurelocal-beacon
+repo_name: AzureLocal/azurelocal-beacon
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.prune
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+  logo: assets/images/azurelocal-beacon-icon.svg
+  favicon: assets/images/azurelocal-beacon-icon.svg
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/overview.md
+      - Prerequisites: getting-started/prerequisites.md
+      - Build the ISO: getting-started/build.md
+      - Boot and Run: getting-started/boot.md
+  - Validation:
+      - Overview: validation/index.md
+      - Active Directory: validation/active-directory.md
+      - Local Identity (AD-less): validation/local-identity.md
+      - Networking and Firewall: validation/network-firewall.md
+      - Category Reference: validation/category-reference.md
+  - Drivers:
+      - Dell AX NIC Drivers: drivers/dell-ax.md
+  - Reference:
+      - Endpoint List: reference/endpoints.md
+      - Environment Checker: reference/environment-checker.md
+      - Results Schema: reference/results-schema.md
+      - Glossary: reference/glossary.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - tables
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html
+
+plugins:
+  - search
+
+extra:
+  analytics:
+    provider: google
+    property: G-2D9XDHSXJW
+  social:
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/countrycloudboy
+      name: CountryCloudBoy on X
+    - icon: fontawesome/brands/github
+      link: https://github.com/AzureLocal/azurelocal-beacon
+      name: GitHub Repository
+    - icon: fontawesome/solid/globe
+      link: https://azurelocal.cloud
+      name: Azure Local Community
+  homepage: https://azurelocal.cloud
+
+copyright: >-
+  Copyright &copy; 2026 Azure Local. Designed and maintained by
+  <a href="https://www.hybridsolutions.cloud">Hybrid Cloud Solutions</a>.

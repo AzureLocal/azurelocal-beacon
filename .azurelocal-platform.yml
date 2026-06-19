@@ -1,0 +1,19 @@
+schema_version: "1.0"
+repo:
+  name: azurelocal-beacon
+  org: AzureLocal
+  platform: github
+  default_branch: main
+  type: tool
+  validation_profile: powershell
+  ado_project: Azure Local Beacon
+  ado_area_path: Azure Local Beacon
+docs:
+  engine: mkdocs-material
+  site_url: https://azurelocal.github.io/azurelocal-beacon/
+standards:
+  platform_ref: https://github.com/AzureLocal/platform/tree/main/docs/standards
+  governance: true
+  scripting: true
+  documentation: true
+owner: kris@hybridsolutions.cloud
