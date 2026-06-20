@@ -21,8 +21,10 @@ AzL Beacon presents a **split menu** at boot. Choose the path that matches your 
   │  2)  Local Identity (AD-less) deployment            │
   │  3)  Networking and Firewall                        │
   │  4)  Full readiness sweep                           │
+  │  5)  Arc integration validation                     │
   ├─────────────────────────────────────────────────────┤
-  │  5)  Network settings (re-run bootstrap)            │
+  │  6)  Network settings (re-run bootstrap)            │
+  │  7)  Open PowerShell console                        │
   │  0)  Exit to command prompt                         │
   └─────────────────────────────────────────────────────┘
 ```

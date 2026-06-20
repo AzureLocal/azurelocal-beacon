@@ -124,7 +124,7 @@ function Show-Banner {
     Write-BeaconLine '  ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝' -Color Cyan
     Write-BeaconLine ''
     Write-BeaconLine '    Azure Local Pre-Deployment Validation' -Color White
-    Write-BeaconLine '    v1.0.0-pre  |  Dell AX 16G  |  HCS Platform' -Color DarkGray
+    Write-BeaconLine '    v1.0.1  |  Dell AX 16G  |  HCS Platform' -Color DarkGray
     Write-BeaconLine ''
     Write-BeaconLine '    Pre-deployment endpoint and network' -Color DarkGray
     Write-BeaconLine '    readiness validation for Azure Local.' -Color DarkGray
@@ -221,6 +221,12 @@ function Invoke-ADMenu {
 
     Write-BeaconLine ''
     Write-BeaconLine '  AD validation complete. Results in X:\results\' -Color Green
+
+    $runArc = Read-MenuInput 'Run optional Arc integration readiness check? Requires Azure sign-in. (y/N)'
+    if ($runArc -eq 'y' -or $runArc -eq 'Y') {
+        Invoke-ArcValidation
+    }
+
     Invoke-PostRunPrompt
 }
 
@@ -291,14 +297,31 @@ function Invoke-LocalIdentityMenu {
 #region  ── Networking & Firewall Path ──
 
 function Invoke-NetworkFirewallMenu {
+    param([hashtable]$NetworkState = @{})
     Write-BeaconHeader 'Networking and Firewall Validation'
     Write-BeaconLine '  Validates physical network, endpoint reachability (Azure Local + Arc + Dell),' -Color White
     Write-BeaconLine '  DNS and the Microsoft Environment Checker.' -Color White
     Write-BeaconLine ''
 
-    $gwIp       = Prompt-Optional 'Management gateway IP (leave blank to use DHCP-detected)'
-    $dnsRaw     = Prompt-Optional 'DNS server IP(s) — comma-separated (leave blank to use current)'
-    $dnsServers = if ($dnsRaw) { @($dnsRaw -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }) } else { @() }
+    $gwIp = if ($NetworkState.GatewayIp) { $NetworkState.GatewayIp } else { $null }
+    $dnsIp = if ($NetworkState.DnsServer) { $NetworkState.DnsServer } else { $null }
+
+    if ($gwIp) {
+        Write-BeaconLine "  Gateway : $gwIp  (from bootstrap)" -Color DarkGray
+    } else {
+        $gwIp = Prompt-Optional 'Management gateway IP (leave blank to skip)'
+    }
+
+    $dnsServers = @()
+    if ($dnsIp) {
+        Write-BeaconLine "  DNS     : $dnsIp  (from bootstrap)" -Color DarkGray
+        $dnsServers = @($dnsIp)
+    } else {
+        $dnsRaw = Prompt-Optional 'DNS server IP(s) - comma-separated (leave blank to skip)'
+        if ($dnsRaw) {
+            $dnsServers = @($dnsRaw -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+        }
+    }
     Write-BeaconLine ''
 
     $overrides = @{}
@@ -314,6 +337,12 @@ function Invoke-NetworkFirewallMenu {
 
     Write-BeaconLine ''
     Write-BeaconLine '  Networking and Firewall validation complete. Results in X:\results\' -Color Green
+
+    $runArc = Read-MenuInput 'Run optional Arc integration readiness check? Requires Azure sign-in. (y/N)'
+    if ($runArc -eq 'y' -or $runArc -eq 'Y') {
+        Invoke-ArcValidation
+    }
+
     Invoke-PostRunPrompt
 }
 
@@ -435,8 +464,10 @@ function Show-MainMenu {
     Write-BeaconLine '  │  2)  Local Identity (AD-less) deployment            │' -Color White
     Write-BeaconLine '  │  3)  Networking and Firewall                        │' -Color White
     Write-BeaconLine '  │  4)  Full readiness sweep                           │' -Color White
+    Write-BeaconLine '  │  5)  Arc integration validation                     │' -Color White
     Write-BeaconLine '  ├─────────────────────────────────────────────────────┤' -Color Cyan
-    Write-BeaconLine '  │  5)  Network settings (re-run bootstrap)            │' -Color DarkGray
+    Write-BeaconLine '  │  6)  Network settings (re-run bootstrap)            │' -Color DarkGray
+    Write-BeaconLine '  │  7)  Open PowerShell console                        │' -Color DarkGray
     Write-BeaconLine '  │  0)  Exit to command prompt                         │' -Color DarkGray
     Write-BeaconLine '  └─────────────────────────────────────────────────────┘' -Color Cyan
     Write-BeaconLine ''
@@ -482,9 +513,10 @@ while ($running) {
     switch ($choice) {
         '1' { Invoke-ADMenu }
         '2' { Invoke-LocalIdentityMenu }
-        '3' { Invoke-NetworkFirewallMenu }
+        '3' { Invoke-NetworkFirewallMenu -NetworkState $networkState }
         '4' { Invoke-FullSweep }
-        '5' {
+        '5' { Invoke-ArcValidation; Invoke-PostRunPrompt }
+        '6' {
             if (Test-Path $bootstrapScript) {
                 Write-BeaconLine '  Re-running network bootstrap...' -Color Cyan
                 $networkState = & $bootstrapScript
@@ -496,6 +528,7 @@ while ($running) {
                 Invoke-PostRunPrompt
             }
         }
+        '7' { Start-Process -FilePath 'powershell.exe' }
         '0' {
             Write-BeaconLine ''
             Write-BeaconLine '  Exiting to command prompt. Results are in X:\results\' -Color White
@@ -504,7 +537,7 @@ while ($running) {
             $running = $false
         }
         default {
-            Write-BeaconLine "  Invalid choice: '$choice'. Enter 0-5." -Color Yellow
+            Write-BeaconLine "  Invalid choice: '$choice'. Enter 0-7." -Color Yellow
             & ping -n 2 127.0.0.1 | Out-Null
         }
     }

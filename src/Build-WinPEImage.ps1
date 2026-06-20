@@ -551,11 +551,20 @@ try {
         if ($PSCmdlet.ShouldProcess($configDest, 'Copy config folder')) {
             Copy-Item -Path $resolvedConfig -Destination $configDest -Recurse -Force
             Write-Step "Config copied from $resolvedConfig." -Level Success
+
+            # Seed a blank validation-config.json from the example if no real one was copied.
+            # The menu collects actual values at runtime via Write-ValidationConfigOverrides.
+            $cfgJson  = Join-Path $configDest 'validation-config.json'
+            $cfgExamp = Join-Path $configDest 'validation-config.example.json'
+            if (-not (Test-Path $cfgJson) -and (Test-Path $cfgExamp)) {
+                Copy-Item -Path $cfgExamp -Destination $cfgJson -Force
+                Write-Step 'Seeded validation-config.json from example (no engagement config provided).' -Level Warning
+            }
         }
     }
     else {
         Write-Warning "Config path '$resolvedConfig' not found."
-        Write-Warning 'Populate src/winpe/config/ and rebuild before use.'
+        Write-Warning 'Populate src/config/ and rebuild before use.'
     }
 
     # --- Step 9: Install startnet.cmd ---

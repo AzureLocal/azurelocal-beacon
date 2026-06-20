@@ -221,6 +221,8 @@ function Resolve-ConfigDefaults {
         adDomainFqdn        = ''
         nodeFqdns           = @()
         dcIps               = @()
+        clusterName         = ''
+        azureRegion         = ''
     }
     foreach ($key in $defaults.Keys) {
         if (-not ($Config.PSObject.Properties.Name -contains $key)) {
@@ -425,11 +427,15 @@ function Invoke-Category1Network {
         Add-ValidationResult -Category $cat -Name 'NIC-Up-WithIP' -Target 'adapter' -Status 'Fail' -Detail $_.Exception.Message
     }
 
-    $gw     = $ValidationConfig.managementGateway
-    $gwPing = Test-PingAddress -Address $gw -TimeoutMs $ValidationConfig.pingTimeoutMs
-    $gwStat = if ($gwPing.Success) { 'Pass' } else { 'Fail' }
-    $gwDet  = if ($gwPing.Success) { "$($gwPing.RoundtripMs)ms" } else { $gwPing.Error }
-    Add-ValidationResult -Category $cat -Name 'Gateway-Ping' -Target $gw -Status $gwStat -Detail $gwDet -DurationMs $gwPing.DurationMs
+    $gw = $ValidationConfig.managementGateway
+    if ($gw) {
+        $gwPing = Test-PingAddress -Address $gw -TimeoutMs $ValidationConfig.pingTimeoutMs
+        $gwStat = if ($gwPing.Success) { 'Pass' } else { 'Fail' }
+        $gwDet  = if ($gwPing.Success) { "$($gwPing.RoundtripMs)ms" } else { $gwPing.Error }
+        Add-ValidationResult -Category $cat -Name 'Gateway-Ping' -Target $gw -Status $gwStat -Detail $gwDet -DurationMs $gwPing.DurationMs
+    } else {
+        Add-ValidationResult -Category $cat -Name 'Gateway-Ping' -Target 'managementGateway' -Status 'Skip' -Detail 'managementGateway not configured'
+    }
 
     if ($ValidationConfig.nodeIps.Count -gt 0) {
         $nodeIp   = $ValidationConfig.nodeIps[0]
@@ -641,7 +647,7 @@ function Invoke-Category5EnvironmentChecker {
         $netResults = Invoke-AzStackHciNetworkValidation -PassThru -ErrorAction Stop
         $sw2.Stop()
         $netFail    = @($netResults | Where-Object { $_.Status -ne 'Succeeded' }).Count
-        $netTotal   = $netResults.Count
+        $netTotal   = @($netResults).Count
         $netSt      = if ($netFail -eq 0) { 'Pass' } else { 'Fail' }
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Network' -Target 'Invoke-AzStackHciNetworkValidation' `
             -Status $netSt -Detail "$($netTotal - $netFail)/$netTotal checks Succeeded" -DurationMs $sw2.ElapsedMilliseconds
@@ -674,7 +680,7 @@ function Invoke-Category6Arc {
     $modLoaded = $null -ne (Get-Module -Name 'AzStackHci.EnvironmentChecker' -ErrorAction SilentlyContinue)
     if (-not $modLoaded) {
         Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
-            -Status 'Skip' -Detail 'AzStackHci.EnvironmentChecker not loaded -- run Category 6 first'
+            -Status 'Skip' -Detail 'AzStackHci.EnvironmentChecker not loaded -- run Category 5 first'
         return
     }
 

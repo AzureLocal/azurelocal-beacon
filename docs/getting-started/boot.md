@@ -27,7 +27,7 @@ Set the node's one-time boot order to the USB device.
 wpeinit                   <- WinPE network stack init
 Start-AzlBeacon.ps1       <- Menu orchestrator
   Start-NetworkBootstrap  <- DHCP detect / static IP prompt
-  Main menu               <- Choose: AD / Local Identity / Network+Firewall / Full sweep
+  Main menu               <- Choose: AD / Local Identity / Network+Firewall / Full sweep / PowerShell console
 ```
 
 ## Network bootstrap

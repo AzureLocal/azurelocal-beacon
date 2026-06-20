@@ -3,7 +3,7 @@
 :: startnet.cmd — AzL Beacon WinPE boot entry point
 :: Injected into \Windows\System32\startnet.cmd at image build.
 ::
-:: v1.0.0-pre — launches the interactive Beacon menu orchestrator
+:: v1.0.1 — launches the interactive Beacon menu orchestrator
 :: (Start-AzlBeacon.ps1) which handles DHCP/static bootstrap
 :: and presents the split validation menu.
 :: ============================================================
@@ -13,7 +13,7 @@ wpeinit
 
 echo.
 echo ============================================================
-echo   AzL Beacon v1.0.0-pre
+echo   AzL Beacon v1.0.1
 echo   Azure Local Pre-Deployment Validation
 echo   Dell AX 16G  ^|  HCS Platform
 echo ============================================================
