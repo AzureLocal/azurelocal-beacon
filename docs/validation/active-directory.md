@@ -10,7 +10,6 @@ Select **option 1** from the Beacon main menu to validate readiness for an AD-jo
 | Domain controller IP(s) | `10.10.0.10, 10.10.0.11` | Yes |
 | Target OU Distinguished Name | `OU=AzureLocal,DC=corp,DC=improbability,DC=cloud` | Optional |
 | Deployment prefix (≤ 8 chars) | `azl` | Optional (default: `azl`) |
-| Primary NTP/time source | `10.10.0.1` | Optional (default: `time.windows.com`) |
 
 ## Tests run
 

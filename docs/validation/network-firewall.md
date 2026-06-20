@@ -8,7 +8,7 @@ This path runs everything except the AD port tests (Category 4). It's ideal for:
 
 - Verifying firewall policy before any identity configuration
 - Checking endpoint reachability from the management VLAN
-- Confirming DNS and NTP are reachable
+- Confirming DNS is reachable
 
 ## What you are prompted for
 

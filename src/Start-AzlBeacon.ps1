@@ -201,20 +201,15 @@ function Invoke-ADMenu {
     $ouDn          = Prompt-Optional 'Target OU Distinguished Name (e.g. OU=AzureLocal,DC=corp,DC=contoso,DC=com)'
     $deployPrefix  = Prompt-Optional 'Deployment prefix (up to 8 chars)' -Default 'azl'
     Write-BeaconLine ''
-    $ntpPrimary    = Prompt-Optional 'Primary NTP/time source IP or FQDN' -Default 'time.windows.com'
-
     Write-BeaconLine ''
     Write-BeaconLine '  Configuration collected. Updating validation config...' -Color Cyan
 
     $overrides = @{
-        adDomainFqdn          = $domainFqdn
-        dcIps                 = $dcIps
-        deploymentPrefix      = $deployPrefix
+        adDomainFqdn     = $domainFqdn
+        dcIps            = $dcIps
+        deploymentPrefix = $deployPrefix
     }
-    if ($ouDn)      { $overrides['adOuDn']   = $ouDn }
-    if ($ntpPrimary) {
-        $overrides['ntpServers'] = @{ primary = $ntpPrimary; secondary = 'time.windows.com' }
-    }
+    if ($ouDn) { $overrides['adOuDn'] = $ouDn }
     Write-ValidationConfigOverrides -Overrides $overrides
 
     Write-BeaconLine ''
@@ -298,7 +293,7 @@ function Invoke-LocalIdentityMenu {
 function Invoke-NetworkFirewallMenu {
     Write-BeaconHeader 'Networking and Firewall Validation'
     Write-BeaconLine '  Validates physical network, endpoint reachability (Azure Local + Arc + Dell),' -Color White
-    Write-BeaconLine '  DNS, NTP, and the Microsoft Environment Checker.' -Color White
+    Write-BeaconLine '  DNS and the Microsoft Environment Checker.' -Color White
     Write-BeaconLine ''
 
     $gwIp       = Prompt-Optional 'Management gateway IP (leave blank to use DHCP-detected)'

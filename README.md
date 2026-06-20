@@ -52,7 +52,7 @@ Or download the full driver pack for your hardware and point `-DriverPath` at th
 
 ### 1. Populate config
 
-Copy `src/config/validation-config.example.json` to `src/config/validation-config.json` and fill in your deployment values (DNS, NTP, AD domain, node IPs, gateway, IP pool range).
+Copy `src/config/validation-config.example.json` to `src/config/validation-config.json` and fill in your deployment values (DNS, AD domain, node IPs, gateway).
 
 Regenerate the Azure endpoint list if needed:
 

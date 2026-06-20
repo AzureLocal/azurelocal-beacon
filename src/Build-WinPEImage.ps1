@@ -27,7 +27,7 @@
     The image is stage 1 of the 5-stage Azure Local validation lifecycle. See
     docs/index.md for the full coverage matrix.
 
-    All environment values (DNS, NTP, domain, node IPs) are supplied via the config folder
+    All environment values (DNS, domain, node IPs) are supplied via the config folder
     copied into the image -- no values are hardcoded in this script.
 
 .PARAMETER WorkspacePath

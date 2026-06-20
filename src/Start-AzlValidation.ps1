@@ -65,8 +65,7 @@
     Prerequisites:
       - config\validation-config.json and config\endpoints.json must exist.
       - curl.exe must be on PATH for HTTPS GET probes (built-in to WinPE and Win10+).
-      - w32tm.exe must be on PATH for NTP checks (built-in to WinPE).
-      - AzStackHci.EnvironmentChecker required for Cat-6/7 (bundled at ISO build time).
+      - AzStackHci.EnvironmentChecker required for Cat-5/6 (bundled at ISO build time).
     PSScriptAnalyzer: passes at Warning/Error severity.
     Compatibility: PowerShell 5.1 (WinPE) and PowerShell 7. No PS7-only syntax used.
 #>
