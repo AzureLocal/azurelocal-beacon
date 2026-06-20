@@ -4,7 +4,7 @@ Select **option 3** from the Beacon main menu to run a focused networking and fi
 
 ## What it covers
 
-This path runs everything except the AD port tests (Category 4). It's ideal for:
+This path runs everything except the AD port tests (Category 3). It's ideal for:
 
 - Verifying firewall policy before any identity configuration
 - Checking endpoint reachability from the management VLAN

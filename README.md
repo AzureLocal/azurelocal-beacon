@@ -9,7 +9,7 @@ Boot it on bare metal before you touch the deployment wizard. Know your environm
 
 ## What it does
 
-On boot, `Start-AzlValidation.ps1` runs 7 validation categories grounded in Microsoft and Dell source documents:
+On boot, `Start-AzlBeacon.ps1` presents an interactive menu. Choose your deployment path — it calls `Start-AzlValidation.ps1` to run the applicable categories from these 6, all grounded in Microsoft and Dell source documents:
 
 | # | Category | What it checks |
 |---|---|---|
@@ -36,15 +36,15 @@ Results land at `X:\results\` on the WinPE RAM drive in JSON format. Copy off be
 | Administrator rights | DISM mount requires elevation |
 | Internet access | For PS7 download + `Save-Module` (skippable — see air-gap build) |
 
-### NIC drivers (recommended)
+### NIC drivers
 
-Inject 25 GbE NIC drivers so ports come up on first boot. Export from a provisioned node:
+Dell AX 16G NIC drivers are **bundled in the repo** at `drivers/dell-ax/` (extracted from Dell SBE bundle `5.0.2603.1641`). The build script picks them up automatically — no separate download or driver export required.
+
+For non-Dell hardware, supply your own drivers:
 
 ```powershell
-Export-WindowsDriver -Online -Destination C:\drivers
+.\src\Build-WinPEImage.ps1 -DriverPath C:\my-drivers
 ```
-
-Or download the full driver pack for your hardware and point `-DriverPath` at the extracted folder.
 
 ---
 
@@ -88,7 +88,7 @@ Output: `src/output/azl-validate-<yyyyMMdd>.iso`
 2. Open **Virtual Console → Virtual Media → Connect Virtual Media**.
 3. Under **Map CD/DVD**, select the ISO and click **Map Device**.
 4. Reboot: power menu → one-time boot (F11) → **Virtual CD/DVD**.
-5. WinPE loads, `startnet.cmd` runs, validation starts automatically.
+5. WinPE loads, `startnet.cmd` runs, the Beacon menu appears.
 
 To preserve results before reboot:
 

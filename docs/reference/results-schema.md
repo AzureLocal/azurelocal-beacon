@@ -28,7 +28,7 @@ Beacon saves results to `X:\results\validation-<timestamp>.json`.
       "DurationMs": 38
     },
     {
-      "Category": "Cat-4-AD",
+      "Category": "Cat-3-AD",
       "Name": "AD-LDAP-10.10.0.10",
       "Target": "10.10.0.10:389",
       "Status": "Fail",

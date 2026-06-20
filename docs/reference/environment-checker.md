@@ -12,9 +12,9 @@ AzL Beacon bundles and calls the Microsoft `AzStackHci.EnvironmentChecker` Power
 
 | Validator | Cmdlet | When called |
 |---|---|---|
-| Connectivity | `Invoke-AzStackHciConnectivityValidation` | Category 6, all paths |
-| Network | `Invoke-AzStackHciNetworkValidation` | Category 6, all paths |
-| Arc integration | `Invoke-AzStackHciArcIntegrationValidation` | Category 7 — optional, requires Azure sign-in |
+| Connectivity | `Invoke-AzStackHciConnectivityValidation` | Category 5, all paths |
+| Network | `Invoke-AzStackHciNetworkValidation` | Category 5, all paths |
+| Arc integration | `Invoke-AzStackHciArcIntegrationValidation` | Category 6 — optional, requires Azure sign-in |
 
 ## WinPE limitations
 

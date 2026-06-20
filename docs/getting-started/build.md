@@ -29,7 +29,7 @@ If your build machine has limited or no internet access, pre-download the PS7 LT
 ```
 
 !!! warning "Module not included in air-gapped builds"
-    Without `AzStackHci.EnvironmentChecker`, Category 6 (environment checker) is skipped.
+    Without `AzStackHci.EnvironmentChecker`, Category 5 (environment checker) is skipped.
     Pre-stage the module at `<WorkspacePath>\mount\Tools\Modules` before the unmount step, or
     run the module-based tests from a staging server post-OS.
 
