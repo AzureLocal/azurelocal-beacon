@@ -917,7 +917,6 @@
 <ul>
 <li>Basic network and NIC status</li>
 <li>DNS resolution (forward + reverse, TCP/UDP port 53)</li>
-<li>NTP time-skew check (Azure Local requires &lt; 5 min skew)</li>
 <li>AD port reachability: LDAP 389/636, Kerberos 88, RPC 135, DNS 53</li>
 <li>DNS SRV record: <code>_ldap._tcp.dc._msdcs.&lt;domain&gt;</code></li>
 <li>Azure endpoint sweep (firewall requirements + EastUS HCI endpoints + Dell OEM)</li>
@@ -928,7 +927,6 @@
 <ul>
 <li>Basic network and NIC status</li>
 <li>DNS resolution</li>
-<li>NTP time-skew check</li>
 <li>Azure endpoint sweep including Key Vault endpoints</li>
 <li>Environment Checker: connectivity + network validation</li>
 <li>No AD checks — nodes use static IP + Azure Key Vault for identity</li>
@@ -938,7 +936,6 @@
 <ul>
 <li>Basic network (gateway reachability, NIC status)</li>
 <li>DNS resolution</li>
-<li>NTP time-skew check</li>
 <li>Full endpoint sweep: Azure Local firewall requirements + EastUS HCI endpoints + Dell OEM endpoints</li>
 <li>Environment Checker: connectivity + network validation</li>
 </ul>

@@ -1147,25 +1147,21 @@
 <td>DNS TCP/UDP 53, forward resolution of Azure management endpoints</td>
 </tr>
 <tr>
-<td><strong>3 — NTP</strong></td>
-<td>Clock skew</td>
-</tr>
-<tr>
-<td><strong>5 — Endpoint sweep</strong></td>
+<td><strong>4 — Endpoint sweep</strong></td>
 <td>Azure Local, Arc, and Key Vault service endpoints</td>
 </tr>
 <tr>
-<td><strong>6 — EnvChecker</strong></td>
+<td><strong>5 — EnvChecker</strong></td>
 <td><code>Invoke-AzStackHciConnectivityValidation</code> + <code>Invoke-AzStackHciNetworkValidation</code></td>
 </tr>
 <tr>
-<td><strong>7 — Arc</strong></td>
+<td><strong>6 — Arc</strong></td>
 <td>Optional: <code>Invoke-AzStackHciArcIntegrationValidation</code></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
-<p class="admonition-title">Category 4 (AD ports) is skipped</p>
+<p class="admonition-title">Category 3 (AD ports) is skipped</p>
 <p>AD port tests are not applicable and not run in the Local Identity path.</p>
 </div>
 <h2 id="azure-key-vault-requirements">Azure Key Vault requirements<a class="headerlink" href="#azure-key-vault-requirements" title="Permanent link">&para;</a></h2>

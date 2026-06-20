@@ -1104,23 +1104,19 @@
 <td>DNS TCP/UDP 53 reachability, forward resolution of Azure endpoints and AD domain FQDN, reverse lookups of DC IPs</td>
 </tr>
 <tr>
-<td><strong>3 — NTP</strong></td>
-<td>Clock skew check (must be &lt; 5 minutes)</td>
-</tr>
-<tr>
-<td><strong>4 — AD ports</strong></td>
+<td><strong>3 — AD ports</strong></td>
 <td>TCP probe per DC: LDAP 389, Kerberos 88, RPC 135, DNS 53, LDAPS 636; DNS SRV <code>_ldap._tcp.dc._msdcs.&lt;domain&gt;</code></td>
 </tr>
 <tr>
-<td><strong>5 — Endpoint sweep</strong></td>
+<td><strong>4 — Endpoint sweep</strong></td>
 <td>Azure Local + Arc + Dell endpoints (TCP + HTTPS for critical)</td>
 </tr>
 <tr>
-<td><strong>6 — EnvChecker</strong></td>
+<td><strong>5 — EnvChecker</strong></td>
 <td><code>Invoke-AzStackHciConnectivityValidation</code> + <code>Invoke-AzStackHciNetworkValidation</code></td>
 </tr>
 <tr>
-<td><strong>7 — Arc</strong></td>
+<td><strong>6 — Arc</strong></td>
 <td>Optional: <code>Invoke-AzStackHciArcIntegrationValidation</code> (requires Azure device-code sign-in)</td>
 </tr>
 </tbody>

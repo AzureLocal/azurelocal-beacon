@@ -721,10 +721,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoint-sources-category-5" class="md-nav__link">
+  <a href="#endpoint-sources-category-4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint sources (Category 5)
+        Endpoint sources (Category 4)
       
     </span>
   </a>
@@ -939,10 +939,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#endpoint-sources-category-5" class="md-nav__link">
+  <a href="#endpoint-sources-category-4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint sources (Category 5)
+        Endpoint sources (Category 4)
       
     </span>
   </a>
@@ -992,7 +992,7 @@
 
 
 <h1 id="category-reference">Category Reference<a class="headerlink" href="#category-reference" title="Permanent link">&para;</a></h1>
-<p>Detailed reference for all 7 validation categories in <code>Start-AzlValidation.ps1</code>.</p>
+<p>Detailed reference for all 6 validation categories in <code>Start-AzlValidation.ps1</code>.</p>
 <table>
 <thead>
 <tr>
@@ -1017,37 +1017,31 @@
 </tr>
 <tr>
 <td>3</td>
-<td><strong>NTP</strong></td>
-<td><code>w32tm /stripchart</code> skew — must be &lt; <code>ntpMaxSkewSeconds</code> (default 300s = 5 min)</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>4</td>
 <td><strong>Active Directory</strong></td>
 <td>TCP: LDAP 389/636, Kerberos 88, RPC 135, DNS 53 per DC; DNS SRV <code>_ldap._tcp.dc._msdcs.&lt;domain&gt;</code></td>
 <td>Yes (AD path only)</td>
 </tr>
 <tr>
-<td>5</td>
+<td>4</td>
 <td><strong>Endpoint Sweep</strong></td>
 <td>TCP connect + HTTPS GET to all endpoints from the 3 source links</td>
 <td>Critical = Fail; Warning = Warn</td>
 </tr>
 <tr>
-<td>6</td>
+<td>5</td>
 <td><strong>Environment Checker</strong></td>
 <td><code>Invoke-AzStackHciConnectivityValidation</code> + <code>Invoke-AzStackHciNetworkValidation</code></td>
 <td>Warn if module absent</td>
 </tr>
 <tr>
-<td>7</td>
+<td>6</td>
 <td><strong>Arc Integration</strong></td>
 <td><code>Invoke-AzStackHciArcIntegrationValidation</code> (optional — requires Az login)</td>
 <td>Skip if not authenticated</td>
 </tr>
 </tbody>
 </table>
-<h2 id="endpoint-sources-category-5">Endpoint sources (Category 5)<a class="headerlink" href="#endpoint-sources-category-5" title="Permanent link">&para;</a></h2>
+<h2 id="endpoint-sources-category-4">Endpoint sources (Category 4)<a class="headerlink" href="#endpoint-sources-category-4" title="Permanent link">&para;</a></h2>
 <p>All endpoints in <code>config/endpoints.json</code> trace to one of three Microsoft/Dell sources:</p>
 <table>
 <thead>
@@ -1098,35 +1092,28 @@
 <td>✅</td>
 </tr>
 <tr>
-<td>3 NTP</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-</tr>
-<tr>
-<td>4 AD ports</td>
+<td>3 AD ports</td>
 <td>✅</td>
 <td>❌</td>
 <td>❌</td>
 <td>AD sub-path only</td>
 </tr>
 <tr>
-<td>5 Endpoint sweep</td>
+<td>4 Endpoint sweep</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>6 EnvChecker</td>
+<td>5 EnvChecker</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
 </tr>
 <tr>
-<td>7 Arc</td>
+<td>6 Arc</td>
 <td>⚠️ optional</td>
 <td>⚠️ optional</td>
 <td>⚠️ optional</td>
@@ -1161,12 +1148,12 @@
 </tr>
 <tr>
 <td><code>adDomainFqdn</code></td>
-<td>Cat-2, Cat-4</td>
+<td>Cat-2, Cat-3</td>
 <td><code>"corp.improbability.cloud"</code></td>
 </tr>
 <tr>
 <td><code>dcIps</code></td>
-<td>Cat-2, Cat-4</td>
+<td>Cat-2, Cat-3</td>
 <td><code>["10.10.0.10", "10.10.0.11"]</code></td>
 </tr>
 <tr>
@@ -1175,33 +1162,23 @@
 <td><code>["azl-node1.corp.improbability.cloud"]</code></td>
 </tr>
 <tr>
-<td><code>ntpServers.primary</code></td>
-<td>Cat-3</td>
-<td><code>"time.windows.com"</code></td>
-</tr>
-<tr>
-<td><code>ntpMaxSkewSeconds</code></td>
-<td>Cat-3</td>
-<td><code>300</code></td>
-</tr>
-<tr>
 <td><code>pingTimeoutMs</code></td>
 <td>Cat-1</td>
 <td><code>2000</code></td>
 </tr>
 <tr>
 <td><code>tcpConnectTimeoutMs</code></td>
-<td>Cat-2–5</td>
+<td>Cat-2–4</td>
 <td><code>5000</code></td>
 </tr>
 <tr>
 <td><code>keyVaultFqdn</code></td>
-<td>Cat-5 (endpoint sweep)</td>
+<td>Cat-4 (endpoint sweep)</td>
 <td><code>"kv-vault.vault.azure.net"</code></td>
 </tr>
 <tr>
 <td><code>azureRegion</code></td>
-<td>Cat-6 (EnvChecker)</td>
+<td>Cat-5 (EnvChecker)</td>
 <td><code>"eastus"</code></td>
 </tr>
 </tbody>
