@@ -15,8 +15,9 @@
       5. Add WinPE optional components (WMI, NetFX, Scripting, PowerShell, StorageWMI, DismCmdlets)
          with matching en-us language packs.
       6. Extract PowerShell 7 into \Tools\PowerShell7 inside the mounted image.
-      7. Save AzStackHci.EnvironmentChecker module offline into \Tools\Modules (skipped if
-         -SkipModuleDownload is set or if the gallery is unreachable -- warning only).
+      7. Stage AzStackHci.EnvironmentChecker module into \Tools\Modules. Copies from local
+         -ModuleCachePath (default C:\build\modules) if present; otherwise downloads from
+         PSGallery with a 5-minute timeout and caches locally. FAILS the build if unavailable.
       8. Copy Start-AzlValidation.ps1 and the config folder into \Tools.
       9. Write startnet.cmd into \Windows\System32\startnet.cmd.
      10. Set scratch space to 512 MB.
@@ -114,6 +115,9 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$ConfigPath = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$ModuleCachePath = 'C:\build\modules',
 
     [Parameter(Mandatory = $false)]
     [switch]$SkipModuleDownload,
@@ -499,23 +503,37 @@ try {
         Write-Step "PowerShell 7 extracted to $ps7Dest" -Level Success
     }
 
-    # --- Step 7: Save offline module ---
-    Write-Step 'Step 7: Saving AzStackHci.EnvironmentChecker module...'
+    # --- Step 7: Stage AzStackHci.EnvironmentChecker module ---
+    Write-Step 'Step 7: Staging AzStackHci.EnvironmentChecker module (mandatory)...'
     $moduleDest = Join-Path $MOUNT_PATH "$TOOLS_DIR\Modules"
-    if (-not $SkipModuleDownload) {
-        New-Item -ItemType Directory -Path $moduleDest -Force | Out-Null
-        try {
-            Save-Module -Name $PS_GALLERY_MODULE -Path $moduleDest -Force -ErrorAction Stop
-            Write-Step "$PS_GALLERY_MODULE saved successfully." -Level Success
-        }
-        catch {
-            Write-Warning "Save-Module failed for '$PS_GALLERY_MODULE': $_"
-            Write-Warning 'The module will NOT be present in the image. The image will still boot.'
-            Write-Warning "Pre-stage it manually at $moduleDest and rebuild, or use -SkipModuleDownload."
-        }
+    New-Item -ItemType Directory -Path $moduleDest -Force | Out-Null
+
+    $cacheModule = Join-Path $ModuleCachePath $PS_GALLERY_MODULE
+    if (Test-Path $cacheModule) {
+        Write-Step "Module found in local cache ($ModuleCachePath) — copying into image..."
+        Copy-Item -Path $cacheModule -Destination $moduleDest -Recurse -Force
+        Write-Step "$PS_GALLERY_MODULE staged from cache." -Level Success
+    }
+    elseif ($SkipModuleDownload) {
+        throw "Module '$PS_GALLERY_MODULE' not found in cache '$ModuleCachePath' and -SkipModuleDownload is set. " +
+              "Pre-stage the module by running: Save-Module -Name $PS_GALLERY_MODULE -Path '$ModuleCachePath' -Force"
     }
     else {
-        Write-Step "Module download skipped (-SkipModuleDownload). Pre-stage at: $moduleDest" -Level Warning
+        Write-Step "Cache miss — downloading from PSGallery (5-min timeout)..."
+        $job = Start-Job {
+            Save-Module -Name $using:PS_GALLERY_MODULE -Path $using:ModuleCachePath -Force -ErrorAction Stop
+        }
+        $completed = $job | Wait-Job -Timeout 300
+        if ($completed -and $job.State -eq 'Completed') {
+            $job | Remove-Job -Force
+            Copy-Item -Path $cacheModule -Destination $moduleDest -Recurse -Force
+            Write-Step "$PS_GALLERY_MODULE downloaded and staged." -Level Success
+        }
+        else {
+            $job | Stop-Job -PassThru | Remove-Job -Force
+            throw "Save-Module timed out after 300s — PSGallery unreachable. " +
+                  "Pre-stage the module: Save-Module -Name $PS_GALLERY_MODULE -Path '$ModuleCachePath' -Force"
+        }
     }
 
     # --- Step 8: Copy validation artifacts ---
