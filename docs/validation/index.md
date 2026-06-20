@@ -27,17 +27,16 @@ AzL Beacon presents a **split menu** at boot. Choose the path that matches your 
   └─────────────────────────────────────────────────────┘
 ```
 
-## 7 validation categories
+## 6 validation categories
 
 | Category | Name | Paths |
 |---|---|---|
 | 1 | Basic network connectivity (NIC, IP, gateway) | All |
 | 2 | DNS (forward/reverse/TCP/UDP) | All |
-| 3 | NTP time-skew | All |
-| 4 | Active Directory ports (LDAP/Kerberos/RPC/DNS/LDAPS + SRV) | AD, Full-AD |
-| 5 | Azure endpoint sweep | All |
-| 6 | AzStackHci.EnvironmentChecker (connectivity + network validators) | All |
-| 7 | Arc integration (optional — requires Azure device-code login) | Optional on all paths |
+| 3 | Active Directory ports (LDAP/Kerberos/RPC/DNS/LDAPS + SRV) | AD, Full-AD |
+| 4 | Azure endpoint sweep | All |
+| 5 | AzStackHci.EnvironmentChecker (connectivity + network validators) | All |
+| 6 | Arc integration (optional — requires Azure device-code login) | Optional on all paths |
 
 All test targets derive from the three Microsoft/Dell source documents:
 

@@ -19,7 +19,6 @@ AzL Beacon boots directly from an iDRAC virtual media session or USB drive — n
 
     - Basic network and NIC status
     - DNS resolution (forward + reverse, TCP/UDP port 53)
-    - NTP time-skew check (Azure Local requires < 5 min skew)
     - AD port reachability: LDAP 389/636, Kerberos 88, RPC 135, DNS 53
     - DNS SRV record: `_ldap._tcp.dc._msdcs.<domain>`
     - Azure endpoint sweep (firewall requirements + EastUS HCI endpoints + Dell OEM)
@@ -29,7 +28,6 @@ AzL Beacon boots directly from an iDRAC virtual media session or USB drive — n
 
     - Basic network and NIC status
     - DNS resolution
-    - NTP time-skew check
     - Azure endpoint sweep including Key Vault endpoints
     - Environment Checker: connectivity + network validation
     - No AD checks — nodes use static IP + Azure Key Vault for identity
@@ -38,7 +36,6 @@ AzL Beacon boots directly from an iDRAC virtual media session or USB drive — n
 
     - Basic network (gateway reachability, NIC status)
     - DNS resolution
-    - NTP time-skew check
     - Full endpoint sweep: Azure Local firewall requirements + EastUS HCI endpoints + Dell OEM endpoints
     - Environment Checker: connectivity + network validation
 

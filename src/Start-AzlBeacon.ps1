@@ -221,8 +221,8 @@ function Invoke-ADMenu {
     Write-BeaconLine '  Running Active Directory validation (Categories 1-4 + Connectivity)...' -Color Cyan
     Write-BeaconLine ''
 
-    # Categories: 1=Network, 2=DNS, 3=NTP, 4=AD ports, 5=Endpoint sweep, 6=EnvChecker, 7=Arc(optional)
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '4', '5', '6')
+    # Categories: 1=Network, 2=DNS, 3=AD ports, 4=Endpoint sweep, 5=EnvChecker, 6=Arc(optional)
+    Invoke-ValidationEngine -Categories @('1', '2', '3', '4', '5')
 
     Write-BeaconLine ''
     Write-BeaconLine '  AD validation complete. Results in X:\results\' -Color Green
@@ -248,8 +248,8 @@ function Invoke-LocalIdentityMenu {
     $kvFqdn     = Prompt-Optional 'Azure Key Vault FQDN (e.g. kv-beacon-01.vault.azure.net)' -Default ''
     Write-BeaconLine ''
 
-    Write-BeaconLine '  Running Local Identity validation (Categories 1-3, 5-6)...' -Color Cyan
-    Write-BeaconLine '  Skipping AD port tests (Category 4) — not needed for Local Identity.' -Color DarkGray
+    Write-BeaconLine '  Running Local Identity validation (Categories 1, 2, 4, 5)...' -Color Cyan
+    Write-BeaconLine '  Skipping AD port tests (Category 3) — not needed for Local Identity.' -Color DarkGray
     Write-BeaconLine ''
 
     $overrides = @{
@@ -258,8 +258,8 @@ function Invoke-LocalIdentityMenu {
     }
     Write-ValidationConfigOverrides -Overrides $overrides
 
-    # Categories: 1=Network, 2=DNS, 3=NTP, 5=Endpoint sweep, 6=EnvChecker(connectivity+network), 7=Arc(optional)
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '6')
+    # Categories: 1=Network, 2=DNS, 4=Endpoint sweep, 5=EnvChecker(connectivity+network), 6=Arc(optional)
+    Invoke-ValidationEngine -Categories @('1', '2', '4', '5')
 
     # Key Vault endpoint check — manual TCP probe if FQDN provided
     if ($kvFqdn) {
@@ -311,11 +311,11 @@ function Invoke-NetworkFirewallMenu {
     if ($dnsServers.Count -gt 0)  { $overrides['dnsServers']        = $dnsServers }
     if ($overrides.Count -gt 0) { Write-ValidationConfigOverrides -Overrides $overrides }
 
-    Write-BeaconLine '  Running Networking/Firewall validation (Categories 1-3, 5-6)...' -Color Cyan
+    Write-BeaconLine '  Running Networking/Firewall validation (Categories 1, 2, 4, 5)...' -Color Cyan
     Write-BeaconLine ''
 
-    # All categories except Cat-4 (AD ports — not relevant for a network-focused run)
-    Invoke-ValidationEngine -Categories @('1', '2', '3', '5', '6')
+    # All categories except Cat-3 (AD ports — not relevant for a network-focused run)
+    Invoke-ValidationEngine -Categories @('1', '2', '4', '5')
 
     Write-BeaconLine ''
     Write-BeaconLine '  Networking and Firewall validation complete. Results in X:\results\' -Color Green
@@ -362,8 +362,8 @@ Invoke-AzStackHciArcIntegrationValidation ``
 #region  ── Full Sweep ──
 
 function Invoke-FullSweep {
-    Write-BeaconHeader 'Full Readiness Sweep — All 7 Categories'
-    Write-BeaconLine '  Runs all 7 validation categories including the Microsoft Environment Checker.' -Color White
+    Write-BeaconHeader 'Full Readiness Sweep — All 6 Categories'
+    Write-BeaconLine '  Runs all 6 validation categories including the Microsoft Environment Checker.' -Color White
     Write-BeaconLine '  Choose deployment path to include the correct identity tests:' -Color DarkGray
     Write-BeaconLine ''
     Write-BeaconLine '    A) Active Directory (includes Category 4 AD port tests)' -Color White
@@ -375,10 +375,10 @@ function Invoke-FullSweep {
 
     $sweepCategories = if ($pathChoice -eq 'L' -or $pathChoice -eq 'l') {
         Write-BeaconLine '  Running full sweep — Local Identity path (skipping AD port tests)...' -Color Cyan
-        @('1', '2', '3', '5', '6', '7')
+        @('1', '2', '4', '5', '6')
     } else {
         Write-BeaconLine '  Running full sweep — Active Directory path (all categories)...' -Color Cyan
-        @('1', '2', '3', '4', '5', '6', '7')
+        @('1', '2', '3', '4', '5', '6')
     }
 
     Write-BeaconLine ''

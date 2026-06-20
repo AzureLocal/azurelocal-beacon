@@ -23,10 +23,9 @@ This path runs everything except the AD port tests (Category 4). It's ideal for:
 |---|---|
 | **1 — Network** | NIC status, IP assigned, gateway ping |
 | **2 — DNS** | DNS TCP/UDP 53, forward resolution of key Azure endpoints |
-| **3 — NTP** | Clock skew (must be < 5 minutes) |
-| **5 — Endpoint sweep** | All Azure Local + Arc + Dell endpoints |
-| **6 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **7 — Arc** | Optional |
+| **4 — Endpoint sweep** | All Azure Local + Arc + Dell endpoints |
+| **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
+| **6 — Arc** | Optional |
 
 ## Firewall requirements — Azure Local
 

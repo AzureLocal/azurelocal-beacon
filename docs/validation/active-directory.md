@@ -18,11 +18,10 @@ Select **option 1** from the Beacon main menu to validate readiness for an AD-jo
 |---|---|
 | **1 — Network** | NIC status, IP assigned, gateway ping |
 | **2 — DNS** | DNS TCP/UDP 53 reachability, forward resolution of Azure endpoints and AD domain FQDN, reverse lookups of DC IPs |
-| **3 — NTP** | Clock skew check (must be < 5 minutes) |
-| **4 — AD ports** | TCP probe per DC: LDAP 389, Kerberos 88, RPC 135, DNS 53, LDAPS 636; DNS SRV `_ldap._tcp.dc._msdcs.<domain>` |
-| **5 — Endpoint sweep** | Azure Local + Arc + Dell endpoints (TCP + HTTPS for critical) |
-| **6 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **7 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` (requires Azure device-code sign-in) |
+| **3 — AD ports** | TCP probe per DC: LDAP 389, Kerberos 88, RPC 135, DNS 53, LDAPS 636; DNS SRV `_ldap._tcp.dc._msdcs.<domain>` |
+| **4 — Endpoint sweep** | Azure Local + Arc + Dell endpoints (TCP + HTTPS for critical) |
+| **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
+| **6 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` (requires Azure device-code sign-in) |
 
 ## Active Directory preparation requirements
 

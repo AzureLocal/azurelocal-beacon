@@ -8,11 +8,6 @@
     "10.x.x.x"
   ],
 
-  "ntpServers": {
-    "primary": "10.x.x.x",
-    "secondary": "time.windows.com"
-  },
-
   "adDomainFqdn": "yourdomain.local",
   "adNetbios": "YOURDOMAIN",
 
@@ -50,7 +45,6 @@
   "_arcGatewayNote": "Arc gateway endpoint URLs are deployment-generated (<guid>.gw.arc.azure.com). Fill arcGatewayFqdn from the deployed gateway resource. Empty = not probed.",
   "arcGatewayFqdn": "",
 
-  "ntpMaxSkewSeconds": 300,
   "tcpConnectTimeoutMs": 5000,
   "pingTimeoutMs": 2000
 }

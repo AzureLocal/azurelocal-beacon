@@ -33,12 +33,11 @@ Local Identity deployment uses a local administrator account and Azure Key Vault
 |---|---|
 | **1 — Network** | NIC status, IP assigned, gateway ping |
 | **2 — DNS** | DNS TCP/UDP 53, forward resolution of Azure management endpoints |
-| **3 — NTP** | Clock skew |
-| **5 — Endpoint sweep** | Azure Local, Arc, and Key Vault service endpoints |
-| **6 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **7 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` |
+| **4 — Endpoint sweep** | Azure Local, Arc, and Key Vault service endpoints |
+| **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
+| **6 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` |
 
-!!! note "Category 4 (AD ports) is skipped"
+!!! note "Category 3 (AD ports) is skipped"
     AD port tests are not applicable and not run in the Local Identity path.
 
 ## Azure Key Vault requirements

@@ -15,11 +15,10 @@ On boot, `Start-AzlValidation.ps1` runs 7 validation categories grounded in Micr
 |---|---|---|
 | 1 | Basic network | NIC up, IP assigned, gateway reachable |
 | 2 | DNS | Forward/reverse lookups, TCP/UDP port 53, AD domain resolution |
-| 3 | NTP | w32tm stripchart + clock skew check (5-minute limit) |
-| 4 | Active Directory ports | LDAP 389, LDAPS 636, Kerberos 88, RPC 135, DNS 53, SRV records (AD path only) |
-| 5 | Azure endpoint sweep | TCP + HTTPS probe — Azure Local firewall requirements + EastUS HCI + Dell OEM endpoints |
-| 6 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` (Microsoft's official validators) |
-| 7 | Arc integration | `Invoke-AzStackHciArcIntegrationValidation` (optional — requires Azure device-code sign-in) |
+| 3 | Active Directory ports | LDAP 389, LDAPS 636, Kerberos 88, RPC 135, DNS 53, SRV records (AD path only) |
+| 4 | Azure endpoint sweep | TCP + HTTPS probe — Azure Local firewall requirements + EastUS HCI + Dell OEM endpoints |
+| 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` (Microsoft's official validators) |
+| 6 | Arc integration | `Invoke-AzStackHciArcIntegrationValidation` (optional — requires Azure device-code sign-in) |
 
 Results land at `X:\results\` on the WinPE RAM drive in JSON format. Copy off before reboot.
 

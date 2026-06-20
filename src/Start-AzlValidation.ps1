@@ -4,20 +4,19 @@
     Boot-time Azure Local pre-deployment validation engine for WinPE and full Windows.
 
 .DESCRIPTION
-    Runs 7 validation categories grounded in Microsoft and Dell documentation.
+    Runs 6 validation categories grounded in Microsoft and Dell documentation.
     Designed to run from WinPE (PS 5.1 subset) or PowerShell 7 on any machine
     connected to the management network.
 
     Validation categories:
       1  Basic network: NIC up, IP assigned, gateway reachable
       2  DNS: forward and reverse lookups, TCP/UDP port 53 reachability
-      3  NTP: w32tm stripchart + clock skew check
-      4  Active Directory ports: LDAP, Kerberos, RPC, LDAPS, DNS + SRV record (AD path only)
-      5  Azure endpoint sweep: TCP connect + HTTPS GET — sourced from Azure Local firewall
+      3  Active Directory ports: LDAP, Kerberos, RPC, LDAPS, DNS + SRV record (AD path only)
+      4  Azure endpoint sweep: TCP connect + HTTPS GET — sourced from Azure Local firewall
          requirements, EastUS HCI endpoints, and Dell OEM endpoints
-      6  Environment Checker: Invoke-AzStackHciConnectivityValidation +
+      5  Environment Checker: Invoke-AzStackHciConnectivityValidation +
          Invoke-AzStackHciNetworkValidation (AzStackHci.EnvironmentChecker module)
-      7  Arc integration: Invoke-AzStackHciArcIntegrationValidation (optional; requires
+      6  Arc integration: Invoke-AzStackHciArcIntegrationValidation (optional; requires
          Connect-AzAccount login — skipped gracefully if not authenticated)
 
     All test targets are read from config\validation-config.json and
@@ -37,8 +36,8 @@
     Default: X:\results (WinPE RAM drive). Falls back to $env:TEMP if X: is absent.
 
 .PARAMETER Categories
-    One or more category numbers (1-7) to run. Default: all.
-    Example: -Categories 1,2,5
+    One or more category numbers (1-6) to run. Default: all.
+    Example: -Categories 1,2,4
 
 .PARAMETER SkipEnvironmentChecker
     Skip Category 6 (AzStackHci.EnvironmentChecker connectivity + network validation).
@@ -50,15 +49,15 @@
 
 .EXAMPLE
     .\Start-AzlValidation.ps1
-    Runs all 7 categories with defaults.
+    Runs all 6 categories with defaults.
 
 .EXAMPLE
-    .\Start-AzlValidation.ps1 -Categories 1,2,3,4 -ResultsPath C:\Temp\results
-    Runs network/DNS/NTP/AD categories only and saves results to C:\Temp\results.
+    .\Start-AzlValidation.ps1 -Categories 1,2,3 -ResultsPath C:\Temp\results
+    Runs network/DNS/AD categories only and saves results to C:\Temp\results.
 
 .EXAMPLE
     .\Start-AzlValidation.ps1 -SkipEnvironmentChecker -SkipArc
-    Runs categories 1-5 only (network probes, no MS module required).
+    Runs categories 1-4 only (network probes, no MS module required).
 
 .NOTES
     Version:      2.0
@@ -457,51 +456,10 @@ function Invoke-Category2DnsCheck {
     }
 }
 
-function Invoke-Category3Ntp {
+function Invoke-Category3ActiveDirectory {
     param([object]$ValidationConfig)
-    $cat = 'Cat-3-NTP'
-    Out-ConsoleLine -Message "`n[Category 3] NTP Time Sync" -Color ([System.ConsoleColor]::Cyan)
-
-    $ntpServerList = @($ValidationConfig.ntpServers.primary, $ValidationConfig.ntpServers.secondary)
-    foreach ($ntpTarget in $ntpServerList) {
-        try {
-            $sw     = [System.Diagnostics.Stopwatch]::StartNew()
-            $output = & w32tm.exe /stripchart /computer:$ntpTarget /samples:1 /dataonly 2>&1
-            $sw.Stop()
-
-            if ($LASTEXITCODE -ne 0) {
-                Add-ValidationResult -Category $cat -Name "NTP-$ntpTarget" -Target $ntpTarget -Status 'Fail' `
-                    -Detail "w32tm exit $LASTEXITCODE" -DurationMs $sw.ElapsedMilliseconds
-                continue
-            }
-
-            $offsetLine = $output | Where-Object { $_ -match '[+-]\d+\.\d+s' } | Select-Object -Last 1
-            if ($offsetLine -and $offsetLine -match '([+-]\d+\.\d+)s') {
-                $offsetSec = [double]$Matches[1]
-                $absOffset = [System.Math]::Abs($offsetSec)
-                $maxSkew   = $ValidationConfig.ntpMaxSkewSeconds
-                if ($absOffset -le $maxSkew) {
-                    Add-ValidationResult -Category $cat -Name "NTP-$ntpTarget" -Target $ntpTarget -Status 'Pass' `
-                        -Detail "offset=${offsetSec}s (limit=${maxSkew}s)" -DurationMs $sw.ElapsedMilliseconds
-                } else {
-                    Add-ValidationResult -Category $cat -Name "NTP-$ntpTarget" -Target $ntpTarget -Status 'Fail' `
-                        -Detail "offset=${offsetSec}s EXCEEDS ${maxSkew}s -- Azure Local deployment requires clock within 5 minutes of NTP" -DurationMs $sw.ElapsedMilliseconds
-                }
-            } else {
-                Add-ValidationResult -Category $cat -Name "NTP-$ntpTarget" -Target $ntpTarget -Status 'Warn' `
-                    -Detail "w32tm responded but offset not parseable" -DurationMs $sw.ElapsedMilliseconds
-            }
-        } catch {
-            Add-ValidationResult -Category $cat -Name "NTP-$ntpTarget" -Target $ntpTarget -Status 'Fail' `
-                -Detail $_.Exception.Message
-        }
-    }
-}
-
-function Invoke-Category4ActiveDirectory {
-    param([object]$ValidationConfig)
-    $cat = 'Cat-4-AD'
-    Out-ConsoleLine -Message "`n[Category 4] Active Directory Ports" -Color ([System.ConsoleColor]::Cyan)
+    $cat = 'Cat-3-AD'
+    Out-ConsoleLine -Message "`n[Category 3] Active Directory Ports" -Color ([System.ConsoleColor]::Cyan)
 
     $adPortSpec = @(
         @{ Port = 389; Label = 'LDAP' },
@@ -528,10 +486,10 @@ function Invoke-Category4ActiveDirectory {
     Add-ValidationResult -Category $cat -Name "AD-SRV-DCLocator" -Target $srvName -Status $st -Detail $dt
 }
 
-function Invoke-Category5EndpointSweep {
+function Invoke-Category4EndpointSweep {
     param([object]$ValidationConfig, [object[]]$EndpointList)
-    $cat = 'Cat-5-Endpoints'
-    Out-ConsoleLine -Message "`n[Category 5] Azure Endpoint Sweep" -Color ([System.ConsoleColor]::Cyan)
+    $cat = 'Cat-4-Endpoints'
+    Out-ConsoleLine -Message "`n[Category 4] Azure Endpoint Sweep" -Color ([System.ConsoleColor]::Cyan)
     Out-ConsoleLine -Message "  Testing $($EndpointList.Count) endpoints ..." -Color ([System.ConsoleColor]::DarkGray)
 
     foreach ($ep in $EndpointList) {
@@ -572,10 +530,10 @@ function Invoke-Category5EndpointSweep {
     }
 }
 
-function Invoke-Category6EnvironmentChecker {
+function Invoke-Category5EnvironmentChecker {
     param([string]$DestResultsPath, [switch]$SkipChecks)
-    $cat = 'Cat-6-EnvChecker'
-    Out-ConsoleLine -Message "`n[Category 6] Azure Local Environment Checker (Official Microsoft Validator)" -Color ([System.ConsoleColor]::Cyan)
+    $cat = 'Cat-5-EnvChecker'
+    Out-ConsoleLine -Message "`n[Category 5] Azure Local Environment Checker (Official Microsoft Validator)" -Color ([System.ConsoleColor]::Cyan)
 
     if ($SkipChecks) {
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Module' -Target 'AzStackHci.EnvironmentChecker' `
@@ -659,10 +617,10 @@ function Invoke-Category6EnvironmentChecker {
     }
 }
 
-function Invoke-Category7Arc {
+function Invoke-Category6Arc {
     param([string]$DestResultsPath, [switch]$SkipChecks)
-    $cat = 'Cat-7-Arc'
-    Out-ConsoleLine -Message "`n[Category 7] Arc Integration (Optional)" -Color ([System.ConsoleColor]::Cyan)
+    $cat = 'Cat-6-Arc'
+    Out-ConsoleLine -Message "`n[Category 6] Arc Integration (Optional)" -Color ([System.ConsoleColor]::Cyan)
 
     if ($SkipChecks) {
         Add-ValidationResult -Category $cat -Name 'Arc-Integration' -Target 'Invoke-AzStackHciArcIntegrationValidation' `
@@ -820,7 +778,7 @@ $endpoints = $epWrapper.endpoints
 Out-ConsoleLine -Message "  Config loaded: $($cfg.clusterName) / $($cfg.azureRegion)" -Color ([System.ConsoleColor]::DarkGray)
 Out-ConsoleLine -Message "  Endpoints    : $($endpoints.Count) entries" -Color ([System.ConsoleColor]::DarkGray)
 
-$allCategoryNums  = @(1, 2, 3, 4, 5, 6, 7)
+$allCategoryNums  = @(1, 2, 3, 4, 5, 6)
 $parsedCategories = @($Categories | ForEach-Object { $_ -split '[,\s]+' } |
     Where-Object { $_ -match '^\d+$' } | ForEach-Object { [int]$_ } |
     Where-Object { $allCategoryNums -contains $_ } | Select-Object -Unique)
@@ -830,11 +788,10 @@ Out-ConsoleLine -Message "  Categories   : $($runCategories -join ', ')" -Color 
 
 if ($runCategories -contains 1) { Invoke-Category1Network            -ValidationConfig $cfg }
 if ($runCategories -contains 2) { Invoke-Category2DnsCheck           -ValidationConfig $cfg }
-if ($runCategories -contains 3) { Invoke-Category3Ntp                -ValidationConfig $cfg }
-if ($runCategories -contains 4) { Invoke-Category4ActiveDirectory    -ValidationConfig $cfg }
-if ($runCategories -contains 5) { Invoke-Category5EndpointSweep      -ValidationConfig $cfg -EndpointList $endpoints }
-if ($runCategories -contains 6) { Invoke-Category6EnvironmentChecker -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipEnvironmentChecker }
-if ($runCategories -contains 7) { Invoke-Category7Arc                -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipArc }
+if ($runCategories -contains 3) { Invoke-Category3ActiveDirectory    -ValidationConfig $cfg }
+if ($runCategories -contains 4) { Invoke-Category4EndpointSweep      -ValidationConfig $cfg -EndpointList $endpoints }
+if ($runCategories -contains 5) { Invoke-Category5EnvironmentChecker -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipEnvironmentChecker }
+if ($runCategories -contains 6) { Invoke-Category6Arc                -DestResultsPath $resolvedResultsPath -SkipChecks:$SkipArc }
 
 Write-ValidationSummary -Results $script:AllResults
 $null = Save-ValidationResult -Results $script:AllResults -ResultsDir $resolvedResultsPath
