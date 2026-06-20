@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  
+  <!-- Root element -->
+  <xs:element name="ValidationManifest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Version" type="xs:string" minOccurs="0" />
+        <xs:element name="SchemaVersion" type="xs:string" minOccurs="0" />
+        <xs:element name="LastUpdated" type="xs:dateTime" minOccurs="0" />
+        <xs:element name="Validators" type="ValidatorsType" />
+      </xs:sequence>
+      <xs:attribute name="Version" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- Validators collection -->
+  <xs:complexType name="ValidatorsType">
+    <xs:sequence>
+      <xs:element name="Validator" type="ValidatorType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Validator definition -->
+  <xs:complexType name="ValidatorType">
+    <xs:sequence>
+      <xs:element name="Id" type="xs:string" />
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Description" type="xs:string" minOccurs="0" />
+      <xs:element name="Enabled" type="xs:boolean" />
+      <xs:element name="MinVersion" type="VersionType" minOccurs="0" />
+      <xs:element name="MaxVersion" type="VersionType" minOccurs="0" />
+      <xs:element name="Overrides" type="ValidatorOverridesType" minOccurs="0" />
+      <xs:element name="Tests" type="TestsType" minOccurs="0" />
+      <xs:element name="Results" type="ResultsType" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:string" use="optional" />
+    <xs:attribute name="Name" type="xs:string" use="optional" />
+    <xs:attribute name="Enabled" type="xs:boolean" use="optional" />
+    <xs:attribute name="MinVersion" type="VersionType" use="optional" />
+    <xs:attribute name="MaxVersion" type="VersionType" use="optional" />
+  </xs:complexType>
+  
+  <!-- Version type: YYMM format (e.g., 2601) -->
+  <xs:simpleType name="VersionType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{4}" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- Validator-level Overrides -->
+  <xs:complexType name="ValidatorOverridesType">
+    <xs:sequence>
+      <xs:element name="Override" type="ValidatorOverrideType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ValidatorOverrideType">
+    <xs:sequence>
+      <xs:element name="LifecycleOperations" type="LifecycleOperationsType" />
+      <xs:element name="Enabled" type="xs:boolean" />
+      <xs:element name="Reason" type="xs:string" minOccurs="0" />
+      <xs:element name="MinVersion" type="VersionType" minOccurs="0" />
+      <xs:element name="MaxVersion" type="VersionType" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Lifecycle Operations -->
+  <xs:complexType name="LifecycleOperationsType">
+    <xs:sequence>
+      <xs:element name="Operation" type="LifecycleOperationType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:simpleType name="LifecycleOperationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="deployment" />
+      <xs:enumeration value="upgrade" />
+      <xs:enumeration value="update" />
+      <xs:enumeration value="addnode" />
+      <xs:enumeration value="repairnode" />
+      <xs:enumeration value="*" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- Tests collection -->
+  <xs:complexType name="TestsType">
+    <xs:sequence>
+      <xs:element name="Test" type="TestType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Test definition -->
+  <xs:complexType name="TestType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Enabled" type="xs:boolean" />
+      <xs:element name="Overrides" type="TestOverridesType" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="optional" />
+    <xs:attribute name="Enabled" type="xs:boolean" use="optional" />
+  </xs:complexType>
+  
+  <!-- Test-level Overrides -->
+  <xs:complexType name="TestOverridesType">
+    <xs:sequence>
+      <xs:element name="Override" type="TestOverrideType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TestOverrideType">
+    <xs:sequence>
+      <xs:element name="LifecycleOperations" type="LifecycleOperationsType" />
+      <xs:element name="Enabled" type="xs:boolean" />
+      <xs:element name="Reason" type="xs:string" minOccurs="0" />
+      <xs:element name="MinVersion" type="VersionType" minOccurs="0" />
+      <xs:element name="MaxVersion" type="VersionType" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Results collection -->
+  <xs:complexType name="ResultsType">
+    <xs:sequence>
+      <xs:element name="Result" type="ResultType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Result definition -->
+  <xs:complexType name="ResultType">
+    <xs:sequence>
+      <xs:element name="ResultName" type="xs:string" />
+      <xs:element name="FriendlyName" type="xs:string" minOccurs="0" />
+      <xs:element name="Overrides" type="ResultOverridesType" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- Severity type -->
+  <xs:simpleType name="SeverityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="critical" />
+      <xs:enumeration value="warning" />
+      <xs:enumeration value="informational" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- Result-level Overrides -->
+  <xs:complexType name="ResultOverridesType">
+    <xs:sequence>
+      <xs:element name="Override" type="ResultOverrideType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ResultOverrideType">
+    <xs:sequence>
+      <xs:element name="LifecycleOperations" type="LifecycleOperationsType" />
+      <xs:element name="Severity" type="SeverityType" />
+      <xs:element name="Reason" type="xs:string" minOccurs="0" />
+      <xs:element name="MinVersion" type="VersionType" minOccurs="0" />
+      <xs:element name="MaxVersion" type="VersionType" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>

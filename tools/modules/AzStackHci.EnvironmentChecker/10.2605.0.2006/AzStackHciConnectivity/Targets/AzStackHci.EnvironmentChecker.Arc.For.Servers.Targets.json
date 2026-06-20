@@ -1,0 +1,543 @@
+[
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Installation Download Script",
+    "Name": "Arc_For_Servers_Installation_Download_Script",
+    "Severity": "Warning",
+    "Description": "For resolving the download script during installation.",
+    "Endpoint": [
+      "aka.ms/hciconnectivitytargets"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Windows Installation Package",
+    "Name": "Arc_For_Servers_Windows_Installation_Package",
+    "Severity": "Warning",
+    "Description": "For downloading the Windows installation package.",
+    "Endpoint": [
+      "download.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Azure Active Directory",
+    "Name": "Arc_For_Servers_Azure_Active_Directory",
+    "Severity": "CRITICAL",
+    "Description": "For Azure Active Directory",
+    "Endpoint": [
+      "login.windows.net/common/oauth2",
+      "pas.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Azure Active Directory",
+    "Name": "Arc_For_Servers_Azure_Active_Directory",
+    "Severity": "CRITICAL",
+    "Description": "For Active Directory Authority and authentication, token fetch, and validation",
+    "Endpoint": [
+      "login.microsoftonline.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Arc Server Resource Manager",
+    "Name": "Arc_For_Servers_Arc_Resource_Manager",
+    "Severity": "Warning",
+    "Description": "For Azure Resource Manager to create or delete the Arc Server resource",
+    "Endpoint": [
+      "management.azure.com/metadata/endpoints?api-version=2022-08-01"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Notification Service",
+    "Name": "Arc_For_Servers_Notification_Service_AgentServiceApi",
+    "Severity": "CRITICAL",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "agentserviceapi.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Notification Service",
+    "Name": "Arc_For_Servers_Notification_Service",
+    "Severity": "INFORMATIONAL",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "guestnotificationservice.azure.com/urls/allowlist?api-version=2020-01-01&location=eastus2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "australiaeast-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "canadacentral-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "eastus-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "eastus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "centralindia-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "japaneast-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "southcentralus-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "southeastasia-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Arc For Servers"
+    ],
+    "Title": "Extension Management and guest configuration",
+    "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+    "Severity": "Warning",
+    "Description": "For the notification service for extension and connectivity scenarios",
+    "Endpoint": [
+      "westeurope-gas.guestconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": true
+  }
+]

@@ -117,7 +117,7 @@ param(
     [string]$ConfigPath = '',
 
     [Parameter(Mandatory = $false)]
-    [string]$ModuleCachePath = 'C:\build\modules',
+    [string]$ModulesPath = (Join-Path $PSScriptRoot '..\tools\modules'),
 
     [Parameter(Mandatory = $false)]
     [switch]$SkipModuleDownload,
@@ -508,32 +508,15 @@ try {
     $moduleDest = Join-Path $MOUNT_PATH "$TOOLS_DIR\Modules"
     New-Item -ItemType Directory -Path $moduleDest -Force | Out-Null
 
-    $cacheModule = Join-Path $ModuleCachePath $PS_GALLERY_MODULE
-    if (Test-Path $cacheModule) {
-        Write-Step "Module found in local cache ($ModuleCachePath) — copying into image..."
-        Copy-Item -Path $cacheModule -Destination $moduleDest -Recurse -Force
-        Write-Step "$PS_GALLERY_MODULE staged from cache." -Level Success
-    }
-    elseif ($SkipModuleDownload) {
-        throw "Module '$PS_GALLERY_MODULE' not found in cache '$ModuleCachePath' and -SkipModuleDownload is set. " +
-              "Pre-stage the module by running: Save-Module -Name $PS_GALLERY_MODULE -Path '$ModuleCachePath' -Force"
+    $repoModule = Join-Path $ModulesPath $PS_GALLERY_MODULE
+    if (Test-Path $repoModule) {
+        Write-Step "Copying $PS_GALLERY_MODULE from repo modules path..."
+        Copy-Item -Path $repoModule -Destination $moduleDest -Recurse -Force
+        Write-Step "$PS_GALLERY_MODULE staged." -Level Success
     }
     else {
-        Write-Step "Cache miss — downloading from PSGallery (5-min timeout)..."
-        $job = Start-Job {
-            Save-Module -Name $using:PS_GALLERY_MODULE -Path $using:ModuleCachePath -Force -ErrorAction Stop
-        }
-        $completed = $job | Wait-Job -Timeout 300
-        if ($completed -and $job.State -eq 'Completed') {
-            $job | Remove-Job -Force
-            Copy-Item -Path $cacheModule -Destination $moduleDest -Recurse -Force
-            Write-Step "$PS_GALLERY_MODULE downloaded and staged." -Level Success
-        }
-        else {
-            $job | Stop-Job -PassThru | Remove-Job -Force
-            throw "Save-Module timed out after 300s — PSGallery unreachable. " +
-                  "Pre-stage the module: Save-Module -Name $PS_GALLERY_MODULE -Path '$ModuleCachePath' -Force"
-        }
+        throw "Module '$PS_GALLERY_MODULE' not found at '$ModulesPath'. " +
+              "Run Update-BeaconModules.ps1 to refresh the module cache in tools/modules/."
     }
 
     # --- Step 8: Copy validation artifacts ---

@@ -1,0 +1,282 @@
+[
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Container Registries",
+    "Name": "Vm_Management_HCI_Container_Registries",
+    "Severity": "CRITICAL",
+    "Description": "For official Microsoft artifacts such as container images",
+    "Endpoint": [
+      "mcr.microsoft.com",
+      "ecpacr.azurecr.io",
+      "kvamanagementoperator.azurecr.io",
+      "msk8s.api.cdp.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Container Registries",
+    "Name": "Vm_Management_HCI_Container_Registries",
+    "Severity": "CRITICAL",
+    "Description": "For official Microsoft artifacts such as container images. Required for bandwidth testing.",
+    "Endpoint": [
+      "msk8s.sb.tlu.dl.delivery.mp.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Client Telemetry",
+    "Name": "Vm_Management_HCI_Telemetry",
+    "Severity": "CRITICAL",
+    "Description": "To periodically send Telemetry from  HCI or Windows Server host",
+    "Endpoint": [
+      "linuxgeneva-microsoft.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "1p metrics and logging",
+    "Name": "Vm_Management_1p_Metrics_Logging",
+    "Severity": "CRITICAL",
+    "Description": "To periodically send metrics and logs from appliance to 1p endpoints",
+    "Endpoint": [
+      "gcs.prod.monitoring.core.windows.net/healthcheck",
+      "global.prod.microsoftmetrics.com",
+      "prod5.prod.microsoftmetrics.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Download",
+    "Name": "Vm_Management_HCI_Download",
+    "Severity": "CRITICAL",
+    "Description": "Resource bridge (appliance) client needs to Validate python package versions",
+    "Endpoint": [
+      "packages.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Azure Arc Urls",
+    "Name": "Azure_Arc_Urls",
+    "Severity": "CRITICAL",
+    "Description": "Azure Resource Manager - to create or delete the Arc enabled components",
+    "Endpoint": [
+      "graph.microsoft.com/v1.0/",
+      "sts.windows.net/common/oauth2",
+      "login.windows.net/common/oauth2",
+      "login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Azure Arc Urls",
+    "Name": "Azure_Arc_Urls",
+    "Severity": "CRITICAL",
+    "Description": "Azure Resource Manager - to create or delete the Arc enabled components",
+    "Endpoint": [
+      "login.microsoftonline.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Vm Management for HCI"
+    ],
+    "Title": "Azure Local ARB Infrastructure for ARB Extensions",
+    "Name": "Azure_Local_ARB_Infrastructure_ARB_Extensions",
+    "Severity": "CRITICAL",
+    "Description": "Used to deploy ARB extensions",
+    "Endpoint": [
+      "arcplatformcliextprod.z13.web.core.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  }
+]

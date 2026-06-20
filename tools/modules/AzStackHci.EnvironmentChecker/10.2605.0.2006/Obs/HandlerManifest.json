@@ -1,0 +1,16 @@
+[
+    {
+        "version": 1.0,
+        "handlerManifest": {
+            "installCommand": "run_psscript.cmd scripts\\Install-Extension.ps1",
+            "uninstallCommand": "run_psscript.cmd scripts\\Uninstall-Extension.ps1",
+            "updateCommand": "run_psscript.cmd scripts\\Update-Extension.ps1",
+            "enableCommand": "run_psscript.cmd scripts\\Enable-Extension.ps1",
+            "disableCommand": "run_psscript.cmd scripts\\Disable-Extension.ps1",
+            "rebootAfterInstall": false,
+            "reportHeartbeat": true,
+            "updateMode": "UpdateWithInstall",
+            "continueOnUpdateFailure": false
+        }
+    }
+]

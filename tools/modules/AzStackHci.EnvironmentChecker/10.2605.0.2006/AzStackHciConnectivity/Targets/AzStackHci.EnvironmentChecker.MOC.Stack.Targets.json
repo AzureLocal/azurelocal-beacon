@@ -1,0 +1,290 @@
+[
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Prerequisite Artifacts Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_Prerequisite_Artifacts_Url",
+    "Severity": "Warning",
+    "Description": "Used for official Microsoft artifacts such as container images",
+    "Endpoint": [
+      "mcr.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack's Kubernetes Service Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_Azure_Kubernetes_URL",
+    "Severity": "Warning",
+    "Description": "Used for container images within an Azure Container Registry, specify related to a deployment in an Azure Kubernetes Service.",
+    "Endpoint": [
+      "hybridaks.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Authentication Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_Security_Token_Service_URL",
+    "Severity": "Warning",
+    "Description": "Used by Microsoft for authentication and identity-related services",
+    "Endpoint": [
+      "sts.windows.net/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Agent Download Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_Download_Agent",
+    "Severity": "Warning",
+    "Description": "For downloading Resource bridge (appliance) container images",
+    "Endpoint": [
+      "ecpacr.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Kubernetes Download Image Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_Kubernetes_Download",
+    "Severity": "Warning",
+    "Description": "For downloading Azure Arc for Kubernetes container images",
+    "Endpoint": [
+      "azurearcfork8s.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Resource Bridge Component Download Firewall Requirement",
+    "Name": "AzStackHci_MOCStack_Resource_Bridge_component_Download_URL",
+    "Severity": "Warning",
+    "Description": "Used to pull artifacts for Appliance managed components",
+    "Endpoint": [
+      "kvamanagementoperator.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Azurestackhci Extension Download Firewall URL Requirement",
+    "Name": "AzStackHci_MOCStack_CLI_Extension_URL",
+    "Severity": "Warning",
+    "Description": "Required to download the AZ CLI Extension azurestackhci",
+    "Endpoint": [
+      "hybridaksstorage.z13.web.core.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "MOC Stack"
+    ],
+    "Title": "MOCStack Azurestackhci Arc-enabled Kubernetes URL Requirement",
+    "Name": "AzStackHci_MOCStack_Arc_K8s_URL",
+    "Severity": "Warning",
+    "Description": "Required for Azure Arc for K8s",
+    "Endpoint": [
+      "azurearcfork8sdev.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  }
+]

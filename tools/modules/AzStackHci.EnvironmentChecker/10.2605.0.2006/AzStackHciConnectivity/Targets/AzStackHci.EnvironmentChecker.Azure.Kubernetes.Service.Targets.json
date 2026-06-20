@@ -1,0 +1,1745 @@
+[
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure API Management",
+    "Name": "Azure_Kubernetes_Service_Azure_API_Management",
+    "Severity": "Warning",
+    "Description": "Required for the agent to connect to Azure and register the cluster.",
+    "Endpoint": [
+      "management.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure RBAC",
+    "Name": "Azure_Kubernetes_Service_Azure_RBAC",
+    "Severity": "Warning",
+    "Description": "Required when Azure RBAC is configured.",
+    "Endpoint": [
+      "graph.microsoft.com/v1.0/"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },  
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Microsoft Container Registry",
+    "Name": "Azure_Kubernetes_Service_Microsoft_Container_Registry",
+    "Severity": "Warning",
+    "Description": "Used for official Microsoft artifacts such as container images",
+    "Endpoint": [
+      "mcr.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc identity service",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc_identity_service",
+    "Severity": "Warning",
+    "Description": "Used for identity and access control",
+    "Endpoint": [
+      "gbl.his.arc.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "eastus.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "EastUS",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "southcentralus.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "australiaeast.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "canadacentral.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "centralindia.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "japaneast.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "southeastasia.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used for Azure Arc configuration",
+    "Endpoint": [
+      "westeurope.dp.kubernetesconfiguration.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Cluster connect",
+    "Name": "Azure_Kubernetes_Service_Cluster_connect",
+    "Severity": "Warning",
+    "Description": "Used to securely connect to Azure Arc-enabled Kubernetes clusters without requiring any inbound port to be enabled on the firewall.",
+    "Endpoint": [
+      "azgnrelay-eastus-l1.servicebus.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "EastUS",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Notification service",
+    "Name": "Azure_Kubernetes_Service_Notification_service",
+    "Severity": "INFORMATIONAL",
+    "Description": "Used for guest notification operations.",
+    "Endpoint": [
+      "guestnotificationservice.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "eastus.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "EastUS",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "scus.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "australiaeast.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "canadacentral.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "centralindia.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "japaneast.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "southeastasia.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Data plane service",
+    "Name": "Azure_Kubernetes_Service_Data_plane_service",
+    "Severity": "Warning",
+    "Description": "Used for data plane operations for Resource bridge (appliance).",
+    "Endpoint": [
+      "westeurope.dp.prod.appliances.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Download agent",
+    "Name": "Azure_Kubernetes_Service_Download_agent",
+    "Severity": "Warning",
+    "Description": "Used to download images and agents.",
+    "Endpoint": [
+      "westus.data.mcr.microsoft.com",
+      "azurearcfork8s.azurecr.io",
+      "linuxgeneva-microsoft.azurecr.io",
+      "pipelineagent.azurecr.io",
+      "ecpacr.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Metrics and health monitoring",
+    "Name": "Azure_Kubernetes_Service_Download_agent",
+    "Severity": "Warning",
+    "Description": "Used for metrics and monitoring telemetry traffic.",
+    "Endpoint": [
+      "global.prod.microsoftmetrics.com",
+      "prod5.prod.hot.ingestion.msftcloudes.com",
+      "gcs.prod.monitoring.core.windows.net/healthcheck"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "ARB Images",
+    "Name": "Azure_Kubernetes_Service_ARB_Images",
+    "Severity": "Warning",
+    "Description": "Used to download Resource bridge (appliance) images.",
+    "Endpoint": [
+      "arcplatformcliextprod.blob.core.windows.net",
+      "fe3cr.delivery.mp.microsoft.com",
+      "geo.prod.do.dsp.mp.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Kubernetes",
+    "Name": "Azure_Kubernetes_Service_Kubernetes",
+    "Severity": "Warning",
+    "Description": "Used to download Azure Arc for Kubernetes container images.",
+    "Endpoint": [
+      "azurearcfork8sdev.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Telemetry",
+    "Name": "Azure_Kubernetes_Service_Telemetry",
+    "Severity": "Warning",
+    "Description": "Used periodically to send required diagnostic data to Microsoft from control plane nodes.",
+    "Endpoint": [
+      "adhs.events.data.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Telemetry",
+    "Name": "Azure_Kubernetes_Service_Telemetry",
+    "Severity": "Warning",
+    "Description": "Used periodically to send required diagnostic data to Microsoft from control plane nodes.",
+    "Endpoint": [
+      "adhs.events.data.microsoft.com",
+      "v20.events.data.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Container image",
+    "Name": "Azure_Kubernetes_Service_Python_package",
+    "Severity": "Warning",
+    "Description": "Required to access the HybridAKS operator image.",
+    "Endpoint": [
+      "hybridaks.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Az Extensions",
+    "Name": "Azure_Kubernetes_Service_Az_Extensions",
+    "Severity": "Warning",
+    "Description": "Required to download Azure CLI extensions such as akshybrid and connectedk8s.",
+    "Endpoint": [
+      "aka.ms/hciconnectivitytargets"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "login.windows.net/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "australiaeast.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "canadacentral.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "eastus.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "eastus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "centralindia.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "japaneast.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "southcentralus.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "southeastasia.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "Warning",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "westeurope.login.microsoft.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure",
+    "Name": "Azure_Kubernetes_Service_Azure",
+    "Severity": "CRITICAL",
+    "Description": "Required to fetch and update Azure Resource Manager tokens",
+    "Endpoint": [
+      "login.microsoftonline.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Warning",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "sts.windows.net/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "eastus.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "EastUs",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "southcentralus.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "australiaeast.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "canadacentral.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "centralindia.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "japaneast.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "southeastasia.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Arc",
+    "Name": "Azure_Kubernetes_Service_Azure_Arc",
+    "Severity": "Informational",
+    "Description": "For Cluster Connect and Custom Location-based scenarios.",
+    "Endpoint": [
+      "westeurope.obo.arc.azure.com:8084"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Azure Stack HCI",
+    "Name": "Azure_Kubernetes_Service_Azure_Stack_HCI",
+    "Severity": "Warning",
+    "Description": "AKSHCI static website hosted in Azure Storage.",
+    "Endpoint": [
+      "hybridaksstorage.z13.web.core.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Kubernetes Service"
+    ],
+    "Title": "Microsoft official web site",
+    "Name": "Azure_Kubernetes_Service_Microsoft_official_web_site",
+    "Severity": "Warning",
+    "Description": "Microsoft official web site.",
+    "Endpoint": [
+      "www.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  }
+]

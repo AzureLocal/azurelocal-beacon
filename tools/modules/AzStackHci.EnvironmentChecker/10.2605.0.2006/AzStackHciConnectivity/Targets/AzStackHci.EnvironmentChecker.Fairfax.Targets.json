@@ -1,0 +1,1432 @@
+[
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Cluster connect",
+        "Name": "Azure_Kubernetes_Service_Cluster_connect",
+        "Severity": "CRITICAL",
+        "Description": "Used to securely connect to Azure Arc-enabled Kubernetes clusters without requiring any inbound port to be enabled on the firewall.",
+        "Endpoint": [
+            "azgns-usgovvirginia-fairfax-1p-public.servicebus.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "ARB Images",
+        "Name": "Azure_Kubernetes_Service_ARB_Images",
+        "Severity": "CRITICAL",
+        "Description": "Used to download Resource bridge (appliance) images.",
+        "Endpoint": [
+            "arcplatformcliextprod.blob.core.windows.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Arc For Servers"
+        ],
+        "Title": "Extension Management and guest configuration",
+        "Name": "Arc_For_Servers_Extension_Management_and_guest_configuration",
+        "Severity": "CRITICAL",
+        "Description": "For the notification service for extension and connectivity scenarios",
+        "Endpoint": [
+            "usgv-gas.guestconfiguration.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Azure Arc identity service",
+        "Name": "Azure_Kubernetes_Service_Azure_Arc_identity_service",
+        "Severity": "CRITICAL",
+        "Description": "Used for identity and access control",
+        "Endpoint": [
+            "usgv.his.arc.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Container Registries",
+        "Name": "Vm_Management_HCI_Container_Registries",
+        "Severity": "CRITICAL",
+        "Description": "For official Microsoft artifacts such as container images",
+        "Endpoint": [
+            "mcr.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Download agent",
+        "Name": "Azure_Kubernetes_Service_Download_agent",
+        "Severity": "CRITICAL",
+        "Description": "Used to download images and agents.",
+        "Endpoint": [
+            "eastus.data.mcr.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Metrics and health monitoring",
+        "Name": "Azure_Kubernetes_Service_Download_agent",
+        "Severity": "CRITICAL",
+        "Description": "Used for metrics and monitoring telemetry traffic.",
+        "Endpoint": [
+            "fp1phx.prod.microsoftmetrics.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Arc For Servers"
+        ],
+        "Title": "Azure Active Directory",
+        "Name": "Arc_For_Servers_Azure_Active_Directory",
+        "Severity": "CRITICAL",
+        "Description": "For Active Directory Authority and authentication, token fetch, and validation",
+        "Endpoint": [
+            "login.microsoftonline.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Local Management"
+        ],
+        "Title": "Azure Local Management",
+        "Name": "Azure_Local_Management",
+        "Severity": "CRITICAL",
+        "Description": "Initial Azure Local cluster registration, bootstrapping and management operations.",
+        "Endpoint": [
+            "management.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "RBAC Flows for Azure Gov"
+        ],
+        "Title": "RBAC_Flows_for_Azure_Gov",
+        "Name": "RBAC Flows for Azure Gov",
+        "Severity": "CRITICAL",
+        "Description": "RBAC Flows for Azure Gov",
+        "Endpoint": [
+            "pasff.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Notification service",
+        "Name": "Azure_Kubernetes_Service_Notification_service",
+        "Severity": "CRITICAL",
+        "Description": "For the notification service for extension and connectivity scenarios.",
+        "Endpoint": [
+            "guestnotificationservice.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Monitor"
+        ],
+        "Title": "Observability Services",
+        "Name": "Geneva_Observability_Services",
+        "Severity": "CRITICAL",
+        "Description": "Geneva observability",
+        "Endpoint": [
+            "gcs.monitoring.core.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Analysis Services RestAPI/Data modeling"
+        ],
+        "Title": "Azure_Analysis_Services_RestAPI_Data_modeling",
+        "Name": "Azure Analysis Services RestAPI/Data modeling",
+        "Severity": "CRITICAL",
+        "Description": "Azure Analysis Services RestAPI/Data modeling",
+        "Endpoint": [
+            "analysisservice.watson.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Monitor"
+        ],
+        "Title": "Observability Services",
+        "Name": "Geneva_Observability_Services",
+        "Severity": "CRITICAL",
+        "Description": "Geneva observability",
+        "Endpoint": [
+            "qos.prod.warm.ingest.monitor.core.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Monitor"
+        ],
+        "Title": "Observability Services - USGovVirginia",
+        "Name": "Geneva_Observability_Services_USGovVirginia",
+        "Severity": "CRITICAL",
+        "Description": "",
+        "Endpoint": [
+            "usgovvirginia-shared.prod.warm.ingest.monitor.core.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Dataplane",
+        "Name": "Azure_Stack_HCI_Dataplane",
+        "Severity": "CRITICAL",
+        "Description": "For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline",
+        "Endpoint": [
+            "dp.azurestackhci.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Azure Stack HCI Arc Extensions",
+        "Name": "Azure_Stack_HCI_Arc_Extensions",
+        "Severity": "CRITICAL",
+        "Description": "Azure Stack HCI Arc extensions deployment",
+        "Endpoint": [
+            "azurestackreleases.download.prss.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Azure Portal",
+        "Name": "Azure_Stack_HCI_Azure_Portal",
+        "Severity": "CRITICAL",
+        "Description": "Portal for cluster registration and to unregister the cluster .",
+        "Endpoint": [
+            "portal.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Local"
+        ],
+        "Title": "Azure Local authentication",
+        "Name": "Azure_Local_Authentication",
+        "Severity": "CRITICAL",
+        "Description": "For Graph authentication and Azure Resource Bridge RBAC.",
+        "Endpoint": [
+            "graph.microsoft.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Dataplane",
+        "Name": "Azure_Stack_HCI_Dataplane",
+        "Severity": "CRITICAL",
+        "Description": "For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline",
+        "Endpoint": [
+            "licensing.platform.edge.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Kubernetes",
+        "Name": "Azure_Kubernetes_Service_Kubernetes",
+        "Severity": "CRITICAL",
+        "Description": "Used for Azure Arc configuration",
+        "Endpoint": [
+            "usgovvirginia.dp.kubernetesconfiguration.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Active Directory Authority",
+        "Name": "Azure_Stack_HCI_Active_Directory_Authority",
+        "Severity": "CRITICAL",
+        "Description": "For Active Directory Authority and authentication, token fetch, and validation.",
+        "Endpoint": [
+            "usgovvirginia.login.microsoftonline.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Arc Enabled Kubernetes / AKSArc"
+        ],
+        "Title": "Arc Enabled Kubernetes / AKSArc",
+        "Name": "Arc_Enabled_Kubernetes_AKSArc",
+        "Severity": "CRITICAL",
+        "Description": "Arc Enabled Kubernetes / AKSArc",
+        "Endpoint": [
+            "clusterconfig-virginia.usgovvirginia.cloudapp.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "ARM for Azure Government"
+        ],
+        "Title": "ARM for Azure Government",
+        "Name": "ARM_for_Azure_Government",
+        "Severity": "CRITICAL",
+        "Description": "Used for ARM operations in Azure Government.",
+        "Endpoint": [
+            "arm-fdweb.usdodeast.cloudapp.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Data plane service",
+        "Name": "Azure_Kubernetes_Service_Data_plane_service",
+        "Severity": "CRITICAL",
+        "Description": "Used for data plane operations for Resource bridge (appliance).",
+        "Endpoint": [
+            "usgovvirginia.dp.prod.appliances.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+        "Azure Kubernetes Service"
+        ],
+        "Title": "Metrics and health monitoring",
+        "Name": "Azure_Kubernetes_Service_Download_agent",
+        "Severity": "CRITICAL",
+        "Description": "Used for metrics and monitoring telemetry traffic.",
+        "Endpoint": [
+            "usgovarizona-mdm.prod.hot.ingest.monitor.core.usgovcloudapi.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Arc Registration - PSGallery",
+        "Name": "Azure_Stack_HCI_Arc_Registration_PSGallery",
+        "Severity": "CRITICAL",
+        "Description": "To install required PSGallery modules for Arc registration",
+        "Endpoint": [
+            "www.powershellgallery.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Dataplane",
+        "Name": "Azure_Stack_HCI_Dataplane",
+        "Severity": "CRITICAL",
+        "Description": "For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline",
+        "Endpoint": [
+            "billing.platform.edge.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Monitor"
+        ],
+        "Title": "Azure Monitor",
+        "Name": "Azure_Monitor",
+        "Severity": "CRITICAL",
+        "Description": "Used for monitoring and diagnostics.",
+        "Endpoint": [
+            "global.handler.control.monitor.azure.us"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Container Registries",
+        "Name": "Vm_Management_HCI_Container_Registries",
+        "Severity": "CRITICAL",
+        "Description": "For official Microsoft artifacts such as container images",
+        "Endpoint": [
+            "msk8s.api.cdp.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Container Registries",
+        "Name": "Vm_Management_HCI_Container_Registries",
+        "Severity": "CRITICAL",
+        "Description": "For official Microsoft artifacts such as container images. Required for bandwidth testing.",
+        "Endpoint": [
+            "msk8s.sb.tlu.dl.delivery.mp.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Download",
+        "Name": "Vm_Management_HCI_Download",
+        "Severity": "CRITICAL",
+        "Description": "Resource bridge (appliance) client needs to Validate python package versions",
+        "Endpoint": [
+            "packages.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Azure Arc Urls",
+        "Name": "Azure_Arc_Urls",
+        "Severity": "CRITICAL",
+        "Description": "Azure Resource Manager - to create or delete the Arc enabled components",
+        "Endpoint": [
+            "sts.windows.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "Azure API Management",
+        "Name": "Azure_Kubernetes_Service_Azure_API_Management",
+        "Severity": "CRITICAL",
+        "Description": "Required for the agent to connect to Azure and register the cluster.",
+        "Endpoint": [
+            "management.azure.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": false,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": false,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "MOC Stack"
+        ],
+        "Title": "MOCStack Agent Download Firewall URL Requirement",
+        "Name": "AzStackHci_MOCStack_Download_Agent",
+        "Severity": "CRITICAL",
+        "Description": "For downloading Resource bridge (appliance) container images",
+        "Endpoint": [
+            "ecpacr.azurecr.io"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": false,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": false,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Client Telemetry",
+        "Name": "Vm_Management_HCI_Telemetry",
+        "Severity": "CRITICAL",
+        "Description": "To periodically send Telemetry from  HCI or Windows Server host",
+        "Endpoint": [
+            "linuxgeneva-microsoft.azurecr.io"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Vm Management for HCI"
+        ],
+        "Title": "Azure Local ARB Infrastructure for ARB Extensions",
+        "Name": "Azure_Local_ARB_Infrastructure_ARB_Extensions",
+        "Severity": "CRITICAL",
+        "Description": "Used to deploy ARB extensions",
+        "Endpoint": [
+            "arcplatformcliextprod.z13.web.core.windows.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Stack HCI"
+        ],
+        "Title": "Arc VM Storage",
+        "Name": "Azure_Stack_HCI_ArcVM_Storage",
+        "Severity": "Critical",
+        "Description": "Static website hosted in Azure storage for stack-hci-vm CLI extension files.",
+        "Endpoint": [
+            "hciarcvmsstorage.z13.web.core.windows.net"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment",
+            "Update"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment",
+                "Update"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Microsoft Update"
+        ],
+        "Title": "Microsoft update for fairfax endpoint",
+        "Name": "Microsoft_Update_Fairfax",
+        "Severity": "CRITICAL",
+        "Description": "For Microsoft Update, allowing the OS to receive updates.",
+        "Endpoint": [
+            "slscr.update.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Microsoft Update"
+        ],
+        "Title": "Microsoft update for fairfax second endpoint",
+        "Name": "Microsoft_Update_Fairfax_Second_Endpoint",
+        "Severity": "CRITICAL",
+        "Description": "For Microsoft Update, allowing the OS to receive updates.",
+        "Endpoint": [
+            "fe2cr.update.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": true,
+        "OperationType": [
+            "Deployment"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": true,
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Service": [
+            "Azure Kubernetes Service"
+        ],
+        "Title": "ARB Images",
+        "Name": "Azure_Kubernetes_Service_ARB_Images",
+        "Severity": "CRITICAL",
+        "Description": "Used to download Resource bridge (appliance) images.",
+        "Endpoint": [
+            "fe3cr.delivery.mp.microsoft.com"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Mandatory": false,
+        "OperationType": [
+            "Workload"
+        ],
+        "Group": "ReadinessChecks",
+        "Remediation": "https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions",
+        "TargetResourceID": "",
+        "TargetResourceName": "",
+        "TargetResourceType": "",
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Mandatory": false,
+            "OperationType": [
+                "Workload"
+            ]
+        },
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false
+    },
+    {
+        "Name": "System_Check_SSL_Inspection_Detection",
+        "Endpoint": [
+            "login.microsoftonline.com/common/oauth2"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Title": "System Check - SSL Inspection Detection",
+        "Severity": "Critical",
+        "Description": "Well known endpoint for Root CA thumbprint validation",
+        "Mandatory": true,
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Service": [
+                "System"
+            ],
+            "ExpectedSubject": [
+                "O=DigiCert",
+                "O=Microsoft"
+            ],
+            "Mandatory": true
+        },
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/use-environment-checker?tabs=connectivity#potential-failure-scenario-for-connectivity-validator",
+        "TargetResourceID": null,
+        "TargetResourceName": "System_RootCA",
+        "TargetResourceType": "Root CA",
+        "AdditionalData": null,
+        "Region": "usgovvirginia",
+        "ARCGateway": false,
+        "Service": [
+            "System"
+        ]
+    }
+]

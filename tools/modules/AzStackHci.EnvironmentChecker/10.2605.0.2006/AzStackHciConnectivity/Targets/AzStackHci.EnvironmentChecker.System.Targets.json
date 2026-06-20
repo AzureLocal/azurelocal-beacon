@@ -1,0 +1,90 @@
+[
+    {
+        "Name": "System_Check_DNS_External_Hostname_Resolution",
+        "Endpoint": [
+            "microsoft.com"
+        ],
+        "Protocol": [],
+        "Title": "System Check - DNS External Hostname Resolution",
+        "Severity": "Critical",
+        "Description": "Well known endpoint for DNS external resolution validation",
+        "Mandatory": true,
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Service": [
+                "System"
+            ],
+            "Mandatory": true
+        },
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/use-environment-checker?tabs=connectivity",
+        "TargetResourceID": null,
+        "TargetResourceName": "System_ExternalDNS",
+        "TargetResourceType": "External DNS",
+        "AdditionalData": null,
+        "Region": "Global",
+        "ARCGateway": true,
+        "Service": [
+            "System"
+        ]
+    },
+    {
+        "Name": "System_Check_SSL_Inspection_Detection",
+        "Endpoint": [
+            "login.microsoftonline.com/common/oauth2"
+        ],
+        "Protocol": [
+            "https"
+        ],
+        "Title": "System Check - SSL Inspection Detection",
+        "Severity": "Critical",
+        "Description": "Well known endpoint for Root CA thumbprint validation",
+        "Mandatory": true,
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Service": [
+                "System"
+            ],
+            "ExpectedSubject": [
+                "O=DigiCert",
+                "O=Microsoft"
+            ],
+            "Mandatory": true
+        },
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/use-environment-checker?tabs=connectivity#potential-failure-scenario-for-connectivity-validator",
+        "TargetResourceID": null,
+        "TargetResourceName": "System_RootCA",
+        "TargetResourceType": "Root CA",
+        "AdditionalData": null,
+        "Region": "Global",
+        "ARCGateway": false,
+        "Service": [
+            "System"
+        ]
+    },
+    {
+        "Name": "System_Check_User_Proxy",
+        "Endpoint": null,
+        "Protocol": null,
+        "Title": "System Check - User Proxy",
+        "Severity": "Warning",
+        "Description": "Test web request to user-specified proxy",
+        "Mandatory": true,
+        "Tags": {
+            "Group": "ReadinessChecks",
+            "Service": [
+                "System"
+            ],
+            "Mandatory": true
+        },
+        "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+        "TargetResourceID": null,
+        "TargetResourceName": "System_User_Proxy",
+        "TargetResourceType": "Proxy Setting",
+        "AdditionalData": null,
+        "Region": "Global",
+        "ARCGateway": true,
+        "Service": [
+            "System"
+        ]
+    }
+]

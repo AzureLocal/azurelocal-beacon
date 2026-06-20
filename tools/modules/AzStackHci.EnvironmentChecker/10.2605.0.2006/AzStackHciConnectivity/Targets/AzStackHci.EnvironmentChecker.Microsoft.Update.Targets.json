@@ -1,0 +1,74 @@
+[
+  {
+    "Service": [
+      "Microsoft Update"
+    ],
+    "Title": "Microsoft Update",
+    "Name": "Microsoft_Update_Microsoft_Microsoft_Update",
+    "Severity": "Informational",
+    "Description": "For Microsoft Update (http), which allows the OS to receive updates.",
+    "Endpoint": [
+      "go.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?tabs=allow-json#recommended-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Microsoft Update"
+    ],
+    "Title": "Microsoft Update",
+    "Name": "Microsoft_Update_Microsoft_Microsoft_Update",
+    "Severity": "Warning",
+    "Description": "For Microsoft Update (https), which allows the OS to receive updates.",
+    "Endpoint": [
+      "download.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?tabs=allow-json#recommended-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  }
+]

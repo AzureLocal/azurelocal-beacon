@@ -1,0 +1,326 @@
+[
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services",
+    "Name": "Watson_Observability_Services",
+    "Severity": "Warning",
+    "Description": "Watson observability",
+    "Endpoint": [
+      "azurewatsonanalysis-prod.core.windows.net/ping"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services",
+    "Name": "Geneva_Observability_Services",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "gcs.prod.monitoring.core.windows.net/healthcheck"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - SouthCentralUS",
+    "Name": "Geneva_Observability_Services_SouthCentralUS",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "southcentralus-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southcentralus",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - AustraliaEast",
+    "Name": "Geneva_Observability_Services_AustraliaEast",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "australiaeast-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "australiaeast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - CanadaCentral",
+    "Name": "Geneva_Observability_Services_CanadaCentral",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "canadacentral-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "canadacentral",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - CentralIndia",
+    "Name": "Geneva_Observability_Services_CentralIndia",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "centralindia-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "centralindia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - JapanEast",
+    "Name": "Geneva_Observability_Services_JapanEast",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "japaneast-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "japaneast",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - SoutheastAsia",
+    "Name": "Geneva_Observability_Services_SoutheastAsia",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "southeastasia-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "southeastasia",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Monitor"
+    ],
+    "Title": "Observability Services - WestEurope",
+    "Name": "Geneva_Observability_Services_WestEurope",
+    "Severity": "Warning",
+    "Description": "Geneva observability",
+    "Endpoint": [
+      "westeurope-shared.prod.warm.ingest.monitor.core.windows.net/api/v1/ingestion/status"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "westeurope",
+    "ARCGateway": true
+  }
+]

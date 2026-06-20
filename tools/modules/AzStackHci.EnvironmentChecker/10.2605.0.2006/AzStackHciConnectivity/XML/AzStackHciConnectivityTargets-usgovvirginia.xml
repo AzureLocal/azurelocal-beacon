@@ -1,0 +1,1691 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Objects>
+<Object Type="AzStackHciConnectivityManifest">
+  <Property Name="Title" Type="System.String">AzStackHci Connectivity Endpoint Definitions</Property>
+  <Property Name="Version" Type="System.Version">10.2605.0.2006</Property>
+  <Property Name="Targets" Type="System.Management.Automation.PSObject[]">
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Cluster_connect</Property>
+      <Property Name="Title" Type="System.String">Cluster connect</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used to securely connect to Azure Arc-enabled Kubernetes clusters without requiring any inbound port to be enabled on the firewall.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">azgns-usgovvirginia-fairfax-1p-public.servicebus.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">azgns-usgovvirginia-fairfax-1p-public.servicebus.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">azgns-usgovvirginia-fairfax-1p-public.servicebus.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_ARB_Images</Property>
+      <Property Name="Title" Type="System.String">ARB Images</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used to download Resource bridge (appliance) images.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">arcplatformcliextprod.blob.core.windows.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">arcplatformcliextprod.blob.core.windows.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">arcplatformcliextprod.blob.core.windows.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Arc_For_Servers_Extension_Management_and_guest_configuration</Property>
+      <Property Name="Title" Type="System.String">Extension Management and guest configuration</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For the notification service for extension and connectivity scenarios</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgv-gas.guestconfiguration.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgv-gas.guestconfiguration.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgv-gas.guestconfiguration.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Arc For Servers</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Azure_Arc_identity_service</Property>
+      <Property Name="Title" Type="System.String">Azure Arc identity service</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for identity and access control</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgv.his.arc.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgv.his.arc.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgv.his.arc.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Vm_Management_HCI_Container_Registries</Property>
+      <Property Name="Title" Type="System.String">Container Registries</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For official Microsoft artifacts such as container images</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">mcr.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">mcr.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">mcr.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Download_agent</Property>
+      <Property Name="Title" Type="System.String">Download agent</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used to download images and agents.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">eastus.data.mcr.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">eastus.data.mcr.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">eastus.data.mcr.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Download_agent</Property>
+      <Property Name="Title" Type="System.String">Metrics and health monitoring</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for metrics and monitoring telemetry traffic.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">fp1phx.prod.microsoftmetrics.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">fp1phx.prod.microsoftmetrics.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">fp1phx.prod.microsoftmetrics.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Arc_For_Servers_Azure_Active_Directory</Property>
+      <Property Name="Title" Type="System.String">Azure Active Directory</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Active Directory Authority and authentication, token fetch, and validation</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-arc/servers/network-requirements?tabs=azure-cloud#urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">login.microsoftonline.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">login.microsoftonline.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">login.microsoftonline.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Arc For Servers</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Local_Management</Property>
+      <Property Name="Title" Type="System.String">Azure Local Management</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Initial Azure Local cluster registration, bootstrapping and management operations.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">management.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">management.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">management.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Local Management</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">RBAC Flows for Azure Gov</Property>
+      <Property Name="Title" Type="System.String">RBAC_Flows_for_Azure_Gov</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">RBAC Flows for Azure Gov</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">pasff.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">pasff.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">pasff.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">RBAC Flows for Azure Gov</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Notification_service</Property>
+      <Property Name="Title" Type="System.String">Notification service</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For the notification service for extension and connectivity scenarios.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">guestnotificationservice.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">guestnotificationservice.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">guestnotificationservice.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Geneva_Observability_Services</Property>
+      <Property Name="Title" Type="System.String">Observability Services</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Geneva observability</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">gcs.monitoring.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">gcs.monitoring.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">gcs.monitoring.core.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Monitor</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure Analysis Services RestAPI/Data modeling</Property>
+      <Property Name="Title" Type="System.String">Azure_Analysis_Services_RestAPI_Data_modeling</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Azure Analysis Services RestAPI/Data modeling</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String"></Property>
+      <Property Name="TargetResourceID" Type="System.String">analysisservice.watson.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">analysisservice.watson.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">analysisservice.watson.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Analysis Services RestAPI/Data modeling</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Geneva_Observability_Services</Property>
+      <Property Name="Title" Type="System.String">Observability Services</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Geneva observability</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">qos.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">qos.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">qos.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Monitor</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Geneva_Observability_Services_USGovVirginia</Property>
+      <Property Name="Title" Type="System.String">Observability Services - USGovVirginia</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String"></Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgovvirginia-shared.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgovvirginia-shared.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgovvirginia-shared.prod.warm.ingest.monitor.core.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Monitor</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Dataplane</Property>
+      <Property Name="Title" Type="System.String">Dataplane</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">dp.azurestackhci.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">dp.azurestackhci.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">dp.azurestackhci.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Arc_Extensions</Property>
+      <Property Name="Title" Type="System.String">Azure Stack HCI Arc Extensions</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Azure Stack HCI Arc extensions deployment</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/tree/master/HCI</Property>
+      <Property Name="TargetResourceID" Type="System.String">azurestackreleases.download.prss.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">azurestackreleases.download.prss.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">azurestackreleases.download.prss.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Azure_Portal</Property>
+      <Property Name="Title" Type="System.String">Azure Portal</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Portal for cluster registration and to unregister the cluster .</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">portal.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">portal.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">portal.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Local_Authentication</Property>
+      <Property Name="Title" Type="System.String">Azure Local authentication</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Graph authentication and Azure Resource Bridge RBAC.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">graph.microsoft.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">graph.microsoft.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">graph.microsoft.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Local</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Dataplane</Property>
+      <Property Name="Title" Type="System.String">Dataplane</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">licensing.platform.edge.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">licensing.platform.edge.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">licensing.platform.edge.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Kubernetes</Property>
+      <Property Name="Title" Type="System.String">Kubernetes</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for Azure Arc configuration</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgovvirginia.dp.kubernetesconfiguration.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgovvirginia.dp.kubernetesconfiguration.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgovvirginia.dp.kubernetesconfiguration.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Active_Directory_Authority</Property>
+      <Property Name="Title" Type="System.String">Active Directory Authority</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Active Directory Authority and authentication, token fetch, and validation.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgovvirginia.login.microsoftonline.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgovvirginia.login.microsoftonline.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgovvirginia.login.microsoftonline.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Arc_Enabled_Kubernetes_AKSArc</Property>
+      <Property Name="Title" Type="System.String">Arc Enabled Kubernetes / AKSArc</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Arc Enabled Kubernetes / AKSArc</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String"></Property>
+      <Property Name="TargetResourceID" Type="System.String">clusterconfig-virginia.usgovvirginia.cloudapp.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">clusterconfig-virginia.usgovvirginia.cloudapp.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">clusterconfig-virginia.usgovvirginia.cloudapp.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Arc Enabled Kubernetes / AKSArc</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">ARM_for_Azure_Government</Property>
+      <Property Name="Title" Type="System.String">ARM for Azure Government</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for ARM operations in Azure Government.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String"></Property>
+      <Property Name="TargetResourceID" Type="System.String">arm-fdweb.usdodeast.cloudapp.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">arm-fdweb.usdodeast.cloudapp.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">arm-fdweb.usdodeast.cloudapp.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">ARM for Azure Government</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Data_plane_service</Property>
+      <Property Name="Title" Type="System.String">Data plane service</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for data plane operations for Resource bridge (appliance).</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgovvirginia.dp.prod.appliances.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgovvirginia.dp.prod.appliances.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgovvirginia.dp.prod.appliances.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Download_agent</Property>
+      <Property Name="Title" Type="System.String">Metrics and health monitoring</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for metrics and monitoring telemetry traffic.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">usgovarizona-mdm.prod.hot.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">usgovarizona-mdm.prod.hot.ingest.monitor.core.usgovcloudapi.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">usgovarizona-mdm.prod.hot.ingest.monitor.core.usgovcloudapi.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Arc_Registration_PSGallery</Property>
+      <Property Name="Title" Type="System.String">Arc Registration - PSGallery</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">To install required PSGallery modules for Arc registration</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/tree/master/HCI</Property>
+      <Property Name="TargetResourceID" Type="System.String">www.powershellgallery.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">www.powershellgallery.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">www.powershellgallery.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_Dataplane</Property>
+      <Property Name="Title" Type="System.String">Dataplane</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">billing.platform.edge.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">billing.platform.edge.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">billing.platform.edge.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Monitor</Property>
+      <Property Name="Title" Type="System.String">Azure Monitor</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used for monitoring and diagnostics.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String"></Property>
+      <Property Name="TargetResourceID" Type="System.String">global.handler.control.monitor.azure.us</Property>
+      <Property Name="TargetResourceName" Type="System.String">global.handler.control.monitor.azure.us</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">global.handler.control.monitor.azure.us</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Monitor</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Vm_Management_HCI_Container_Registries</Property>
+      <Property Name="Title" Type="System.String">Container Registries</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For official Microsoft artifacts such as container images</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">msk8s.api.cdp.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">msk8s.api.cdp.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">msk8s.api.cdp.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Vm_Management_HCI_Container_Registries</Property>
+      <Property Name="Title" Type="System.String">Container Registries</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For official Microsoft artifacts such as container images. Required for bandwidth testing.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites</Property>
+      <Property Name="TargetResourceID" Type="System.String">msk8s.sb.tlu.dl.delivery.mp.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">msk8s.sb.tlu.dl.delivery.mp.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">msk8s.sb.tlu.dl.delivery.mp.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Vm_Management_HCI_Download</Property>
+      <Property Name="Title" Type="System.String">Download</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Resource bridge (appliance) client needs to Validate python package versions</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">packages.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">packages.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">packages.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Arc_Urls</Property>
+      <Property Name="Title" Type="System.String">Azure Arc Urls</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Azure Resource Manager - to create or delete the Arc enabled components</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">sts.windows.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">sts.windows.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">sts.windows.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_Azure_API_Management</Property>
+      <Property Name="Title" Type="System.String">Azure API Management</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Required for the agent to connect to Azure and register the cluster.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">False</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud</Property>
+      <Property Name="TargetResourceID" Type="System.String">management.azure.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">management.azure.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">management.azure.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">False</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">AzStackHci_MOCStack_Download_Agent</Property>
+      <Property Name="Title" Type="System.String">MOCStack Agent Download Firewall URL Requirement</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For downloading Resource bridge (appliance) container images</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">False</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/manage/azure-arc-vm-management-prerequisites#firewall-url-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">ecpacr.azurecr.io</Property>
+      <Property Name="TargetResourceName" Type="System.String">ecpacr.azurecr.io</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">ecpacr.azurecr.io</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">MOC Stack</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">False</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Vm_Management_HCI_Telemetry</Property>
+      <Property Name="Title" Type="System.String">Client Telemetry</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">To periodically send Telemetry from  HCI or Windows Server host</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements</Property>
+      <Property Name="TargetResourceID" Type="System.String">linuxgeneva-microsoft.azurecr.io</Property>
+      <Property Name="TargetResourceName" Type="System.String">linuxgeneva-microsoft.azurecr.io</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">linuxgeneva-microsoft.azurecr.io</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Local_ARB_Infrastructure_ARB_Extensions</Property>
+      <Property Name="Title" Type="System.String">Azure Local ARB Infrastructure for ARB Extensions</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used to deploy ARB extensions</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/tree/master/HCI</Property>
+      <Property Name="TargetResourceID" Type="System.String">arcplatformcliextprod.z13.web.core.windows.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">arcplatformcliextprod.z13.web.core.windows.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">arcplatformcliextprod.z13.web.core.windows.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Vm Management for HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Stack_HCI_ArcVM_Storage</Property>
+      <Property Name="Title" Type="System.String">Arc VM Storage</Property>
+      <Property Name="Severity" Type="System.String">Critical</Property>
+      <Property Name="Description" Type="System.String">Static website hosted in Azure storage for stack-hci-vm CLI extension files.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+          <Property Type="System.String">Update</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls</Property>
+      <Property Name="TargetResourceID" Type="System.String">hciarcvmsstorage.z13.web.core.windows.net</Property>
+      <Property Name="TargetResourceName" Type="System.String">hciarcvmsstorage.z13.web.core.windows.net</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">hciarcvmsstorage.z13.web.core.windows.net</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Stack HCI</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+        <Property Type="System.String">Update</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Microsoft_Update_Fairfax</Property>
+      <Property Name="Title" Type="System.String">Microsoft update for fairfax endpoint</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Microsoft Update, allowing the OS to receive updates.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">slscr.update.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">slscr.update.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">slscr.update.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Microsoft Update</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Microsoft_Update_Fairfax_Second_Endpoint</Property>
+      <Property Name="Title" Type="System.String">Microsoft update for fairfax second endpoint</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">For Microsoft Update, allowing the OS to receive updates.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Deployment</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://github.com/Azure/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md</Property>
+      <Property Name="TargetResourceID" Type="System.String">fe2cr.update.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">fe2cr.update.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">fe2cr.update.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Microsoft Update</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Deployment</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">Azure_Kubernetes_Service_ARB_Images</Property>
+      <Property Name="Title" Type="System.String">ARB Images</Property>
+      <Property Name="Severity" Type="System.String">CRITICAL</Property>
+      <Property Name="Description" Type="System.String">Used to download Resource bridge (appliance) images.</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Mandatory" Type="System.Boolean">False</Property>
+        <Property Name="OperationType" Type="System.Object[]">
+          <Property Type="System.String">Workload</Property>
+        </Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure/aks/hybrid/aks-hci-network-system-requirements#firewall-url-exceptions</Property>
+      <Property Name="TargetResourceID" Type="System.String">fe3cr.delivery.mp.microsoft.com</Property>
+      <Property Name="TargetResourceName" Type="System.String">fe3cr.delivery.mp.microsoft.com</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">fe3cr.delivery.mp.microsoft.com</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">Azure Kubernetes Service</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]">
+        <Property Type="System.String">Workload</Property>
+      </Property>
+      <Property Name="Group" Type="System.String[]">
+        <Property Type="System.String">ReadinessChecks</Property>
+      </Property>
+      <Property Name="Mandatory" Type="System.Boolean">False</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+    <Property Type="AzStackHciConnectivityTarget">
+      <Property Name="Name" Type="System.String">System_Check_SSL_Inspection_Detection</Property>
+      <Property Name="Title" Type="System.String">System Check - SSL Inspection Detection</Property>
+      <Property Name="Severity" Type="System.String">Critical</Property>
+      <Property Name="Description" Type="System.String">Well known endpoint for Root CA thumbprint validation</Property>
+      <Property Name="Tags" Type="System.Management.Automation.PSCustomObject">
+        <Property Name="Group" Type="System.String">ReadinessChecks</Property>
+        <Property Name="Service" Type="System.Object[]">
+          <Property Type="System.String">System</Property>
+        </Property>
+        <Property Name="ExpectedSubject" Type="System.Object[]">
+          <Property Type="System.String">O=DigiCert</Property>
+          <Property Type="System.String">O=Microsoft</Property>
+        </Property>
+        <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      </Property>
+      <Property Name="Status" Type="System.String" />
+      <Property Name="Remediation" Type="System.String">https://learn.microsoft.com/en-us/azure-stack/hci/manage/use-environment-checker?tabs=connectivity#potential-failure-scenario-for-connectivity-validator</Property>
+      <Property Name="TargetResourceID" Type="System.String">login.microsoftonline.com/common/oauth2</Property>
+      <Property Name="TargetResourceName" Type="System.String">login.microsoftonline.com/common/oauth2</Property>
+      <Property Name="TargetResourceType" Type="System.String">External Endpoint</Property>
+      <Property Name="Timestamp" Type="System.DateTime">1/1/0001 12:00:00 AM</Property>
+      <Property Name="AdditionalData" Type="System.Management.Automation.PSObject[]" />
+      <Property Name="HealthCheckSource" Type="System.String"></Property>
+      <Property Name="EndPoint" Type="System.String[]">
+        <Property Type="System.String">login.microsoftonline.com/common/oauth2</Property>
+      </Property>
+      <Property Name="Protocol" Type="System.String[]">
+        <Property Type="System.String">https</Property>
+      </Property>
+      <Property Name="Service" Type="System.String[]">
+        <Property Type="System.String">System</Property>
+      </Property>
+      <Property Name="OperationType" Type="System.String[]" />
+      <Property Name="Group" Type="System.String[]" />
+      <Property Name="Mandatory" Type="System.Boolean">True</Property>
+      <Property Name="System" Type="System.Boolean">False</Property>
+      <Property Name="Region" Type="System.String">usgovvirginia</Property>
+      <Property Name="ArcGateway" Type="System.Boolean">False</Property>
+    </Property>
+  </Property>
+</Object>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>oFuUZ+Vj3N+fYl8eU0L1N9UEBcylVR8JOm0NCEc8zs4=</DigestValue></Reference></SignedInfo><SignatureValue>jKyhybXx8010q0113b0ecLA2obB0h41zLmXEUW8RhpUNCePnyBUHeQYw7+2F2llQDUU8rXcKOgmWhxaiFQRMBwWaVAlp9DqvY+q7FSv0pGqKpFXYGhYljFOrjRUJSk4hFOrKEdZwQswSD3GPi/3i7hE2zJFiD5K9LKcdYs3BEg1sYkO9DAxQWCfM43+qN1aBjqpCq6f7TBpsWa81IZu9MknRxWx0hB3OjQMU1HgXT1bWeO8LF1G5SAHvGRg+5d+o+IPX6sgWGQAmjLxgLhnyycU+NrgklcNYfLyTVgLxcnTyGGRtteFXMxqtKtlDCN1FcCvt/WaHYDUog2T63/bWhA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>0L3sF8cfYGWRQumLNVgWsvASfJBgOCUJx+QjGn6jgEpU6SvR/KOWV017dHGlUEzTFD7eOOcF2A/nRbWilk8A59SOdqFEqwvbyYp9RrKrfs8iiS+Q4N3kF20DUetQ5jMttBi0yDt0hXnfUX4v6KYYAixhSw0d69Crx48DG/42FktHHpVf+C89uy3wHpJvL/ROSF2nol2wFGGSitPdJ+AlZdyQbWzfvQ7SPUjbv8o76M1udv7u0V/07aWvyg5abqJGfmXG75rXfbq/YBS72c4eNaPTLBP3JULXWhVhr7qOibmv57aYJHstxOf7wRXvjCTxuqYXZ7qOq+e2bnQrnYiNWw==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>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</X509Certificate><X509Certificate>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</X509Certificate><X509Certificate>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</X509Certificate></X509Data></KeyInfo><Object Id="ts-countersig"><X509Data><X509Certificate>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</X509Certificate><X509Certificate>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</X509Certificate></X509Data><CounterSignature ts-format="cms-timestamp-message" xmlns="http://schemas.microsoft.com/xmldsig/timestamp/2003">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</CounterSignature></Object></Signature></Objects>

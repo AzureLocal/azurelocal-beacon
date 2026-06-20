@@ -1,0 +1,152 @@
+[
+    {
+        "Port": {
+            "PortNumber": [
+                135
+            ],
+            "Protocol": [
+                "TCP"
+            ],
+            "ProcessName" : "svchost"
+        },
+        "Title": "svchost tcp port 135",
+        "Severity": "Critical",
+        "Description": "Sample Ports to help test validator",
+        "Tags": {
+            "Group": [
+                "ReadinessChecks"
+            ],
+            "Service": [
+                "TestService"
+            ],
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "Remediation": "https://aka.ms/hci-connect-chk",
+        "TargetResourceID": null,
+        "TargetResourceName": "Sample_Ports_For_Validation",
+        "TargetResourceType": "HCI Node",
+        "AdditionalData": null
+    },
+    {
+        "Port": {
+            "PortNumber": [
+                4356
+            ],
+            "Protocol": [
+                "TCP","UDP"
+            ],
+            "ProcessName" : null
+        },
+        "Title": "Random port check tcp & udp, no owning process",
+        "Severity": "Critical",
+        "Description": "Sample Ports to help test validator",
+        "Tags": {
+            "Group": [
+                "ReadinessChecks"
+            ],
+            "Service": [
+                "TestService"
+            ],
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "Remediation": "https://aka.ms/hci-connect-chk",
+        "TargetResourceID": null,
+        "TargetResourceName": "Sample_Ports_For_Validation",
+        "TargetResourceType": "HCI Node",
+        "AdditionalData": null
+    },
+    {
+        "Port": {
+            "PortNumber": [
+                49664
+            ],
+            "Protocol": [
+                "UDP"
+            ],
+            "ProcessName" : "lukamagic"
+        },
+        "Title": "Port 49664 (udp: lsass & *tcp: svchost*)",
+        "Severity": "Critical",
+        "Description": "Sample Ports to help test validator",
+        "Tags": {
+            "Group": [
+                "ReadinessChecks"
+            ],
+            "Service": [
+                "TestService"
+            ],
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "Remediation": "https://aka.ms/hci-connect-chk",
+        "TargetResourceID": null,
+        "TargetResourceName": "Sample_Ports_For_Validation",
+        "TargetResourceType": "HCI Node",
+        "AdditionalData": null
+    },
+    {
+        "Port": {
+            "PortNumber": [
+                49664
+            ],
+            "Protocol": [
+                "TCP"
+            ],
+            "ProcessName" : "lsass"
+        },
+        "Title": "Port 49664 (*udp: lsass* & tcp: svchost)",
+        "Severity": "Critical",
+        "Description": "Sample Ports to help test validator",
+        "Tags": {
+            "Group": [
+                "ReadinessChecks"
+            ],
+            "Service": [
+                "TestService"
+            ],
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "Remediation": "https://aka.ms/hci-connect-chk",
+        "TargetResourceID": null,
+        "TargetResourceName": "Sample_Ports_For_Validation",
+        "TargetResourceType": "HCI Node",
+        "AdditionalData": null
+    },
+    {
+        "Port": {
+            "PortNumber": [
+                123
+            ],
+            "Protocol": [
+                "UDP"
+            ],
+            "ProcessName" : "svchost"
+        },
+        "Title": "UDP 123 svchost",
+        "Severity": "Critical",
+        "Description": "Sample Ports to help test validator",
+        "Tags": {
+            "Group": [
+                "ReadinessChecks"
+            ],
+            "Service": [
+                "TestService"
+            ],
+            "OperationType": [
+                "Deployment"
+            ]
+        },
+        "Remediation": "https://aka.ms/hci-connect-chk",
+        "TargetResourceID": null,
+        "TargetResourceName": "Sample_Ports_For_Validation",
+        "TargetResourceType": "HCI Node",
+        "AdditionalData": null
+    }
+]

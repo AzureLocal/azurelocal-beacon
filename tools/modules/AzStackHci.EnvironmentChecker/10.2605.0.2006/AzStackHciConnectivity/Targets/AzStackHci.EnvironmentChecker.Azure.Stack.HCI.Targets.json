@@ -1,0 +1,514 @@
+[
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Active Directory Authority",
+    "Name": "Azure_Stack_HCI_Active_Directory_Authority",
+    "Severity": "CRITICAL",
+    "Description": "For Active Directory Authority for authentication, token fetch, and validation",
+    "Endpoint": [
+      "login.microsoftonline.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Graph",
+    "Name": "Azure_Stack_HCI_Graph",
+    "Severity": "Critical",
+    "Description": "For Graph, used for authentication, token fetch, and validation",
+    "Endpoint": [
+      "graph.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Resource Manager",
+    "Name": "Azure_Stack_HCI_Resource_Resource_Manager",
+    "Severity": "Critical",
+    "Description": "For For Resource Manager for cluster registration and to unregister the cluster .",
+    "Endpoint": [
+      "management.azure.com/metadata/endpoints?api-version=2022-08-01"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Azure Portal",
+    "Name": "Azure_Stack_HCI_Azure_Portal",
+    "Severity": "Critical",
+    "Description": "Portal for cluster registration and to unregister the cluster .",
+    "Endpoint": [
+      "portal.azure.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Dataplane",
+    "Name": "Azure_Stack_HCI_Dataplane",
+    "Severity": "Critical",
+    "Description": "For Dataplane that pushes up diagnostics data, billing data and used in the Portal pipeline",
+    "Endpoint": [
+      "dp.stackhci.azure.com/_ping",
+      "licensing.platform.edge.azure.com/_health",
+      "billing.platform.edge.azure.com/_health"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Arc VM Container Registry",
+    "Name": "Azure_Stack_HCI_ArcVM_Container_Registry",
+    "Severity": "Critical",
+    "Description": "For Arc VM container registry on Azure Stack HCI 23H2.",
+    "Endpoint": [
+      "hciarcvmscontainerregistry.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Arc VM Storage",
+    "Name": "Azure_Stack_HCI_ArcVM_Storage",
+    "Severity": "Critical",
+    "Description": "Static website hosted in Azure storage for stack-hci-vm CLI extension files.",
+    "Endpoint": [
+      "hciarcvmsstorage.z13.web.core.windows.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Dataplane Previous URL",
+    "Name": "Azure_Stack_HCI_Dataplane_Previous_URL",
+    "Severity": "Warning",
+    "Description": "For Dataplane that has been deprecated and replaced with new dataplane endpoint",
+    "Endpoint": [
+      "azurestackhci.azurefd.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/concepts/firewall-requirements?#required-firewall-urls",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Arc Registration - PSGallery",
+    "Name": "Azure_Stack_HCI_Arc_Registration_PSGallery",
+    "Severity": "CRITICAL",
+    "Description": "To install required PSGallery modules for Arc registration",
+    "Endpoint": [
+      "www.powershellgallery.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Arc Registration",
+    "Name": "Azure_Stack_HCI_Arc_Registration",
+    "Severity": "Informational",
+    "Description": "Required for Arc registration",
+    "Endpoint": [
+      "go.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-azure-arc-gateway-overview?tabs=portal#azure-local-endpoints-not-redirected",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Azure Stack HCI Arc VM Container Registry",
+    "Name": "Azure_Stack_HCI_Arc_VM_Container_Registry",
+    "Severity": "CRITICAL",
+    "Description": "Arc VM container registry on Azure Stack HCI 23H2",
+    "Endpoint": [
+      "hciarcvmscontainerregistry.azurecr.io"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Azure Stack HCI Arc Extensions",
+    "Name": "Azure_Stack_HCI_Arc_Extensions",
+    "Severity": "CRITICAL",
+    "Description": "Azure Stack HCI Arc extensions deployment",
+    "Endpoint": [
+      "azurestackreleases.download.prss.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Azure Stack HCI Deployment",
+    "Name": "Azure_Stack_HCI_Deployment",
+    "Severity": "CRITICAL",
+    "Description": "Azure Stack HCI Deployment",
+    "Endpoint": [
+      "settings-win.data.microsoft.com"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  },
+  {
+    "Service": [
+      "Azure Stack HCI"
+    ],
+    "Title": "Azure Stack HCI CRLs",
+    "Name": "Azure_Stack_HCI_CRLs",
+    "Severity": "CRITICAL",
+    "Description": "Azure Stack HCI Certificate Revocation Lists",
+    "Endpoint": [
+      "oneocsp.microsoft.com",
+      "ts-crl.ws.symantec.com",
+      "ts-ocsp.ws.symantec.com",
+      "s.symcd.com",
+      "ocsp.digicert.com",
+      "ocsp2.globalsign.com/gsorganizationvalsha2g2",
+      "crl.microsoft.com/pkiinfra"
+    ],
+    "Protocol": [
+      "http"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://github.com/Azure/AzureStack-Tools/tree/master/HCI",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  }
+]

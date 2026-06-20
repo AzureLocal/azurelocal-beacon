@@ -1,0 +1,409 @@
+<#############################################################
+ #                                                           #
+ # Copyright (C) Microsoft Corporation. All rights reserved. #
+ #                                                           #
+ #############################################################>
+Import-LocalizedData -BindingVariable lvsTxt -FileName AzStackHCI.StandaloneObservability.Strings.psd1
+Import-Module $PSScriptRoot\AzStackHCI.StandaloneObservability.Helpers.psm1 -DisableNameChecking -Global
+
+<#
+.SYNOPSIS
+    Sends daignostics data using standalone observability pipeline.
+
+.DESCRIPTION
+    Sends diagnostics data using standalone observability pipeline.
+
+    PS C:\> Enter-PsSession -ComputerName <NodeName> -Credential $cred
+
+    PS C:\> Send-AzStackHciDiagnosticData
+
+.PARAMETER ResourceGroupName
+    Azure Resource group name where temporary Arc resource will be created. This can be same parameter as used in AzS Deployment.
+
+.PARAMETER SubscriptionId
+    Azure SubscriptionID where temporary Arc resource will be created. This can be same parameter as used in AzS Deployment.
+
+.PARAMETER RegistrationRegion
+    Optional. Azure registration region where Arc resource will be created. This can be same parameter as used in AzS Deployment.
+
+.PARAMETER DiagnosticLogPath
+    Diagnostic Log path which will be parsed and sent to Microsoft.
+
+.PARAMETER Cloud
+    Optional. Azure Cloud name default: AzureCloud.
+
+.PARAMETER CacheFlushWaitTimeInSec
+    Optional wait time to Flush the cache folder. default:600
+
+.PARAMETER RegistrationCredential
+    Azure credentials used for authentication to register ArcAgent. Needed only for DefaultSet
+
+.PARAMETER RegistrationWithDeviceCode
+    This is RegistrationWithDeviceCode switch to use device code for authentication.
+
+.PARAMETER RegistrationWithExistingContext
+    This is RegistrationWithExistingContext switch to use existing Azure context on the local machine.
+
+.PARAMETER RegistrationSPCredential
+    This is SPN crednetials used for authentication to register ArcAgent. Needed only for ServicePrincipal set
+
+.EXAMPLE
+    The example below .
+
+    During Remote Support JEA configuration, WinRM will be restarted twice and that can break the PsSession to node if you are installing Remote Support remotely. In that case, connect to remote node again and execute Enable cmdlet again after 4-5 minutes.
+
+    PS C:\> Enter-PsSession -ComputerName <NodeName> -Credential $cred
+
+    PS C:\> Send-AzStackHciDiagnosticData
+
+    Processing data from remote server v-host1 failed with the following error message: The I/O operation has been aborted because of either a thread exit or an application request. For more information, see the about_Remote_Troubleshooting Help topic.
+
+    PS C:\> Enter-PsSession -ComputerName <NodeName> -Credential $cred
+
+    PS C:\> Send-AzStackHciDiagnosticData
+
+.NOTES
+    Requires Support VM to have stable internet connectivity.
+#>
+
+function Send-AzStackHciDiagnosticData
+{
+    [CmdletBinding(PositionalBinding = $false, DefaultParameterSetName = "Interactive")]
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.String] $ResourceGroupName,
+
+        [Parameter(Mandatory = $true)]
+        [System.String] $SubscriptionId,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "DefaultSet")]
+        [PSCredential] $RegistrationCredential,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "Interactive")]
+        [Switch] $RegistrationWithDeviceCode,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "PassThrough")]
+        [Switch] $RegistrationWithExistingContext,
+
+        [Parameter(Mandatory = $true, ParameterSetName = "ServicePrincipal")]
+        [PSCredential] $RegistrationSPCredential,
+
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [ValidateScript({ Test-Path -Path $_ -PathType Container })]
+        [System.String] $DiagnosticLogPath,
+
+        [Parameter(Mandatory=$false)]
+        [System.String] $RegistrationRegion = "eastus",
+
+        [Parameter(Mandatory=$false)]
+        [System.String] $ObsRootFolderPath = "C:\StdObservability",
+
+        [Parameter(Mandatory=$false)]
+        [System.String] $Cloud = "AzureCloud",
+
+        [Parameter(Mandatory=$false)]
+        [Int] $CacheFlushWaitTimeInSec = 600
+    )
+    $OperationType = $MyInvocation.MyCommand
+    $script:ErrorActionPreference = 'Stop'
+    $LogSource = "AzStackHciEnvironmentChecker/StandaloneObservability"
+    $EventID = "19101"
+    $standaloneScriptsPath = "..\Obs\scripts"
+    Import-Module "$PSScriptRoot\$standaloneScriptsPath\AzureLocal.StandaloneObservability.psm1"
+
+    Set-AzStackHciOutputPath -Path $ObsRootFolderPath -Source $LogSource
+    Test-ModuleUpdate -PassThru:$PassThru
+
+    # Call/Initialise reporting
+    $envcheckerReport = Get-AzStackHciEnvProgress -clean:$CleanReport
+    $envcheckerReport = Add-AzStackHciEnvJob -report $envcheckerReport
+    try
+    {
+        Write-ETWLog -Source $LogSource -Message "Standalone Observability Status: Starting Send-AzureLocalDiagnosticData" -EventId $EventID
+        if ($PSCmdlet.ParameterSetName -eq "ServicePrincipal")
+        {
+            Send-AzureLocalDiagnosticData `
+                -ResourceGroupName $ResourceGroupName `
+                -SubscriptionId $SubscriptionId `
+                -RegistrationSPCredential $RegistrationSPCredential `
+                -DiagnosticLogPath $DiagnosticLogPath `
+                -RegistrationRegion $RegistrationRegion `
+                -ObsRootFolderPath $ObsRootFolderPath `
+                -Cloud $Cloud `
+                -CacheFlushWaitTimeInSec $CacheFlushWaitTimeInSec
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq "Interactive")
+        {
+            Send-AzureLocalDiagnosticData `
+                -ResourceGroupName $ResourceGroupName `
+                -SubscriptionId $SubscriptionId `
+                -RegistrationWithDeviceCode `
+                -DiagnosticLogPath $DiagnosticLogPath `
+                -RegistrationRegion $RegistrationRegion `
+                -ObsRootFolderPath $ObsRootFolderPath `
+                -Cloud $Cloud `
+                -CacheFlushWaitTimeInSec $CacheFlushWaitTimeInSec
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq "PassThrough")
+        {
+            Send-AzureLocalDiagnosticData `
+                -ResourceGroupName $ResourceGroupName `
+                -SubscriptionId $SubscriptionId `
+                -RegistrationWithExistingContext `
+                -DiagnosticLogPath $DiagnosticLogPath `
+                -RegistrationRegion $RegistrationRegion `
+                -ObsRootFolderPath $ObsRootFolderPath `
+                -Cloud $Cloud `
+                -CacheFlushWaitTimeInSec $CacheFlushWaitTimeInSec
+        }
+        else
+        {
+            Send-AzureLocalDiagnosticData `
+                -ResourceGroupName $ResourceGroupName `
+                -SubscriptionId $SubscriptionId `
+                -RegistrationCredential $RegistrationCredential `
+                -DiagnosticLogPath $DiagnosticLogPath `
+                -RegistrationRegion $RegistrationRegion `
+                -ObsRootFolderPath $ObsRootFolderPath `
+                -Cloud $Cloud `
+                -CacheFlushWaitTimeInSec $CacheFlushWaitTimeInSec
+        }
+        Write-ETWLog -Source $LogSource -Message "Standalone Observability Status: Succeeded" -EventId $EventID
+    }
+    catch
+    {
+        $exception = $_
+        Log-Info -Message "" -ConsoleOut
+        Trace-Execution "$OperationType failed. $exception"
+        Trace-Execution "$($exception.ScriptStackTrace)"
+        Write-ETWLog -Source $LogSource -Message "Standalone Observability failed with error: $exception" -EventId $EventID
+        throw $exception
+    }
+    finally
+    {
+        $Script:ErrorActionPreference = 'SilentlyContinue'
+        # Write result to StandaloneObs channel
+
+        # Write validation result to report object and close out report
+        $envcheckerReport | Add-Member -MemberType NoteProperty -Name 'StandaloneObservability' -Value $cmdletFailed -Force
+        $envcheckerReport = Close-AzStackHciEnvJob -report $envcheckerReport
+        Write-AzStackHciEnvReport -report $envcheckerReport
+    }
+}
+
+Export-ModuleMember -Function Send-AzStackHciDiagnosticData
+
+# SIG # Begin signature block
+# MIInbgYJKoZIhvcNAQcCoIInXzCCJ1sCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBgeIWRavkpWEyn
+# 4Q0Eppksx379+wWrAEczlsybyad+qaCCDMkwggYEMIID7KADAgECAhMzAAACHPrN
+# xZvoL37EAAAAAAIcMA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNVBAYTAlVTMR4wHAYD
+# VQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xKDAmBgNVBAMTH01pY3Jvc29mdCBD
+# b2RlIFNpZ25pbmcgUENBIDIwMjQwHhcNMjYwNDE2MTg1OTQxWhcNMjcwNDE1MTg1
+# OTQxWjB0MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UE
+# BxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMR4wHAYD
+# VQQDExVNaWNyb3NvZnQgQ29ycG9yYXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IB
+# DwAwggEKAoIBAQDVsZfgOKmM31HPfoWOoNEiw0SlCiIxUMC0I9NMWbucKOw/e9lP
+# oAoehQVu6SG65V4EPzrYsnBnFPNoi4/HoOdjhz1qkrEt4I6tEcxXU6oOeY9zGveC
+# /3iBeuhLYxM3M/PkcUoebF+Nednm8OkdSPoDu8imViHPQq/8CQUu0WRR4rE+dMRf
+# rpVqfmNi2qWCX94T4MsepijGVkwE//tJg0ryAiYdHT34LSnlG/RSBZmQRGWZ5g8j
+# qnKjRParSqMft1gvjuUTVgtWNZfgcLFSK5Wa0myrq8OPcgTGGsRgun+tnSS+IxDT
+# xVsAPH1OzvPjwomguByhUe/OcvUN0D5Wmp7xAgMBAAGjggGqMIIBpjAOBgNVHQ8B
+# Af8EBAMCB4AwHwYDVR0lBBgwFgYKKwYBBAGCN0wIAQYIKwYBBQUHAwMwHQYDVR0O
+# BBYEFNoH7a2YDjOSwpkp6DHcmUS7J+0yMFQGA1UdEQRNMEukSTBHMS0wKwYDVQQL
+# EyRNaWNyb3NvZnQgSXJlbGFuZCBPcGVyYXRpb25zIExpbWl0ZWQxFjAUBgNVBAUT
+# DTIzMDAxMis1MDc1NjkwHwYDVR0jBBgwFoAUf1k/VCHarU/vBeXmo9ctBpQSCDEw
+# YAYDVR0fBFkwVzBVoFOgUYZPaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w
+# cy9jcmwvTWljcm9zb2Z0JTIwQ29kZSUyMFNpZ25pbmclMjBQQ0ElMjAyMDI0LmNy
+# bDBtBggrBgEFBQcBAQRhMF8wXQYIKwYBBQUHMAKGUWh0dHA6Ly93d3cubWljcm9z
+# b2Z0LmNvbS9wa2lvcHMvY2VydHMvTWljcm9zb2Z0JTIwQ29kZSUyMFNpZ25pbmcl
+# MjBQQ0ElMjAyMDI0LmNydDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IC
+# AQAUnEqhaRXe0T3hIJjvdQErEkrA/7bByjn6t5IArODkkRjzkYwtKMc2yYj2quaN
+# rLutWw2YZcngKPy1b71YyDJQTy4NDRwaSh9Tw5thrk3NmcPrAHia5vtcBJ1CgtKK
+# 7mQbIcQ22d/N3813ayCDDFewu1+jsZmX+r/aTEqaOM4TVxVtRSkuCy8nAXKuChOK
+# Li/zA4XuH8iEYqIsj2YoNaeSxVmeGiERXpKdo3dDmYi0kO5w2D8VS4c3+9h6gElY
+# BaAAg/dYErBg27qT3vv0zRDJhJufvCNylA8S7/+8H5E/PV5cng6na9VV/w9OV3qu
+# uND6zdGa2EX38Glp50F9AIQk3p2xXmcvorDeM4XJ7UlWYBi6g80J1SSOQnInCYFE
+# msfUNn3+1AaTJKSJL83quKArTac2pKhu0Yzzzrzo6HrsRiQKzpnRBb1/dMa6P3hz
+# 75XbMRBctNsFhZC07WCmjExdLg2eHW5uV0TY8D5+6wozJf7vF3+WHkYPO85Z+BC6
+# U4FkNbYNycZ9cE4j1tXRdyDCfml6c0HWPHjNVDObrv9lKt3qUqFpX38VCqVCyNOO
+# 1UcXfQiVjJw32U2WUKZjt/neJKHEBsm9kFsLuWzkQ53+qcaSaytmsCnk2gOglrlD
+# 5d3kKyvvAw+rzm0lT8K38P6PLxfZQHhu4W8dV7Av8N2ZmDCCBr0wggSloAMCAQIC
+# EzMAAAA5O7Y3Gb8GHWcAAAAAADkwDQYJKoZIhvcNAQEMBQAwgYgxCzAJBgNVBAYT
+# AlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYD
+# VQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xMjAwBgNVBAMTKU1pY3Jvc29mdCBS
+# b290IENlcnRpZmljYXRlIEF1dGhvcml0eSAyMDExMB4XDTI0MDgwODIwNTQxOFoX
+# DTM2MDMyMjIyMTMwNFowVzELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFU1pY3Jvc29m
+# dCBDb3Jwb3JhdGlvbjEoMCYGA1UEAxMfTWljcm9zb2Z0IENvZGUgU2lnbmluZyBQ
+# Q0EgMjAyNDCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANgBnB7jOMeq
+# lRYHNa265v4IY9fH8TKhemHfPINe1gpLaV3dhg324WwH06LcHbpnsBukCDNitryo
+# 0dtS/EW6I/yEL/bLSY8hKpbfQuWusBPr9qazYcDxCW/qnjb5JsI1s8bNOg3bVATv
+# QVL4tcf03aTycsz8QeCdM0l/yHRObJ9QqazM1r6VPEOJ7LL+uEEb73w6QCuhs89a
+# 1uv1zerOYMnsneRRwCbpyW11IcggU0cRKDDq1pjVJzIbIF6+oiXXbReOsgeI8zu1
+# FyQfK0fVkaya8SmVHQ/tOf23mZ4W9k0Ri22QW9p3UgSC5OUDktKxxcCmGL6tXLfO
+# GSWHIIV4YrTJTT6PNty5REojHJuZHArkF9VnHTERWoTjAzfI3kP+5b4alUdhgAZ7
+# ttOu1bVnXfHaqPYl2rPs20ji03LOVWsh/radgE17es5hL+t6lV0eVHrVhsssROWJ
+# uz2MXMCt7iw7lFPG9LXKGjsmonn2gotGdHIuEg5JnJMJVmixd5LRlkmgYRZKzhxS
+# CwyoGIq0PhaA7Y+VPct5pCHkijcIIDm0nlkK+0KyepolcqGm0T/GYQRMhHJlGOOm
+# VQop36wUVUYklUy++vDWeEgEo4s7hxN6mIbf2MSIQ/iIfMZgJxC69oukMUXCrOC3
+# SkE/xIkgpfl22MM1itkZ35nNXkMolU1lAgMBAAGjggFOMIIBSjAOBgNVHQ8BAf8E
+# BAMCAYYwEAYJKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFH9ZP1Qh2q1P7wXl5qPX
+# LQaUEggxMBkGCSsGAQQBgjcUAgQMHgoAUwB1AGIAQwBBMA8GA1UdEwEB/wQFMAMB
+# Af8wHwYDVR0jBBgwFoAUci06AjGQQ7kUBU7h6qfHMdEjiTQwWgYDVR0fBFMwUTBP
+# oE2gS4ZJaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraS9jcmwvcHJvZHVjdHMv
+# TWljUm9vQ2VyQXV0MjAxMV8yMDExXzAzXzIyLmNybDBeBggrBgEFBQcBAQRSMFAw
+# TgYIKwYBBQUHMAKGQmh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2kvY2VydHMv
+# TWljUm9vQ2VyQXV0MjAxMV8yMDExXzAzXzIyLmNydDANBgkqhkiG9w0BAQwFAAOC
+# AgEAFJQfOChP7onn6fLIMKrSlN1WYKwDFgAddymOUO3FrM8d7B/W/iQ6DxXsDn7D
+# 5W4wMwYeLystcEqfkjz4NURRgazyMu5yRzQh4LqjA4tStTcJh1opExo7nn5PuPBY
+# nbu0+THSuVHTe0VTTPVhily/piFrDo3axQ9P4C+Ol5yet+2gTfekICS5xS+cYfSI
+# vgn0JksVBVMYVI5QFu/qhnLhsEFEUzG8fvv0hjgkO+lkpV9ty6GkN4vdnd7ya6Q6
+# aR9y34aiM1qmxaxBi6OUnyNl6fkuun/diTFnYDLTppOkr/mg5WSfCiDVMNCxtj4w
+# PKC5OmHm1DQIt/MNokbbH3UGsFP1QbzsLocuSqLCvH09Io3fDPTmscR9Y75G4qX7
+# RTX8AdBPo0I6OEojf39zuFZt0qOHm65YWQE69cZM2ueE1MB05dNNgHK9gTE7zKvK
+# /fg8B2qjW88MT/WF5V5uvZGtqa9FSL2RazArA+rDPuf6JGYz4HpgMZHB4S6szWSK
+# YBv0VisCzfxgeU+dquXW9bd0auYlOB58DPcOYKdc3Se94g+xL4pcEhbB54JOgAkw
+# YTu/9dLeH2pDqeJZAABVDWRQCaXfO5LgyKwKCLYXpigrZYCjUSBcr+Ve8PFWMhVT
+# Ql0v4q8J/AUmQN5W4n101cY2L4A7GTQG1h32HHAvfQESWP0xghn7MIIZ9wIBATBu
+# MFcxCzAJBgNVBAYTAlVTMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24x
+# KDAmBgNVBAMTH01pY3Jvc29mdCBDb2RlIFNpZ25pbmcgUENBIDIwMjQCEzMAAAIc
+# +s3Fm+gvfsQAAAAAAhwwDQYJYIZIAWUDBAIBBQCgga4wGQYJKoZIhvcNAQkDMQwG
+# CisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwLwYJKoZI
+# hvcNAQkEMSIEIC8Tl14wGh5/hFCAxzPkl59Wml7Kt1eXTzpH3Y+eJHLZMEIGCisG
+# AQQBgjcCAQwxNDAyoBSAEgBNAGkAYwByAG8AcwBvAGYAdKEagBhodHRwOi8vd3d3
+# Lm1pY3Jvc29mdC5jb20wDQYJKoZIhvcNAQEBBQAEggEAsVa2CtQdhjqVWiBiaz9I
+# 5EcdwuTi9+SsY0AbTmdNOWRzSFAoAX0DVBoQx/5mmslc/r+7p2uK6fFDRsj3pjHQ
+# J9frxeb8EdVNyldoPuUMLlEBoU4ULVT4TpOEQWqmsJH9Adz6EuwypcwTgd7qV0hf
+# HwjZq2dfA+1c8ZvJM0WEnYPIsfkHMQ9Mvl9lE0uXrtaMXagqhO8DnIclhujAlx5V
+# j8l8ENQqn4WtcG9lbXyBjN9nkULRVtG/QzsjBBT4d37SylgvHYAkldU4+2ovATmV
+# G52s8mgUMVUGQOICJFcOk/YBZ7Oz4Z72dGdvgOv63jn0PWSahwvw30Q5QdgWgsxe
+# R6GCF60wghepBgorBgEEAYI3AwMBMYIXmTCCF5UGCSqGSIb3DQEHAqCCF4YwgheC
+# AgEDMQ8wDQYJYIZIAWUDBAIBBQAwggFaBgsqhkiG9w0BCRABBKCCAUkEggFFMIIB
+# QQIBAQYKKwYBBAGEWQoDATAxMA0GCWCGSAFlAwQCAQUABCBefyFgeg87IaXZizP+
+# 1KW5HF/mHzjhdruprA2bV9IQiQIGaeyECdFOGBMyMDI2MDUwMzE0MzExMC44NzNa
+# MASAAgH0oIHZpIHWMIHTMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3Rv
+# bjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0
+# aW9uMS0wKwYDVQQLEyRNaWNyb3NvZnQgSXJlbGFuZCBPcGVyYXRpb25zIExpbWl0
+# ZWQxJzAlBgNVBAsTHm5TaGllbGQgVFNTIEVTTjo2RjFBLTA1RTAtRDk0NzElMCMG
+# A1UEAxMcTWljcm9zb2Z0IFRpbWUtU3RhbXAgU2VydmljZaCCEfswggcoMIIFEKAD
+# AgECAhMzAAACHAlVFdfDWQfRAAEAAAIcMA0GCSqGSIb3DQEBCwUAMHwxCzAJBgNV
+# BAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4w
+# HAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29m
+# dCBUaW1lLVN0YW1wIFBDQSAyMDEwMB4XDTI1MDgxNDE4NDgzMVoXDTI2MTExMzE4
+# NDgzMVowgdMxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYD
+# VQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xLTAr
+# BgNVBAsTJE1pY3Jvc29mdCBJcmVsYW5kIE9wZXJhdGlvbnMgTGltaXRlZDEnMCUG
+# A1UECxMeblNoaWVsZCBUU1MgRVNOOjZGMUEtMDVFMC1EOTQ3MSUwIwYDVQQDExxN
+# aWNyb3NvZnQgVGltZS1TdGFtcCBTZXJ2aWNlMIICIjANBgkqhkiG9w0BAQEFAAOC
+# Ag8AMIICCgKCAgEAow0xEAUaFIyyLIXeFzeI8IKyBON2u0Dr02ISE5p9G5CUXfnF
+# u2S0E1gWCMvDWpopX6lRxjmgnqaL3BtnWlBVTo8xUNRZu23ie4YBMAJB7Ut6mnqn
+# HVwvDJxGO4TD3SnrCd+yg35B9QFejq3o4+OByvXjynaypZyukcQaLsKQvoxE8ElH
+# H7zcOXEJWmU3rnXzaW/S4SH3OPhoUbTTcy6nUgKx5pRWiQ24UEPLYzcxGJjqjkz+
+# GiCWGPFHDMdW86laWvmCslouQPsN2eBk8dxJcEZmW4l6p4TthoXcfexEA9YdYaMz
+# 10aMhZNpdsNaDtDQUMDEC3k1D1My69MXSPlUmD9xFyDlkXiVa7BCEp3XcVtqTgzH
+# Gwr28JD6oE7zEPYeuZOiuCBXTZSo/wk3tbDlsESbIPV6inYqrzxiMYqlxfCdzC3C
+# imh9/NT/Lk9/aU+Iyyc9b3OaT0dZ8wgLaVDCGELRMrqyImdFHv0MudctzW/kPsV3
+# Ja9ufpKWujEiN3CW//X8hFa9j5ImNeQzcMit3MoSaoGwnbiZJX1IyibIphlqccXF
+# k4oTTSOQBsAUw8U0gwOnM5UJD8mBUBd65Np6NBkx2cviJ4I34GyXFCWyy5Ft1QsB
+# YyVfAG3KOhCfPHQf8lQzJvLr57YW0bD/xVs4Ag4gTS6KZNyFEfX9jFdRlr0CAwEA
+# AaOCAUkwggFFMB0GA1UdDgQWBBRa3mOCzB8u7zpvDh8MGKVYLCk7ZDAfBgNVHSME
+# GDAWgBSfpxVdAF5iXYP05dJlpxtTNRnpcjBfBgNVHR8EWDBWMFSgUqBQhk5odHRw
+# Oi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL2NybC9NaWNyb3NvZnQlMjBUaW1l
+# LVN0YW1wJTIwUENBJTIwMjAxMCgxKS5jcmwwbAYIKwYBBQUHAQEEYDBeMFwGCCsG
+# AQUFBzAChlBodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL2NlcnRzL01p
+# Y3Jvc29mdCUyMFRpbWUtU3RhbXAlMjBQQ0ElMjAyMDEwKDEpLmNydDAMBgNVHRMB
+# Af8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMA4GA1UdDwEB/wQEAwIHgDAN
+# BgkqhkiG9w0BAQsFAAOCAgEAklb6w/deaid3BujQCtWFBe0n9pkyRy+yyWEg70iD
+# woJ5u0e0O+4GerNzdZb1zTPsHJ8EGMyo1K7ytL21+pmdFMTl19PC8OJ5Y2p+XKUQ
+# y2dD+hggRMmJgDQsgbOCxHYeO+jg4t+vg61wUrovzzLkH3z0PJXXvoNuBj9Lda9C
+# iNMd60451Kube99ArSf6ZMj3t0p4rFbgSazDs+8TJ+8KA5GVaYjPHj9rlMuI3Wjo
+# hEc9apnQ6hMjMck3jlHZIwluVYeUQE0qjmApfMtTAEzbMUdY8sLTunL1GkbDSeKn
+# 9O7llBGnNtyM1uM9Mdv1VyWh0z/IriQKIjntqqGyoF0HvDHOFZCyUDBPLflyiu7Y
+# 1zQ/sPounsb96aBfQdq3h3LOn6t+m9EnNz/G6MzzWvpJk6YgTHTIqeQN/F/XpiPv
+# bfek3nq/PYbL3au+kBfRUHiCFXSvt6lor0HC626vUmz9ZNPOxwEWLuccomxsy3Jw
+# WH79vsM/7ARqoG5h6d6NahfaOuRP4XI9xtdH3Pa/NCLyQjxKXyLxzwQzjddkX2Ep
+# TJnlypuhPmEdea59Uz2E303LxyXSnKBvGsAnyWYAfnejr3YAiL9YrN2l2dn198Rp
+# A4DCm9QtZYiwC0q2fuUvui34PfPIUZByf7wHuuWu50hY9WLx1kOMI8xyo7AI6TaN
+# rnIwggdxMIIFWaADAgECAhMzAAAAFcXna54Cm0mZAAAAAAAVMA0GCSqGSIb3DQEB
+# CwUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UE
+# BxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTIwMAYD
+# VQQDEylNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgMjAxMDAe
+# Fw0yMTA5MzAxODIyMjVaFw0zMDA5MzAxODMyMjVaMHwxCzAJBgNVBAYTAlVTMRMw
+# EQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVN
+# aWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29mdCBUaW1lLVN0
+# YW1wIFBDQSAyMDEwMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA5OGm
+# TOe0ciELeaLL1yR5vQ7VgtP97pwHB9KpbE51yMo1V/YBf2xK4OK9uT4XYDP/XE/H
+# ZveVU3Fa4n5KWv64NmeFRiMMtY0Tz3cywBAY6GB9alKDRLemjkZrBxTzxXb1hlDc
+# wUTIcVxRMTegCjhuje3XD9gmU3w5YQJ6xKr9cmmvHaus9ja+NSZk2pg7uhp7M62A
+# W36MEBydUv626GIl3GoPz130/o5Tz9bshVZN7928jaTjkY+yOSxRnOlwaQ3KNi1w
+# jjHINSi947SHJMPgyY9+tVSP3PoFVZhtaDuaRr3tpK56KTesy+uDRedGbsoy1cCG
+# MFxPLOJiss254o2I5JasAUq7vnGpF1tnYN74kpEeHT39IM9zfUGaRnXNxF803RKJ
+# 1v2lIH1+/NmeRd+2ci/bfV+AutuqfjbsNkz2K26oElHovwUDo9Fzpk03dJQcNIIP
+# 8BDyt0cY7afomXw/TNuvXsLz1dhzPUNOwTM5TI4CvEJoLhDqhFFG4tG9ahhaYQFz
+# ymeiXtcodgLiMxhy16cg8ML6EgrXY28MyTZki1ugpoMhXV8wdJGUlNi5UPkLiWHz
+# NgY1GIRH29wb0f2y1BzFa/ZcUlFdEtsluq9QBXpsxREdcu+N+VLEhReTwDwV2xo3
+# xwgVGD94q0W29R6HXtqPnhZyacaue7e3PmriLq0CAwEAAaOCAd0wggHZMBIGCSsG
+# AQQBgjcVAQQFAgMBAAEwIwYJKwYBBAGCNxUCBBYEFCqnUv5kxJq+gpE8RjUpzxD/
+# LwTuMB0GA1UdDgQWBBSfpxVdAF5iXYP05dJlpxtTNRnpcjBcBgNVHSAEVTBTMFEG
+# DCsGAQQBgjdMg30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29m
+# dC5jb20vcGtpb3BzL0RvY3MvUmVwb3NpdG9yeS5odG0wEwYDVR0lBAwwCgYIKwYB
+# BQUHAwgwGQYJKwYBBAGCNxQCBAweCgBTAHUAYgBDAEEwCwYDVR0PBAQDAgGGMA8G
+# A1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAU1fZWy4/oolxiaNE9lJBb186aGMQw
+# VgYDVR0fBE8wTTBLoEmgR4ZFaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraS9j
+# cmwvcHJvZHVjdHMvTWljUm9vQ2VyQXV0XzIwMTAtMDYtMjMuY3JsMFoGCCsGAQUF
+# BwEBBE4wTDBKBggrBgEFBQcwAoY+aHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3Br
+# aS9jZXJ0cy9NaWNSb29DZXJBdXRfMjAxMC0wNi0yMy5jcnQwDQYJKoZIhvcNAQEL
+# BQADggIBAJ1VffwqreEsH2cBMSRb4Z5yS/ypb+pcFLY+TkdkeLEGk5c9MTO1OdfC
+# cTY/2mRsfNB1OW27DzHkwo/7bNGhlBgi7ulmZzpTTd2YurYeeNg2LpypglYAA7AF
+# vonoaeC6Ce5732pvvinLbtg/SHUB2RjebYIM9W0jVOR4U3UkV7ndn/OOPcbzaN9l
+# 9qRWqveVtihVJ9AkvUCgvxm2EhIRXT0n4ECWOKz3+SmJw7wXsFSFQrP8DJ6LGYnn
+# 8AtqgcKBGUIZUnWKNsIdw2FzLixre24/LAl4FOmRsqlb30mjdAy87JGA0j3mSj5m
+# O0+7hvoyGtmW9I/2kQH2zsZ0/fZMcm8Qq3UwxTSwethQ/gpY3UA8x1RtnWN0SCyx
+# TkctwRQEcb9k+SS+c23Kjgm9swFXSVRk2XPXfx5bRAGOWhmRaw2fpCjcZxkoJLo4
+# S5pu+yFUa2pFEUep8beuyOiJXk+d0tBMdrVXVAmxaQFEfnyhYWxz/gq77EFmPWn9
+# y8FBSX5+k77L+DvktxW/tM4+pTFRhLy/AsGConsXHRWJjXD+57XQKBqJC4822rpM
+# +Zv/Cuk0+CQ1ZyvgDbjmjJnW4SLq8CdCPSWU5nR0W2rRnj7tfqAxM328y+l7vzhw
+# RNGQ8cirOoo6CGJ/2XBjU02N7oJtpQUQwXEGahC0HVUzWLOhcGbyoYIDVjCCAj4C
+# AQEwggEBoYHZpIHWMIHTMQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3Rv
+# bjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0
+# aW9uMS0wKwYDVQQLEyRNaWNyb3NvZnQgSXJlbGFuZCBPcGVyYXRpb25zIExpbWl0
+# ZWQxJzAlBgNVBAsTHm5TaGllbGQgVFNTIEVTTjo2RjFBLTA1RTAtRDk0NzElMCMG
+# A1UEAxMcTWljcm9zb2Z0IFRpbWUtU3RhbXAgU2VydmljZaIjCgEBMAcGBSsOAwIa
+# AxUAWmTiA01u5mxq/nVxiRJLMOskVGeggYMwgYCkfjB8MQswCQYDVQQGEwJVUzET
+# MBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMV
+# TWljcm9zb2Z0IENvcnBvcmF0aW9uMSYwJAYDVQQDEx1NaWNyb3NvZnQgVGltZS1T
+# dGFtcCBQQ0EgMjAxMDANBgkqhkiG9w0BAQsFAAIFAO2hjfwwIhgPMjAyNjA1MDMw
+# OTAzNTZaGA8yMDI2MDUwNDA5MDM1NlowdDA6BgorBgEEAYRZCgQBMSwwKjAKAgUA
+# 7aGN/AIBADAHAgEAAgICbzAHAgEAAgISwjAKAgUA7aLffAIBADA2BgorBgEEAYRZ
+# CgQCMSgwJjAMBgorBgEEAYRZCgMCoAowCAIBAAIDB6EgoQowCAIBAAIDAYagMA0G
+# CSqGSIb3DQEBCwUAA4IBAQC056r68Y6CK9xI3Trd3IJ2M6M/nSftlkbhzJCbpK8N
+# ISUtl/DtiqkpTtG+Z3WlbK8EY77i5CQend6n3uA+Uir+wfNlc9RvFrRqWQj/ab8M
+# ZD85NGLXynWJdp24kr/939oJBz8IzNUgcdToCLTSFtdi7ZJZUS8LnfvqpUB+4wq4
+# IptoEc4tAU3LLfxkKgubUbw+w3PsgxBZaPWHOOj8AC5WHSSEILOLZ2Zs116fpTzq
+# MtHadJOEZ2iA9XVwAKOben++c1eN5G6Tm0eA8LzSuZwqTPz8VaxlJBVuh3S9iIA/
+# vhMOYuyvYklHBhZMUNiAFv/5t6hDPcYRxo3ApEIqfY5BMYIEDTCCBAkCAQEwgZMw
+# fDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1Jl
+# ZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEmMCQGA1UEAxMd
+# TWljcm9zb2Z0IFRpbWUtU3RhbXAgUENBIDIwMTACEzMAAAIcCVUV18NZB9EAAQAA
+# AhwwDQYJYIZIAWUDBAIBBQCgggFKMBoGCSqGSIb3DQEJAzENBgsqhkiG9w0BCRAB
+# BDAvBgkqhkiG9w0BCQQxIgQg57+230iI63TtyjTdpQ2bxVjLrQliC9Vp56+JD5hh
+# xr8wgfoGCyqGSIb3DQEJEAIvMYHqMIHnMIHkMIG9BCCgIGkmNhdo7+KE7dWhI+E2
+# Ctx2RLWoYvvJodCIciHHaDCBmDCBgKR+MHwxCzAJBgNVBAYTAlVTMRMwEQYDVQQI
+# EwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3Nv
+# ZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29mdCBUaW1lLVN0YW1wIFBD
+# QSAyMDEwAhMzAAACHAlVFdfDWQfRAAEAAAIcMCIEINzh9IP1Bt/eVE1rI6MoW3O9
+# +PGTW6C5AHscfG9N9DCVMA0GCSqGSIb3DQEBCwUABIICAJpzLKqYRIx2BPIGCKTq
+# msOZ9EMeulFpWCmb2sV25qjxaK3LpObbuHMSaimXpgR4ZtUFYf7xgqjxIrPUGi3B
+# +ehgaAtSssZgrnzMak/jbPOej3L8LTYpPfot7glwCPv2bMD5aZIgWhQcwpbmp0IQ
+# y3OPKfHt8ZMtyONbSvG+Qte/I4QGKTexTlNhYBjTV23TKsxqdtPNMa7bmQAnsbpV
+# ncYaqQfFSAsdvnyJOl1HoN7O8Y/i9Ke3uyulMWVibTR3lroYTSzPRsyhm5W6NRRO
+# whgJAJNbtPoOl2xBOqDv1MGWLzNVix9Y1SX5oAi1GU2HRW5sZiIGAXCvlf9t8QY5
+# SO2RVukP7EFvNkQMtsOva8QQ8uVCPQ9YUBZEpQPqeJCGDhNYMlCDR/4Y4LGjqg8a
+# UzErmJK274TPUWwe66A0SMkgdWD5FizXh+lhQmGGklU9gJa1e+/IzXMEr6fLg88j
+# n+hj4cj3uI1ezOivFeSYUJ07qv12vMSbfHc6EDtGkd1YQTV+l9Na42rqz/bB66AN
+# kWVHqNmtX4lzQcKwhgpE0z8KH/w2wmT2uRJEZAvtaja1BCdCi6mFaYMYxf0lb0y1
+# Hn5cLgnJ0vtUr3iZHwBsl0IrGsmbchXcdHKN6NA5dJf3yXVeYHH1A7OLNP/sAt8c
+# SoAcXq/aDnkaXd8SgfI0N50h
+# SIG # End signature block

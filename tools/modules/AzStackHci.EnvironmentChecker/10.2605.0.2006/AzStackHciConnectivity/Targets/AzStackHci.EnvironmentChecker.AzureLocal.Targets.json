@@ -1,0 +1,64 @@
+[
+  {
+    "Name": "System_Check_DNS_External_Hostname_Resolution",
+    "Endpoint": [
+        "autonomous.cloud.private"
+    ],
+    "Protocol": [],
+    "Title": "System Check - DNS External Hostname Resolution",
+    "Severity": "Critical",
+    "Description": "Well known endpoint for DNS external resolution validation",
+    "Mandatory": true,
+    "Tags": {
+        "Group": "ReadinessChecks",
+        "Service": [
+            "System"
+        ],
+        "Mandatory": true
+    },
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/use-environment-checker?tabs=connectivity",
+    "TargetResourceID": null,
+    "TargetResourceName": "System_ExternalDNS",
+    "TargetResourceType": "External DNS",
+    "AdditionalData": null,
+    "Region": "AzureLocal",
+    "ARCGateway": false,
+    "Service": [
+        "System"
+    ]
+  },
+  {
+    "Service": [
+      "Azure Local HCI Management"
+    ],
+    "Title": "Azure Local",
+    "Name": "Azure_Local_Hci_Mangement",
+    "Severity": "CRITICAL",
+    "Description": "Azure Local Endpoints for HCI Management",
+    "Endpoint": [
+      "portal.autonomous.cloud.private"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": true,
+    "OperationType": [
+      "Workload"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure/azure-local/manage/azure-arc-vm-management-prerequisites#firewall-requirements",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": true,
+      "OperationType": [
+        "Workload"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "AzureLocal",
+    "ARCGateway": false
+  }
+]

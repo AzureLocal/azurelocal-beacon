@@ -1,0 +1,279 @@
+{
+    "Test": {
+        "Endpoint": "Test",
+        "Account": "AzureEdgeObs",
+        "ShoeboxAccountPrefix":"AEOtestShoebox",
+        "Namespaces": {
+            "Telemetry":"AEOtstTely",
+            "Diagnostics":"AEOtstDiag",
+            "Health":"AEOtstHlth",
+            "Security": "AEOtstSec",
+            "Metrics": {
+                "Prefix": "AEOtstMtcs",
+                "Region":["eastus"],
+                "Default" : "eastus"
+            }
+        },
+        "ConfigVersion": "1.999999"
+    },
+    "Ppe": {
+        "Endpoint": "DiagnosticsPROD",
+        "Account": "AzureEdgeObsPPE",
+        "ShoeboxAccountPrefix":"AEOppeShoebox",
+        "Namespaces": {
+            "Telemetry":"AEOppeTely",
+            "Diagnostics":"AEOppeDiag",
+            "Health":"AEOppeHlth",
+            "Security": "AEOppeSec",
+            "Metrics": {
+                "Prefix": "AEOppeMtcs",
+                "Region": ["eastus", "westeurope"],
+                "Default" : "eastus"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : [
+            "australiaeast", 
+            "canadacentral",
+            "centralindia", 
+            "centralus",
+            "centraluseuap",
+            "eastus",
+            "eastus2",
+            "eastus2euap",
+            "japaneast", 
+            "northeurope", 
+            "southcentralus", 
+            "southeastasia", 
+            "westeurope", 
+            "westus2"
+        ]
+    },
+    "PpeFairfax": {
+        "Endpoint": "CAFairfax",
+        "Account": "AzureEdgeObsFFPPE",
+        "ShoeboxAccountPrefix":"AEOppeffaxShoebox",
+        "Namespaces": {
+            "Telemetry":"AEOppeTely",
+            "Diagnostics":"AEOppeDiag",
+            "Health":"AEOppeHlth",
+            "Security": "AEOppeSec",
+            "Metrics": {
+                "Prefix": "AEOppeMtcs",
+                "Region":["usgovvirginia"],
+                "Default" : "usgovvirginia"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["usgovvirginia", "usgovarizona"]
+    },
+    "PpeMooncake": {
+        "Endpoint": "CAMooncake",
+        "Account": "AzureEdgeObsMCPPE",
+        "Namespaces": {
+            "Telemetry":"AEOppeTely",
+            "Diagnostics":"AEOppeDiag",
+            "Health":"AEOppeHlth",
+            "Security": "AEOppeSec",
+            "Metrics": {
+                "Prefix": "AEOppeMtcs",
+                "Region": [
+                    "chinanorth3", 
+                    "chinaeast2"
+                ],
+                "Default" : "chinanorth3"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["chinanorth3", "chinaeast2"]
+    },
+    "PpeUSNat": {
+        "Endpoint": "USNat",
+        "Account": "AzureEdgeObsEXPPE",
+        "Namespaces": {
+            "Telemetry": "AEOppeTely",
+            "Diagnostics": "AEOppeDiag",
+            "Health": "AEOppeHlth",
+            "Security": "AEOppeSec",
+            "Metrics": {
+                "Prefix": "AEOppeMtcsUsNatEast",
+                "Region": [
+                    "usnateast",
+                    "usnatwest"
+                ],
+                "Default": "usnateast"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions": [ "usnateast", "usnatwest" ]
+    },
+    "PpeUSSec": {
+        "Endpoint": "USSec",
+        "Account": "AzureEdgeObsRXPPE",
+        "Namespaces": {
+            "Telemetry": "AEOppeTely",
+            "Diagnostics": "AEOppeDiag",
+            "Health": "AEOppeHlth",
+            "Security": "AEOppeSec",
+            "Metrics": {
+                "Prefix": "AEOppeMtcsUsSecEast",
+                "Region": [
+                    "usseceast",
+                    "ussecwest"
+                ],
+                "Default": "usseceast"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions": [ "usseceast", "ussecwest" ]
+    },
+    "Prod": {
+        "Endpoint": "DiagnosticsPROD",
+        "Account": "AzureEdgeObsPROD",
+        "ShoeboxAccountPrefix":"AEOprodShoebox",
+        "Namespaces": {
+            "Telemetry":"AEOprdTely",
+            "Diagnostics":"AEOprdDiag",
+            "Health":"AEOprdHlth",
+            "Security": "AEOprdSec",
+            "Metrics": {
+                "Prefix": "AEOprdMtcs",
+                "Region":[
+                    "eastus", 
+                    "centralus", 
+                    "southcentralus", 
+                    "westeurope", 
+                    "northeurope", 
+                    "japaneast", 
+                    "southeastasia", 
+                    "centralindia", 
+                    "australiaeast", 
+                    "canadacentral"
+                ],
+                "Default" : "eastus"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions": [
+            "australiaeast", 
+            "canadacentral",
+            "centralindia", 
+            "centralus",
+            "centraluseuap",
+            "eastus",
+            "eastus2",
+            "eastus2euap",
+            "japaneast", 
+            "northeurope", 
+            "southcentralus", 
+            "southeastasia", 
+            "westeurope", 
+            "westus2"
+        ]
+    },
+    "ArcAPpe": {
+        "Endpoint": "DiagnosticsPROD",
+        "Account": "ArcAObsPpe",
+        "Namespaces": {
+            "Telemetry": "arcappetely",
+            "Diagnostics": "arcappediag"
+        },
+        "ConfigVersion": "1.999999"
+    },
+    "ArcAProd": {
+        "Endpoint": "DiagnosticsPROD",
+        "Account": "ArcAObsProd",
+        "Namespaces": {
+            "Telemetry": "arcaprdtely",
+            "Diagnostics": "arcaprddiag"
+        },
+        "ConfigVersion": "1.999999"
+    },
+    "ArcAFairfax": {
+        "Endpoint": "CAFairfax",
+        "Account": "ArcAObsFairfax",
+        "Namespaces": {
+            "Telemetry": "arcaobsffprdtely",
+            "Diagnostics": "arcaobsffprddiag"
+        },
+        "ConfigVersion": "1.999999"
+    },
+    "Fairfax": {
+        "Endpoint": "CAFairfax",
+        "Account": "AzureEdgeObsFF",
+        "ShoeboxAccountPrefix":"AEOFFaxShoebox",
+        "Namespaces": {
+            "Telemetry":"AEOprdTely",
+            "Diagnostics":"AEOprdDiag",
+            "Health":"AEOprdHlth",
+            "Security": "AEOprdSec",
+            "Metrics": {
+                "Prefix": "AEOprdMtcs",
+                "Region":["usgovvirginia"],
+                "Default" : "usgovvirginia"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["usgovvirginia", "usgovarizona"]
+    },
+    "Mooncake": {
+        "Endpoint": "CAMooncake",
+        "Account": "AzureEdgeObsMC",
+        "Namespaces": {
+            "Telemetry":"AEOprdTely",
+            "Diagnostics":"AEOprdDiag",
+            "Health":"AEOprdHlth",
+            "Security": "AEOprdSec",
+            "Metrics": {
+                "Prefix": "AEOprdMtcs",
+                "Region": [
+                    "chinanorth3", 
+                    "chinaeast2"
+                ],
+                "Default" : "chinanorth3"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["chinanorth3", "chinaeast2"]
+    },
+    "USNat": {
+        "Endpoint": "USNat",
+        "Account": "AzureEdgeObsEX",
+        "Namespaces": {
+            "Telemetry":"AEOprdTely",
+            "Diagnostics":"AEOprdDiag",
+            "Health":"AEOprdHlth",
+            "Security": "AEOprdSec",
+            "Metrics": {
+                "Prefix": "AEOprdMtcsUsNatEast",
+                "Region": [
+                    "usnateast",
+                    "usnatwest"
+                ],
+                "Default" : "usnateast"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["usnateast", "usnatwest"]
+    },
+    "USSec": {
+        "Endpoint": "USSec",
+        "Account": "AzureEdgeObsRX",
+        "Namespaces": {
+            "Telemetry":"AEOprdTely",
+            "Diagnostics":"AEOprdDiag",
+            "Health":"AEOprdHlth",
+            "Security": "AEOprdSec",
+            "Metrics": {
+                "Prefix": "AEOprdMtcsUsSecEast",
+                "Region": [
+                    "usseceast",
+                    "ussecwest"
+                ],
+                "Default" : "usseceast"
+            }
+        },
+        "ConfigVersion": "1.999999",
+        "SupportedRegions" : ["usseceast", "ussecwest"]
+    }
+}

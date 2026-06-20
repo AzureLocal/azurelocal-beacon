@@ -1,0 +1,74 @@
+[
+  {
+    "Service": [
+      "Remote Support"
+    ],
+    "Title": "Remote Support",
+    "Name": "Remote_Support_AAD",
+    "Severity": "CRITICAL",
+    "Description": "For Azure Active Directory",
+    "Endpoint": [
+      "login.microsoftonline.com/common/oauth2"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/get-remote-support#configure-proxy-settings",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": false
+  },
+  {
+    "Service": [
+      "Remote Support"
+    ],
+    "Title": "Remote Support",
+    "Name": "Remote_Support_Traffic_Manager",
+    "Severity": "Warning",
+    "Description": "Remote Support Traffic Manager Endpoint",
+    "Endpoint": [
+      "edgesupprd.trafficmanager.net"
+    ],
+    "Protocol": [
+      "https"
+    ],
+    "Mandatory": false,
+    "OperationType": [
+      "Deployment",
+      "Update"
+    ],
+    "Group": "ReadinessChecks",
+    "Remediation": "https://learn.microsoft.com/en-us/azure-stack/hci/manage/get-remote-support#configure-proxy-settings",
+    "TargetResourceID": "",
+    "TargetResourceName": "",
+    "TargetResourceType": "",
+    "Tags": {
+      "Group": "ReadinessChecks",
+      "Mandatory": false,
+      "OperationType": [
+        "Deployment",
+        "Update"
+      ]
+    },
+    "AdditionalData": null,
+    "Region": "Global",
+    "ARCGateway": true
+  }
+]
