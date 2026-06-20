@@ -1044,13 +1044,13 @@
 </code></pre></div>
 <p>Set the node's one-time boot order to the USB device.</p>
 <h2 id="what-happens-at-boot">What happens at boot<a class="headerlink" href="#what-happens-at-boot" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>wpeinit                   ← WinPE network stack init
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Start-AzlBeacon.ps1       ← Menu orchestrator
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  Start-NetworkBootstrap  ← DHCP detect / static IP prompt
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  Main menu               ← Choose: AD / Local Identity / Network+Firewall / Full sweep
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>wpeinit                   &lt;- WinPE network stack init
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Start-AzlBeacon.ps1       &lt;- Menu orchestrator
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  Start-NetworkBootstrap  &lt;- DHCP detect / static IP prompt
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  Main menu               &lt;- Choose: AD / Local Identity / Network+Firewall / Full sweep
 </code></pre></div>
 <h2 id="network-bootstrap">Network bootstrap<a class="headerlink" href="#network-bootstrap" title="Permanent link">&para;</a></h2>
-<p>On boot, Beacon waits <strong>15 seconds</strong> for a DHCP lease. If none is detected, you are prompted for:</p>
+<p>On boot, Beacon waits <strong>15 seconds</strong> for a DHCP lease on the management NIC. If none is detected, you are prompted for:</p>
 <table>
 <thead>
 <tr>
@@ -1077,11 +1077,7 @@
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Local Identity deployments require static IPs</p>
-<p>Microsoft requires static IP addresses for all cluster nodes in a Local Identity (AD-less) deployment.
-DHCP is not supported for node NICs in this mode.</p>
-</div>
+<p>This gives Beacon connectivity to run the validation — it has nothing to do with how the eventual Azure Local cluster nodes will be addressed.</p>
 <h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
 <p>Results are saved to <code>X:\results\validation-&lt;timestamp&gt;.json</code> for the duration of the WinPE session.</p>
 <div class="admonition warning">
