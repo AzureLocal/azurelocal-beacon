@@ -73,10 +73,7 @@ function Write-BootLine {
         [string]$Message,
         [System.ConsoleColor]$Color = [System.ConsoleColor]::White
     )
-    $old = $Host.UI.RawUI.ForegroundColor
-    $Host.UI.RawUI.ForegroundColor = $Color
-    Write-Output $Message
-    $Host.UI.RawUI.ForegroundColor = $old
+    Write-Host $Message -ForegroundColor $Color
 }
 
 function Get-RoutableIPv4 {
@@ -178,10 +175,10 @@ function Test-DnsResolution {
 }
 
 function Test-TcpPort {
-    param([string]$Host, [int]$Port, [int]$TimeoutMs = 5000)
+    param([string]$Hostname, [int]$Port, [int]$TimeoutMs = 5000)
     try {
         $client = New-Object System.Net.Sockets.TcpClient
-        $ar     = $client.BeginConnect($Host, $Port, $null, $null)
+        $ar     = $client.BeginConnect($Hostname, $Port, $null, $null)
         $ok     = $ar.AsyncWaitHandle.WaitOne($TimeoutMs, $false)
         if ($ok) { $client.EndConnect($ar) }
         $client.Close()
@@ -309,7 +306,7 @@ if (-not $SkipVerification -and $state.Configured) {
     Write-BootLine "  $dnsLabel DNS: management.azure.com" -Color $dnsColor
 
     # Outbound HTTPS
-    $httpsOk = Test-TcpPort -Host 'login.microsoftonline.com' -Port 443
+    $httpsOk = Test-TcpPort -Hostname 'login.microsoftonline.com' -Port 443
     $state.HttpsOk = $httpsOk
     $httpsLabel = if ($httpsOk) { '[OK]  ' } else { '[WARN]' }
     $httpsColor = if ($httpsOk) { [System.ConsoleColor]::Green } else { [System.ConsoleColor]::Yellow }

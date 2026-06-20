@@ -67,10 +67,7 @@ function Write-BeaconLine {
         [string]$Message = '',
         [System.ConsoleColor]$Color = [System.ConsoleColor]::White
     )
-    $old = $Host.UI.RawUI.ForegroundColor
-    $Host.UI.RawUI.ForegroundColor = $Color
-    Write-Output $Message
-    $Host.UI.RawUI.ForegroundColor = $old
+    Write-Host $Message -ForegroundColor $Color
 }
 
 function Write-BeaconHeader {
