@@ -2,8 +2,8 @@
 
 ## Build machine
 
-!!! note "Build once, boot anywhere"
-    You build the ISO once on a Windows machine, then boot it on any node (or on a separate machine on the management network).
+!!! note "Build once, boot on any Dell AX node"
+    You build the ISO once on a Windows machine with ADK installed, then mount it via iDRAC virtual media on each Dell AX node.
 
 | Requirement | Details |
 |---|---|
@@ -17,7 +17,7 @@
 
 ## Dell AX NIC drivers
 
-NIC drivers for Dell AX 16G nodes are **bundled in the repo** under `drivers/dell-ax/` (extracted from Dell SBE bundle `5.0.2603.1641`). No separate download required.
+NIC drivers for Dell AX 16G nodes are **bundled in the repo** under `drivers/dell-ax/` (extracted from Dell SBE bundle `5.0.2603.1641`). No separate download required — the build script picks them up automatically.
 
 | Driver | File | Version |
 |---|---|---|
@@ -29,20 +29,10 @@ NIC drivers for Dell AX 16G nodes are **bundled in the repo** under `drivers/del
 
 ## Network requirements
 
-The Beacon image needs to reach Azure endpoints to run the full endpoint sweep. Ensure:
+The Beacon image needs outbound access to Azure endpoints to run the endpoint sweep. Ensure the management VLAN where Beacon will boot has:
 
-- Management VLAN access from the machine where Beacon boots
 - Outbound HTTPS (443) to Azure endpoints (see [Endpoint List](../reference/endpoints.md))
-- DNS resolution (UDP/TCP 53) — can be tested interactively if DNS is in question
+- DNS resolution (UDP/TCP 53)
 
-## Validation config
-
-Copy `src/config/validation-config.example.json` to `src/config/validation-config.json` before building and fill in your environment's values (DC IPs, gateway, DNS, node IPs, etc.).
-
-```powershell title="Create your validation config"
-Copy-Item src\config\validation-config.example.json src\config\validation-config.json
-# Edit src\config\validation-config.json with your values
-```
-
-!!! warning
-    `validation-config.json` is gitignored. Never commit it — it contains environment-specific IPs.
+!!! tip "No pre-configuration required"
+    All environment values (DC IPs, DNS servers, gateway, domain FQDN) are collected interactively by the Beacon menu at boot. Nothing needs to be filled in before building the ISO.

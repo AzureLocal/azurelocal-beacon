@@ -24,15 +24,15 @@ Set the node's one-time boot order to the USB device.
 ## What happens at boot
 
 ```
-wpeinit                   ← WinPE network stack init
-Start-AzlBeacon.ps1       ← Menu orchestrator
-  Start-NetworkBootstrap  ← DHCP detect / static IP prompt
-  Main menu               ← Choose: AD / Local Identity / Network+Firewall / Full sweep
+wpeinit                   <- WinPE network stack init
+Start-AzlBeacon.ps1       <- Menu orchestrator
+  Start-NetworkBootstrap  <- DHCP detect / static IP prompt
+  Main menu               <- Choose: AD / Local Identity / Network+Firewall / Full sweep
 ```
 
 ## Network bootstrap
 
-On boot, Beacon waits **15 seconds** for a DHCP lease. If none is detected, you are prompted for:
+On boot, Beacon waits **15 seconds** for a DHCP lease on the management NIC. If none is detected, you are prompted for:
 
 | Prompt | Example |
 |---|---|
@@ -41,9 +41,7 @@ On boot, Beacon waits **15 seconds** for a DHCP lease. If none is detected, you 
 | Default gateway | `10.10.0.1` |
 | Primary DNS | `10.10.0.10` |
 
-!!! note "Local Identity deployments require static IPs"
-    Microsoft requires static IP addresses for all cluster nodes in a Local Identity (AD-less) deployment.
-    DHCP is not supported for node NICs in this mode.
+This gives Beacon connectivity to run the validation — it has nothing to do with how the eventual Azure Local cluster nodes will be addressed.
 
 ## Results
 

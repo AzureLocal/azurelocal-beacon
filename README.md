@@ -50,17 +50,10 @@ For non-Dell hardware, supply your own drivers:
 
 ## Quick start
 
-### 1. Populate config
+!!! tip "No pre-configuration required"
+    All environment values (DC IPs, DNS, gateway, domain FQDN) are collected interactively by the Beacon menu at boot. Just build the ISO and boot it.
 
-Copy `src/config/validation-config.example.json` to `src/config/validation-config.json` and fill in your deployment values (DNS, AD domain, node IPs, gateway).
-
-Regenerate the Azure endpoint list if needed:
-
-```powershell
-.\src\Convert-EndpointsToJson.ps1
-```
-
-### 2. Build
+### 1. Build
 
 ```powershell
 # Minimal — downloads PS7, no drivers
