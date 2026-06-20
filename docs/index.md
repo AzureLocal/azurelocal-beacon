@@ -9,7 +9,9 @@ hide:
 
 **Pre-deployment endpoint and network readiness validation for Azure Local.**
 
-AzL Beacon boots directly from an iDRAC virtual media session or USB drive — no OS, no domain join, no licensing — and verifies that the environment meets every Microsoft requirement before you begin an Azure Local deployment.
+When deploying Azure Local, there are scenarios where no existing systems are present on the management or compute VLANs — no jump host, no domain controller reachable, no way to plug in a laptop and get an IP on the right network. You need to know the network is fully functional *before* the cluster deployment starts, not discover firewall gaps or DNS failures halfway through a six-hour deployment wizard run.
+
+AzL Beacon solves this. It boots directly from an iDRAC virtual media session or USB drive on the bare Dell AX hardware — no installed OS, no domain join, no licensing required — and validates every network dependency Microsoft requires for Azure Local. If Beacon passes, you can deploy with confidence. If it fails, you know exactly what to fix before you've committed any time to the deployment itself.
 
 ---
 

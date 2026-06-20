@@ -385,6 +385,14 @@ if ($BuildUSB -and [string]::IsNullOrWhiteSpace($UsbDriveLetter)) {
 $resolvedPS7Zip = Get-ResolvedPS7Zip -ProvidedPath $PS7ZipPath
 $resolvedConfig = Get-ResolvedConfigPath -ProvidedPath $ConfigPath
 
+# Resolve all paths to absolute so MakeWinPEMedia and DISM work
+# regardless of the working directory when the script is invoked.
+$OutputPath      = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
+$WorkspacePath   = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($WorkspacePath)
+if ($DriverPath) {
+    $DriverPath  = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($DriverPath)
+}
+
 # --- Step 1: Prepare workspace ---
 Write-Step 'Step 1: Preparing workspace...'
 if ($PSCmdlet.ShouldProcess($WorkspacePath, 'Remove and recreate WinPE workspace')) {
