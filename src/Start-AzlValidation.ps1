@@ -744,10 +744,28 @@ function Save-ValidationResult {
         }
 
         $output | ConvertTo-Json -Depth 5 | Set-Content -Path $outputFile -Encoding UTF8
-        Out-ConsoleLine -Message "  Results written: $outputFile" -Color ([System.ConsoleColor]::DarkGray)
+
+        # Write human-readable log alongside the JSON
+        $logFile  = Join-Path $ResultsDir "validation-$timestamp.log"
+        $logLines = [System.Collections.Generic.List[string]]::new()
+        $logLines.Add("AzL Beacon Validation Log")
+        $logLines.Add("Timestamp : $($output.validationTimestamp)")
+        $logLines.Add("Duration  : $($output.durationSeconds)s")
+        $logLines.Add("Verdict   : $($output.summary.verdict)  (Pass=$pass  Fail=$fail  Warn=$warn  Skip=$skip)")
+        $logLines.Add('')
+        $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f 'Category','Status','Target','Detail'))
+        $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f '--------','------','------','------'))
+        foreach ($r in $Results) {
+            $tgt = if ($r.Target.Length -gt 50) { $r.Target.Substring(0,47) + '...' } else { $r.Target }
+            $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f $r.Category, $r.Status, $tgt, $r.Detail))
+        }
+        $logLines | Set-Content -Path $logFile -Encoding UTF8
+
+        Out-ConsoleLine -Message "  Results  : $outputFile" -Color ([System.ConsoleColor]::DarkGray)
+        Out-ConsoleLine -Message "  Log file : $logFile"    -Color ([System.ConsoleColor]::DarkGray)
         return $outputFile
     } catch {
-        Write-Warning "Could not save results JSON: $_"
+        Write-Warning "Could not save results: $_"
         return ''
     }
 }
