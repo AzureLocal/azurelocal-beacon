@@ -140,21 +140,21 @@ function Invoke-ValidationEngine {
         [switch]$SkipEnvironmentChecker
     )
 
-    $args = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
-              '-File', $validationScript)
+    $psArgs = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
+               '-File', $validationScript)
     if ($Categories -and $Categories.Count -gt 0) {
-        $args += @('-Categories', ($Categories -join ','))
+        $psArgs += @('-Categories', ($Categories -join ','))
     }
     if ($SkipEnvironmentChecker) {
-        $args += '-SkipEnvironmentChecker'
+        $psArgs += '-SkipEnvironmentChecker'
     }
 
     # Try PS7 bundled in the image, fall back to built-in PS5.1
     $ps7 = 'X:\Tools\PowerShell7\pwsh.exe'
     if (Test-Path $ps7) {
-        & $ps7 @args
+        & $ps7 @psArgs
     } else {
-        & powershell.exe @args
+        & powershell.exe @psArgs
     }
 }
 
@@ -166,7 +166,10 @@ function Write-ValidationConfigOverrides {
     param([hashtable]$Overrides)
     $configDir = 'X:\Tools\config'
     $configFile = Join-Path $configDir 'validation-config.json'
-    if (-not (Test-Path $configFile)) { return }
+    if (-not (Test-Path $configFile)) {
+        Write-BeaconLine "  [WARN] Config file not found: $configFile — your inputs will NOT be applied to validation." -Color Yellow
+        return
+    }
     try {
         $cfg = Get-Content $configFile -Raw | ConvertFrom-Json
         foreach ($key in $Overrides.Keys) {
@@ -398,16 +401,32 @@ function Invoke-PostRunPrompt {
 function Show-MainMenu {
     param([hashtable]$NetworkState)
 
-    $networkLabel = if ($networkState.Configured) {
-        "$($networkState.IpAddress)"
-    } else {
-        'NOT CONFIGURED'
-    }
-    $networkColor = if ($networkState.Configured) { [System.ConsoleColor]::Green } else { [System.ConsoleColor]::Red }
-
     Show-Banner
-    Write-BeaconLine "  Network : " -Color White
-    Write-BeaconLine "  $networkLabel" -Color $networkColor
+
+    if ($NetworkState.Configured) {
+        $dhcpTag = if ($NetworkState.DhcpAcquired) { '  (DHCP)' } elseif ($NetworkState.StaticApplied) { '  (Static)' } else { '' }
+        Write-BeaconLine "  Network Status:" -Color Cyan
+        Write-BeaconLine "    IP    : $($NetworkState.IpAddress)$dhcpTag" -Color Green
+        if ($NetworkState.AdapterName) {
+            Write-BeaconLine "    NIC   : $($NetworkState.AdapterName)" -Color White
+        }
+        if ($NetworkState.GatewayIp) {
+            $gwStatus = if ($NetworkState.GatewayOk) { '[OK]  ' } else { '[WARN]' }
+            $gwColor  = if ($NetworkState.GatewayOk) { [System.ConsoleColor]::Green } else { [System.ConsoleColor]::Yellow }
+            Write-BeaconLine "    GW    : $($NetworkState.GatewayIp)  $gwStatus" -Color $gwColor
+        }
+        if ($NetworkState.DnsServer) {
+            $dnsStatus = if ($NetworkState.DnsOk) { '[OK]  ' } else { '[WARN]' }
+            $dnsColor  = if ($NetworkState.DnsOk) { [System.ConsoleColor]::Green } else { [System.ConsoleColor]::Yellow }
+            Write-BeaconLine "    DNS   : $($NetworkState.DnsServer)  $dnsStatus" -Color $dnsColor
+        }
+        $httpsStatus = if ($NetworkState.HttpsOk) { '[OK]  ' } else { '[WARN]' }
+        $httpsColor  = if ($NetworkState.HttpsOk) { [System.ConsoleColor]::Green } else { [System.ConsoleColor]::Yellow }
+        Write-BeaconLine "    HTTPS : login.microsoftonline.com:443  $httpsStatus" -Color $httpsColor
+    } else {
+        Write-BeaconLine '  Network Status:  NOT CONFIGURED' -Color Red
+        Write-BeaconLine '  Use option 5 to configure network settings.' -Color Yellow
+    }
     Write-BeaconLine ''
     Write-BeaconLine '  ┌─────────────────────────────────────────────────────┐' -Color Cyan
     Write-BeaconLine '  │  Validation Menu                                    │' -Color Cyan
@@ -431,16 +450,23 @@ Show-Banner
 
 # Network bootstrap
 $networkState = @{
-    IpAddress    = ''
-    Configured   = $false
-    DhcpAcquired = $false
+    IpAddress     = ''
+    Configured    = $false
+    DhcpAcquired  = $false
+    StaticApplied = $false
+    GatewayOk     = $false
+    DnsOk         = $false
+    HttpsOk       = $false
+    GatewayIp     = ''
+    DnsServer     = ''
+    AdapterName   = ''
 }
 
 if (-not $SkipNetworkBootstrap -and (Test-Path $bootstrapScript)) {
     Write-BeaconLine '  Initializing network bootstrap...' -Color Cyan
     $networkState = & $bootstrapScript
-    if ($null -eq $networkState) {
-        $networkState = @{ IpAddress = ''; Configured = $false; DhcpAcquired = $false }
+    if ($null -eq $networkState -or $networkState -isnot [hashtable]) {
+        $networkState = @{ IpAddress = ''; Configured = $false; DhcpAcquired = $false; StaticApplied = $false; GatewayOk = $false; DnsOk = $false; HttpsOk = $false; GatewayIp = ''; DnsServer = ''; AdapterName = '' }
     }
 } elseif (-not $SkipNetworkBootstrap) {
     Write-BeaconLine "  [WARN] Bootstrap script not found: $bootstrapScript" -Color Yellow
@@ -462,8 +488,8 @@ while ($running) {
             if (Test-Path $bootstrapScript) {
                 Write-BeaconLine '  Re-running network bootstrap...' -Color Cyan
                 $networkState = & $bootstrapScript
-                if ($null -eq $networkState) {
-                    $networkState = @{ IpAddress = ''; Configured = $false; DhcpAcquired = $false }
+                if ($null -eq $networkState -or $networkState -isnot [hashtable]) {
+                    $networkState = @{ IpAddress = ''; Configured = $false; DhcpAcquired = $false; StaticApplied = $false; GatewayOk = $false; DnsOk = $false; HttpsOk = $false; GatewayIp = ''; DnsServer = ''; AdapterName = '' }
                 }
             } else {
                 Write-BeaconLine "  Bootstrap script not found: $bootstrapScript" -Color Red

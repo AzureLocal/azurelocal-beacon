@@ -206,6 +206,30 @@ function Import-JsonConfig {
     return Get-Content $FilePath -Raw | ConvertFrom-Json
 }
 
+function Resolve-ConfigDefaults {
+    # Fills missing optional fields so StrictMode never throws on property access.
+    # Menu paths write partial override configs intentionally; this is the single
+    # place where missing fields get safe defaults instead of scattering -contains
+    # checks across every category function.
+    param([object]$Config)
+    $defaults = [ordered]@{
+        managementGateway   = ''
+        pingTimeoutMs       = 2000
+        tcpConnectTimeoutMs = 5000
+        nodeIps             = @()
+        dnsServers          = @()
+        adDomainFqdn        = ''
+        nodeFqdns           = @()
+        dcIps               = @()
+    }
+    foreach ($key in $defaults.Keys) {
+        if (-not ($Config.PSObject.Properties.Name -contains $key)) {
+            $Config | Add-Member -MemberType NoteProperty -Name $key -Value $defaults[$key] -Force
+        }
+    }
+    return $Config
+}
+
 #endregion
 
 #region ================================================================
@@ -314,6 +338,9 @@ function Invoke-DirectDnsQuery {
         $udpClient.Close()
         $sw.Stop()
 
+        if ($response.Length -lt 8) {
+            return @{ Success = $false; Addresses = ''; DurationMs = $sw.ElapsedMilliseconds; Error = 'DNS response too short' }
+        }
         $answerCount = ([int]$response[6] -shl 8) -bor [int]$response[7]
         return @{ Success = ($answerCount -gt 0); Addresses = "answers=$answerCount"; DurationMs = $sw.ElapsedMilliseconds; Error = '' }
     } catch {
@@ -359,11 +386,12 @@ function Test-HttpsGet {
         }
         $url    = "https://$($TargetHost):$Port/"
         $output = & curl.exe --silent --max-time $TimeoutSeconds --output NUL `
-                             --write-out '%{http_code}' --insecure $url 2>&1
+                             --write-out '%{http_code}' --insecure $url
         $sw.Stop()
         $exitCode = $LASTEXITCODE
         $httpCode = 0
-        if ($output -match '^\d{3}$') { $httpCode = [int]([string]$output).Trim() }
+        $codeStr  = "$output".Trim()
+        if ($codeStr -match '^\d{3}$') { $httpCode = [int]$codeStr }
         $success = ($exitCode -eq 0 -and $httpCode -gt 0)
         $errMsg  = if ($success) { '' } else { "curl exit=$exitCode http=$httpCode" }
         return @{ Success = $success; HttpCode = $httpCode; DurationMs = $sw.ElapsedMilliseconds; Error = $errMsg }
@@ -403,11 +431,15 @@ function Invoke-Category1Network {
     $gwDet  = if ($gwPing.Success) { "$($gwPing.RoundtripMs)ms" } else { $gwPing.Error }
     Add-ValidationResult -Category $cat -Name 'Gateway-Ping' -Target $gw -Status $gwStat -Detail $gwDet -DurationMs $gwPing.DurationMs
 
-    $nodeIp   = $ValidationConfig.nodeIps[0]
-    $nodePing = Test-PingAddress -Address $nodeIp -TimeoutMs $ValidationConfig.pingTimeoutMs
-    $nodeStat = if ($nodePing.Success) { 'Pass' } else { 'Warn' }
-    $nodeDet  = if ($nodePing.Success) { "$($nodePing.RoundtripMs)ms" } else { "Not reachable (may be unpowered): $($nodePing.Error)" }
-    Add-ValidationResult -Category $cat -Name 'MgmtSubnet-Node1-Ping' -Target $nodeIp -Status $nodeStat -Detail $nodeDet -DurationMs $nodePing.DurationMs
+    if ($ValidationConfig.nodeIps.Count -gt 0) {
+        $nodeIp   = $ValidationConfig.nodeIps[0]
+        $nodePing = Test-PingAddress -Address $nodeIp -TimeoutMs $ValidationConfig.pingTimeoutMs
+        $nodeStat = if ($nodePing.Success) { 'Pass' } else { 'Warn' }
+        $nodeDet  = if ($nodePing.Success) { "$($nodePing.RoundtripMs)ms" } else { "Not reachable (may be unpowered): $($nodePing.Error)" }
+        Add-ValidationResult -Category $cat -Name 'MgmtSubnet-Node1-Ping' -Target $nodeIp -Status $nodeStat -Detail $nodeDet -DurationMs $nodePing.DurationMs
+    } else {
+        Add-ValidationResult -Category $cat -Name 'MgmtSubnet-Node1-Ping' -Target 'nodeIps' -Status 'Skip' -Detail 'No node IPs in config'
+    }
 }
 
 function Invoke-Category2DnsCheck {
@@ -422,11 +454,15 @@ function Invoke-Category2DnsCheck {
         Add-ValidationResult -Category $cat -Name "DNS-TCP53-$dnsIp" -Target "$dnsIp`:53" -Status $st -Detail $det -DurationMs $tcp.DurationMs
     }
 
-    $primaryDns = $ValidationConfig.dnsServers[0]
-    $udpResult  = Invoke-DirectDnsQuery -DnsServer $primaryDns -QueryName 'management.azure.com' -TimeoutMs $ValidationConfig.tcpConnectTimeoutMs
-    $udpSt      = if ($udpResult.Success) { 'Pass' } else { 'Warn' }
-    $udpDet     = if ($udpResult.Success) { "UDP answered -- $($udpResult.Addresses)" } else { $udpResult.Error }
-    Add-ValidationResult -Category $cat -Name 'DNS-UDP53-Probe' -Target "$primaryDns`:53/udp" -Status $udpSt -Detail $udpDet -DurationMs $udpResult.DurationMs
+    if ($ValidationConfig.dnsServers.Count -gt 0) {
+        $primaryDns = $ValidationConfig.dnsServers[0]
+        $udpResult  = Invoke-DirectDnsQuery -DnsServer $primaryDns -QueryName 'management.azure.com' -TimeoutMs $ValidationConfig.tcpConnectTimeoutMs
+        $udpSt      = if ($udpResult.Success) { 'Pass' } else { 'Warn' }
+        $udpDet     = if ($udpResult.Success) { "UDP answered -- $($udpResult.Addresses)" } else { $udpResult.Error }
+        Add-ValidationResult -Category $cat -Name 'DNS-UDP53-Probe' -Target "$primaryDns`:53/udp" -Status $udpSt -Detail $udpDet -DurationMs $udpResult.DurationMs
+    } else {
+        Add-ValidationResult -Category $cat -Name 'DNS-UDP53-Probe' -Target '53/udp' -Status 'Skip' -Detail 'No DNS servers configured'
+    }
 
     foreach ($fwdHost in @('login.microsoftonline.com', 'management.azure.com')) {
         $r  = Invoke-DnsLookup -DnsHostname $fwdHost
@@ -435,10 +471,14 @@ function Invoke-Category2DnsCheck {
         Add-ValidationResult -Category $cat -Name "DNS-Forward-$fwdHost" -Target $fwdHost -Status $st -Detail $dt -DurationMs $r.DurationMs
     }
 
-    $domainR = Invoke-DnsLookup -DnsHostname $ValidationConfig.adDomainFqdn
-    $domSt   = if ($domainR.Success) { 'Pass' } else { 'Fail' }
-    $domDet  = if ($domainR.Success) { $domainR.Addresses } else { $domainR.Error }
-    Add-ValidationResult -Category $cat -Name 'DNS-Forward-ADDomain' -Target $ValidationConfig.adDomainFqdn -Status $domSt -Detail $domDet -DurationMs $domainR.DurationMs
+    if ($ValidationConfig.adDomainFqdn) {
+        $domainR = Invoke-DnsLookup -DnsHostname $ValidationConfig.adDomainFqdn
+        $domSt   = if ($domainR.Success) { 'Pass' } else { 'Fail' }
+        $domDet  = if ($domainR.Success) { $domainR.Addresses } else { $domainR.Error }
+        Add-ValidationResult -Category $cat -Name 'DNS-Forward-ADDomain' -Target $ValidationConfig.adDomainFqdn -Status $domSt -Detail $domDet -DurationMs $domainR.DurationMs
+    } else {
+        Add-ValidationResult -Category $cat -Name 'DNS-Forward-ADDomain' -Target 'adDomainFqdn' -Status 'Skip' -Detail 'AD domain not configured (Local Identity path)'
+    }
 
     foreach ($nodeFqdn in $ValidationConfig.nodeFqdns) {
         $r  = Invoke-DnsLookup -DnsHostname $nodeFqdn
@@ -478,11 +518,15 @@ function Invoke-Category3ActiveDirectory {
         }
     }
 
-    $srvName = "_ldap._tcp.dc._msdcs.$($ValidationConfig.adDomainFqdn)"
-    $srv     = Test-DnsSrvRecord -SrvName $srvName -DnsServer $ValidationConfig.dnsServers[0]
-    $st      = if ($srv.Success) { 'Pass' } else { 'Fail' }
-    $dt      = if ($srv.Success) { $srv.Detail } else { $srv.Error }
-    Add-ValidationResult -Category $cat -Name "AD-SRV-DCLocator" -Target $srvName -Status $st -Detail $dt
+    if ($ValidationConfig.adDomainFqdn -and $ValidationConfig.dnsServers.Count -gt 0) {
+        $srvName = "_ldap._tcp.dc._msdcs.$($ValidationConfig.adDomainFqdn)"
+        $srv     = Test-DnsSrvRecord -SrvName $srvName -DnsServer $ValidationConfig.dnsServers[0]
+        $st      = if ($srv.Success) { 'Pass' } else { 'Fail' }
+        $dt      = if ($srv.Success) { $srv.Detail } else { $srv.Error }
+        Add-ValidationResult -Category $cat -Name 'AD-SRV-DCLocator' -Target $srvName -Status $st -Detail $dt
+    } else {
+        Add-ValidationResult -Category $cat -Name 'AD-SRV-DCLocator' -Target 'SRV' -Status 'Skip' -Detail 'AD domain or DNS servers not configured'
+    }
 }
 
 function Invoke-Category4EndpointSweep {
@@ -582,7 +626,7 @@ function Invoke-Category5EnvironmentChecker {
         $envResults = Invoke-AzStackHciConnectivityValidation -PassThru -ErrorAction Stop
         $sw.Stop()
         $failCount  = @($envResults | Where-Object { $_.Status -ne 'Succeeded' }).Count
-        $totalCount = $envResults.Count
+        $totalCount = @($envResults).Count
         $st         = if ($failCount -eq 0) { 'Pass' } else { 'Fail' }
         Add-ValidationResult -Category $cat -Name 'EnvChecker-Connectivity' -Target 'Invoke-AzStackHciConnectivityValidation' `
             -Status $st -Detail "$($totalCount - $failCount)/$totalCount endpoints Succeeded" -DurationMs $sw.ElapsedMilliseconds
@@ -756,7 +800,7 @@ function Save-ValidationResult {
         $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f 'Category','Status','Target','Detail'))
         $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f '--------','------','------','------'))
         foreach ($r in $Results) {
-            $tgt = if ($r.Target.Length -gt 50) { $r.Target.Substring(0,47) + '...' } else { $r.Target }
+            $tgt = if ("$($r.Target)".Length -gt 50) { "$($r.Target)".Substring(0,47) + '...' } else { "$($r.Target)" }
             $logLines.Add(("{0,-20} {1,-6} {2,-50} {3}" -f $r.Category, $r.Status, $tgt, $r.Detail))
         }
         $logLines | Set-Content -Path $logFile -Encoding UTF8
@@ -788,7 +832,7 @@ $resolvedResultsPath = Get-ResultsDirectory -Provided $ResultsPath
 Write-Verbose "Config path  : $resolvedConfigPath"
 Write-Verbose "Results path : $resolvedResultsPath"
 
-$cfg       = Import-JsonConfig -FilePath (Join-Path $resolvedConfigPath 'validation-config.json')
+$cfg       = Resolve-ConfigDefaults -Config (Import-JsonConfig -FilePath (Join-Path $resolvedConfigPath 'validation-config.json'))
 $epWrapper = Import-JsonConfig -FilePath (Join-Path $resolvedConfigPath 'endpoints.json')
 $endpoints = $epWrapper.endpoints
 
