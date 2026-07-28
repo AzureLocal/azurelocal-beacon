@@ -24,11 +24,12 @@ Select **option 1** from the Beacon main menu to validate readiness for an AD-jo
 
 ## Active Directory preparation requirements
 
-!!! warning "AD prep must be run before deployment — not before Beacon"
-    Beacon tests AD **connectivity** (port probes + DNS SRV). It does not run `Invoke-AzStackHciExternalActiveDirectoryValidation` (the MS AD validator) because that requires RSAT/GPO modules not available in WinPE.
-
-    Run the Microsoft AD validator from a domain-joined workstation or staging server post-OS as part of Stage 2-3 validation.
-
+> [!WARNING]
+> **AD prep must be run before deployment — not before Beacon**
+> Beacon tests AD **connectivity** (port probes + DNS SRV). It does not run `Invoke-AzStackHciExternalActiveDirectoryValidation` (the MS AD validator) because that requires RSAT/GPO modules not available in WinPE.
+>
+> Run the Microsoft AD validator from a domain-joined workstation or staging server post-OS as part of Stage 2-3 validation.
+>
 ### Minimum AD requirements (from Microsoft)
 
 - Dedicated OU for the Azure Local deployment

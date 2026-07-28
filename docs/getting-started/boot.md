@@ -47,9 +47,10 @@ This gives Beacon connectivity to run the validation — it has nothing to do wi
 
 Results are saved to `X:\results\validation-<timestamp>.json` for the duration of the WinPE session.
 
-!!! warning "Results lost on reboot"
-    WinPE runs in RAM. Copy results before rebooting:
-    ```cmd
-    net use Z: \\management-server\share password /user:domain\user
-    copy X:\results\*.json Z:\beacon-results\
-    ```
+> [!WARNING]
+> **Results lost on reboot**
+> WinPE runs in RAM. Copy results before rebooting:
+> ```cmd
+> net use Z: \\management-server\share password /user:domain\user
+> copy X:\results\*.json Z:\beacon-results\
+> ```

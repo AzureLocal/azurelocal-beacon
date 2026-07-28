@@ -17,9 +17,10 @@ Local Identity deployment uses a local administrator account and Azure Key Vault
 | Windows Admin Center | Supported | Not supported |
 | BitLocker keys | AD-stored | Key Vault-stored |
 
-!!! warning "Static IP required"
-    Microsoft explicitly requires static IP addresses for all cluster nodes in a Local Identity deployment. Configure static IPs before or during validation (Beacon's network bootstrap prompts for this).
-
+> [!WARNING]
+> **Static IP required**
+> Microsoft explicitly requires static IP addresses for all cluster nodes in a Local Identity deployment. Configure static IPs before or during validation (Beacon's network bootstrap prompts for this).
+>
 ## What you are prompted for
 
 | Input | Example | Required |
@@ -37,9 +38,10 @@ Local Identity deployment uses a local administrator account and Azure Key Vault
 | **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
 | **6 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` |
 
-!!! note "Category 3 (AD ports) is skipped"
-    AD port tests are not applicable and not run in the Local Identity path.
-
+> [!NOTE]
+> **Category 3 (AD ports) is skipped**
+> AD port tests are not applicable and not run in the Local Identity path.
+>
 ## Azure Key Vault requirements
 
 The deployment provisions an Azure Key Vault during deployment to store:

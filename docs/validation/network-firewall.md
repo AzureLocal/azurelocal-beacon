@@ -37,9 +37,10 @@ The endpoint sweep tests all endpoints from these sources:
 | Arc for Servers (`arc-endpoints.md`) | ~30 endpoints | Critical / Warning |
 | Dell AX OEM (`DellAzureLocalEndpoints.md`) | ~11 endpoints | Warning |
 
-!!! tip "See the full list"
-    See [Endpoint List](../reference/endpoints.md) for every endpoint tested.
-
+> [!TIP]
+> **See the full list**
+> See [Endpoint List](../reference/endpoints.md) for every endpoint tested.
+>
 ## Microsoft documentation
 
 - [Azure Local firewall requirements](https://learn.microsoft.com/azure/azure-local/concepts/firewall-requirements)

@@ -28,20 +28,22 @@ If your build machine has limited or no internet access, pre-download the PS7 LT
     -SkipModuleDownload
 ```
 
-!!! warning "Module not included in air-gapped builds"
-    Without `AzStackHci.EnvironmentChecker`, Category 5 (environment checker) is skipped.
-    Pre-stage the module at `<WorkspacePath>\mount\Tools\Modules` before the unmount step, or
-    run the module-based tests from a staging server post-OS.
-
+> [!WARNING]
+> **Module not included in air-gapped builds**
+> Without `AzStackHci.EnvironmentChecker`, Category 5 (environment checker) is skipped.
+> Pre-stage the module at `<WorkspacePath>\mount\Tools\Modules` before the unmount step, or
+> run the module-based tests from a staging server post-OS.
+>
 ## Write to USB
 
 ```powershell
 .\src\Build-WinPEImage.ps1 -BuildUSB -UsbDriveLetter F
 ```
 
-!!! danger "The USB drive is reformatted"
-    Verify the drive letter before running. All data on the drive is erased.
-
+> [!CAUTION]
+> **The USB drive is reformatted**
+> Verify the drive letter before running. All data on the drive is erased.
+>
 ## Custom driver path
 
 The build defaults to `drivers/dell-ax/` in the repo. To supply a different driver folder:

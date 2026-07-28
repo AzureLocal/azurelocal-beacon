@@ -21,6 +21,7 @@ AzL Beacon is a WinPE bootable diagnostic image that validates Azure Local deplo
 
 Results are saved to `X:\results\validation-<timestamp>.json` and displayed on the console with `[PASS]` / `[FAIL]` / `[WARN]` / `[SKIP]` indicators per test.
 
-!!! info "Results persist for the session only"
-    WinPE runs entirely in RAM. Results saved to `X:\results\` are lost on reboot.
-    Copy the results JSON to a network share or USB before rebooting if you need to retain them.
+> [!NOTE]
+> **Results persist for the session only**
+> WinPE runs entirely in RAM. Results saved to `X:\results\` are lost on reboot.
+> Copy the results JSON to a network share or USB before rebooting if you need to retain them.

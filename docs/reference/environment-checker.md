@@ -24,9 +24,10 @@ The following validators **cannot run in WinPE** and are deferred to post-OS (St
 |---|---|---|
 | Active Directory | Requires RSAT AD/GPO modules | Run `Invoke-AzStackHciExternalActiveDirectoryValidation` from a domain-joined staging server |
 
-!!! warning "SSL inspection — note"
-    `Invoke-AzStackHciConnectivityValidation` raises an error if it detects SSL deep-inspection (private root CA in the TLS chain). If you see this failure, work with your network team to exempt Azure Local node IPs from SSL inspection before re-running.
-
+> [!WARNING]
+> **SSL inspection — note**
+> `Invoke-AzStackHciConnectivityValidation` raises an error if it detects SSL deep-inspection (private root CA in the TLS chain). If you see this failure, work with your network team to exempt Azure Local node IPs from SSL inspection before re-running.
+>
 ## Post-OS environment checker (Stage 2)
 
 After the OS is installed on each node, run the full suite locally on each node:

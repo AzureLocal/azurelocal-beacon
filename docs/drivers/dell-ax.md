@@ -59,5 +59,6 @@ To update to a newer SBE bundle:
 3. Update the version table in this document
 4. Rebuild the ISO
 
-!!! tip "Dell firmware (not included)"
-    The SBE bundle also contains network firmware DUPs (Broadcom FW 36.11.56.00, Mellanox ConnectX FW 26.41.10.00, Intel E810 FW 23.61.3). These are not injected into the Beacon image — firmware updates are applied through Dell SBE / Cluster-Aware Updating during the cluster update lifecycle.
+> [!TIP]
+> **Dell firmware (not included)**
+> The SBE bundle also contains network firmware DUPs (Broadcom FW 36.11.56.00, Mellanox ConnectX FW 26.41.10.00, Intel E810 FW 23.61.3). These are not injected into the Beacon image — firmware updates are applied through Dell SBE / Cluster-Aware Updating during the cluster update lifecycle.

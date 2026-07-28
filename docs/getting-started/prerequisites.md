@@ -2,9 +2,10 @@
 
 ## Build machine
 
-!!! note "Build once, boot on any Dell AX node"
-    You build the ISO once on a Windows machine with ADK installed, then mount it via iDRAC virtual media on each Dell AX node.
-
+> [!NOTE]
+> **Build once, boot on any Dell AX node**
+> You build the ISO once on a Windows machine with ADK installed, then mount it via iDRAC virtual media on each Dell AX node.
+>
 | Requirement | Details |
 |---|---|
 | **OS** | Windows 10/11 or Windows Server 2019+ |
@@ -34,5 +35,6 @@ The Beacon image needs outbound access to Azure endpoints to run the endpoint sw
 - Outbound HTTPS (443) to Azure endpoints (see [Endpoint List](../reference/endpoints.md))
 - DNS resolution (UDP/TCP 53)
 
-!!! tip "No pre-configuration required"
-    All environment values (DC IPs, DNS servers, gateway, domain FQDN) are collected interactively by the Beacon menu at boot. Nothing needs to be filled in before building the ISO.
+> [!TIP]
+> **No pre-configuration required**
+> All environment values (DC IPs, DNS servers, gateway, domain FQDN) are collected interactively by the Beacon menu at boot. Nothing needs to be filled in before building the ISO.

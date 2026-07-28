@@ -70,12 +70,13 @@ cd azurelocal-beacon
 
 Boot the resulting `src/output/azl-validate-<date>.iso` via iDRAC virtual media or USB.
 
-!!! tip "Air-gapped build"
-    Supply a pre-downloaded PS7 zip and skip the module download:
-    ```powershell
-    .\src\Build-WinPEImage.ps1 -PS7ZipPath C:\downloads\PowerShell-7.4.6-win-x64.zip -SkipModuleDownload
-    ```
-
+> [!TIP]
+> **Air-gapped build**
+> Supply a pre-downloaded PS7 zip and skip the module download:
+> ```powershell
+> .\src\Build-WinPEImage.ps1 -PS7ZipPath C:\downloads\PowerShell-7.4.6-win-x64.zip -SkipModuleDownload
+> ```
+>
 ---
 
 ## Validation lifecycle
