@@ -1,26 +1,33 @@
 # AzL Beacon
 
-**Pre-deployment endpoint and network readiness validation for Azure Local.**
+**Pre-deployment endpoint, network and Arc readiness validation for Azure Local 12.2609 (latest).**
 
-Boots from iDRAC Virtual Media or USB — no installed OS, no domain join, no licensing required.
+Boots from BMC virtual media or USB: no installed OS, no domain join, no licensing required.
 Boot it on bare metal before you touch the deployment wizard. Know your environment is ready.
+Beacon deliberately has **no drive check**: it validates the network, identity and Azure side only.
+
+Documentation: <https://azurelocal.cloud/azurelocal-beacon/>
 
 ---
 
 ## What it does
 
-On boot, `Start-AzlBeacon.ps1` presents an interactive menu. Choose your deployment path — it calls `Start-AzlValidation.ps1` to run the applicable categories from these 6, all grounded in Microsoft and Dell source documents:
+On boot, `Start-AzlBeacon.ps1` presents a menu. Choose your deployment path; it calls `Start-AzlValidation.ps1` for the applicable
+categories of these 6, grounded in Microsoft Learn:
 
 | # | Category | What it checks |
 |---|---|---|
-| 1 | Basic network | NIC up, IP assigned, gateway reachable |
-| 2 | DNS | Forward/reverse lookups, TCP/UDP port 53, AD domain resolution |
-| 3 | Active Directory ports | LDAP 389, LDAPS 636, Kerberos 88, RPC 135, DNS 53, SRV records (AD path only) |
-| 4 | Azure endpoint sweep | TCP + HTTPS probe — Azure Local firewall requirements + EastUS HCI + Dell OEM endpoints |
-| 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` (Microsoft's official validators) |
-| 6 | Arc integration | `Invoke-AzStackHciArcIntegrationValidation` (optional — requires Azure device-code sign-in) |
+| 1 | Basic network and time | NIC up, IP assigned, gateway, node ping, NTP/W32Time reachability and clock skew |
+| 2 | DNS | Forward and reverse lookups, TCP/UDP 53, AD domain resolution |
+| 3 | Active Directory | TCP 53/88/135/389/445/464/636/3268/3269/9389, UDP 88/389/464 where testable, DC SRV record (AD path only) |
+| 4 | Azure endpoint sweep | The per-region endpoint list Learn links to (9 regions + optional Dell OEM), Arc gateway and proxy aware; Arc endpoints must resolve publicly; HTTPS-inspection detection |
+| 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` and `Invoke-AzStackHciNetworkValidation` (Microsoft's validators), failed checks itemised |
+| 6 | Arc readiness | Device-code sign-in and Azure REST checks: resource providers, resource group, Arc roles, existing Arc machines. No Az modules, nothing stored |
 
-Results land at `X:\results\` on the WinPE RAM drive in JSON format. Copy off before reboot.
+Results land in `X:\results\` on the WinPE RAM drive as JSON (schema: `docs/reference/results.schema.json`), a log and an HTML report.
+Export them from the menu (USB drive, SMB share or HTTPS) before reboot, optionally redacted.
+
+See a full run with sample output: [walkthrough](docs/getting-started/walkthrough.md) and [examples/](examples/).
 
 ---
 
@@ -34,120 +41,105 @@ Results land at `X:\results\` on the WinPE RAM drive in JSON format. Copy off be
 | WinPE Add-on | `winget install Microsoft.ADKPEAddon` |
 | PowerShell 7.4+ | `winget install Microsoft.PowerShell` |
 | Administrator rights | DISM mount requires elevation |
-| Internet access | For PS7 download + `Save-Module` (skippable — see air-gap build) |
+| Internet access | Only to download PowerShell 7 (verified by SHA256); not needed with `-PS7ZipPath` and `-PS7ZipSha256` |
 
 ### NIC drivers
 
-Dell AX 16G NIC drivers are **bundled in the repo** at `drivers/dell-ax/` (extracted from Dell SBE bundle `5.0.2603.1641`). The build script picks them up automatically — no separate download or driver export required.
-
-For non-Dell hardware, supply your own drivers:
-
-```powershell
-.\src\Build-WinPEImage.ps1 -DriverPath C:\my-drivers
-```
+Dell AX 16G NIC drivers are bundled in `drivers/dell-ax/` (Dell SBE `5.0.2603.1641`; hashes in `drivers/driver-manifest.json`) and injected by
+default. For other hardware supply your own: `-DriverPath C:\my-drivers` (see [drivers](docs/drivers/dell-ax.md#other-oems)).
 
 ---
 
 ## Quick start
 
-!!! tip "No pre-configuration required"
-    All environment values (DC IPs, DNS, gateway, domain FQDN) are collected interactively by the Beacon menu at boot. Just build the ISO and boot it.
+> **First build?** Follow [docs/getting-started/verify-build.md](docs/getting-started/verify-build.md): install steps, expected output, a Hyper-V test and a bare-node
+> test, and a checklist to record the first boot in the repository. The ISO has to be built and boot-verified on a Windows host with the ADK;
+> it cannot be built in CI.
 
-### 1. Build
+### 1. Check the repository
 
 ```powershell
-# Minimal — downloads PS7, no drivers
+pwsh -File .\scripts\Update-BeaconModules.ps1     # pinned, signed Environment Checker module
+Invoke-Pester -Path .\tests                       # unit tests, no ADK needed
+```
+
+### 2. Build
+
+```powershell
+# Default: bundled drivers, PowerShell 7 downloaded and SHA256-verified
 .\src\Build-WinPEImage.ps1
 
-# Recommended — pre-exported drivers, cached PS7 zip
-.\src\Build-WinPEImage.ps1 -DriverPath C:\drivers -PS7ZipPath C:\downloads\PowerShell-7.4.6-win-x64.zip
+# Offline: verified local PowerShell 7 zip
+.\src\Build-WinPEImage.ps1 -PS7ZipPath C:\downloads\PowerShell-7.6.6-win-x64.zip -PS7ZipSha256 <hash from hashes.sha256>
 
-# Build ISO + write USB simultaneously
-.\src\Build-WinPEImage.ps1 -DriverPath C:\drivers -BuildUSB -UsbDriveLetter F
+# ISO + USB stick (erases the stick)
+.\src\Build-WinPEImage.ps1 -BuildUSB -UsbDriveLetter F
 
-# Air-gapped (no internet)
-Save-Module -Name AzStackHci.EnvironmentChecker -Path C:\staging\Modules   # on internet-connected machine
-.\src\Build-WinPEImage.ps1 -SkipModuleDownload -PS7ZipPath C:\downloads\PowerShell-7.4.6-win-x64.zip
-
-# Dry run
+# Pre-flight only
 .\src\Build-WinPEImage.ps1 -WhatIf
 ```
 
-Output: `src/output/azl-validate-<yyyyMMdd>.iso`
+Output: `src/output/azl-beacon-<version>-<yyyyMMdd>.iso` plus `.build-manifest.json` (ADK, PowerShell 7, module, driver and script versions and hashes, ISO hash).
 
-### 3. Boot via iDRAC Virtual Media
+### 3. Boot
 
-1. Log in to the iDRAC web console.
-2. Open **Virtual Console → Virtual Media → Connect Virtual Media**.
-3. Under **Map CD/DVD**, select the ISO and click **Map Device**.
-4. Reboot: power menu → one-time boot (F11) → **Virtual CD/DVD**.
-5. WinPE loads, `startnet.cmd` runs, the Beacon menu appears.
+1. Mount the ISO as virtual media (Dell iDRAC: **Virtual Console > Virtual Media > Map CD/DVD**) or boot the USB stick.
+2. One-time boot to the virtual CD/DVD or USB device (UEFI).
+3. WinPE loads, `startnet.cmd` runs, the Beacon menu appears. Set region, proxy or Arc gateway with option 9 if needed.
 
-To preserve results before reboot:
+### 4. Copy the results off
 
-```cmd
-:: Map a network share inside WinPE
-net use Z: \\<server>\<share>
-xcopy X:\results Z:\beacon-results /E /Y
-```
+Menu option 8 copies the results to a USB drive, an SMB share or posts them over HTTPS, optionally redacted. Results contain
+IP addresses, DC and host names, the domain and the node serial number, so redact before sharing.
 
 ---
 
 ## Repo layout
 
-```
+```text
 azurelocal-beacon/
 ├── src/
-│   ├── Build-WinPEImage.ps1          # Build script — creates the bootable ISO
-│   ├── Start-AzlValidation.ps1       # Validation engine — runs on boot
-│   ├── Convert-EndpointsToJson.ps1   # Regenerates endpoints.json from markdown sources
-│   ├── startnet.cmd                  # WinPE boot entry point
-│   └── config/
-│       ├── validation-config.example.json   # Template — copy and populate per engagement
-│       └── endpoints.json                   # Azure endpoint list (pre-built, regenerate with Convert-*)
-├── config/
-│   └── endpoints/
-│       ├── azurelocal-endpoints.md   # Azure Local service endpoints (source for Convert-*)
-│       ├── arc-endpoints.md          # Arc agent + ARB endpoints
-│       └── dell-endpoints.md         # Dell SBE endpoints
-├── docs/
-│   └── index.md                      # Validation lifecycle and coverage matrix
-└── ...
+│   ├── Build-WinPEImage.ps1          # Build script: creates the bootable ISO and its build manifest
+│   ├── Start-AzlBeacon.ps1           # Menu
+│   ├── Start-AzlValidation.ps1       # Validation engine
+│   ├── Start-NetworkBootstrap.ps1    # DHCP / static address at boot
+│   ├── Convert-EndpointsToJson.ps1   # Strict converter: Learn-linked lists -> endpoints.json
+│   ├── startnet.cmd                  # WinPE boot entry point (template)
+│   ├── lib/                          # Shared functions (version, net probes, Arc REST, results, ...)
+│   └── config/                       # validation-config.example.json, endpoints.json (generated)
+├── config/endpoints/                 # sources.json + learn/ snapshots of the per-region lists
+├── scripts/                          # Update-BeaconModules.ps1, New-DriverManifest.ps1
+├── tools/modules/                    # Vendored AzStackHci.EnvironmentChecker (pinned: modules.lock.json)
+├── drivers/                          # NIC drivers + driver-manifest.json
+├── tests/                            # Pester 5 tests
+├── examples/                         # Sample results JSON and HTML report
+└── docs/                             # VitePress site
 ```
 
 ---
 
 ## Validation lifecycle
 
-AzL Beacon is **stage 1 of 5** in the Azure Local validation lifecycle:
+AzL Beacon is **stage 1 of 5**:
 
 | Stage | When | Tooling |
 |---|---|---|
-| **1 — Beacon (this tool)** | Before OS install, bare hardware | Custom sweep + `Invoke-AzStackHciConnectivityValidation` |
-| 2 — Post-OS, pre-registration | After Azure Stack HCI OS on nodes | `Invoke-AzStackHciHardwareValidation`, `Invoke-AzStackHciSoftwareValidation`, `azcmagent check` |
-| 3 — Pre-deployment | After AD prep | `Invoke-AzStackHciExternalActiveDirectoryValidation`, `Invoke-AzStackHciArcIntegrationValidation` |
-| 4 — Portal wizard | Nodes with answer file | `Invoke-AzStackHciNetworkValidation -DeployAnswerFile` |
-| 5 — Deployment | Cloud deployment (integrated) | All validators re-run automatically |
+| **1 - Beacon (this tool)** | Before OS install, bare hardware | Custom sweep + Connectivity/Network validators + Arc REST checks |
+| 2 - Post-OS, pre-registration | After the Azure Local OS is on the nodes | `Invoke-AzStackHciHardwareValidation`, `Invoke-AzStackHciSoftwareValidation`, `azcmagent check` |
+| 3 - Pre-deployment | After AD prep | `Invoke-AzStackHciExternalActiveDirectoryValidation`, `Invoke-AzStackHciArcIntegrationValidation` |
+| 4 - Portal wizard | Nodes with answer file | `Invoke-AzStackHciNetworkValidation -DeployAnswerFile` |
+| 5 - Deployment | Cloud deployment | All validators re-run automatically |
 
 ---
 
 ## Rebuild triggers
 
-Rebuild the ISO when:
-- `src/Start-AzlValidation.ps1` changes
-- `src/config/validation-config.json` changes (engagement-specific values)
-- `src/config/endpoints.json` changes (regenerate with `Convert-EndpointsToJson.ps1` after endpoint list updates)
-- Driver versions change (re-export from node after firmware/driver updates)
-- PowerShell 7 minor version bumps
-
----
+Rebuild the ISO when `src/` scripts change, `src/config/endpoints.json` is regenerated, the module pin or drivers change, or you want a newer PowerShell 7.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md). Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

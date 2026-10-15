@@ -1,56 +1,51 @@
-# Boot and Run
+# Boot and run
 
-## Boot via iDRAC Virtual Media
+## Boot via BMC virtual media (Dell iDRAC example)
 
-1. Open iDRAC and navigate to **Configuration → Virtual Media**
-2. Map the `azl-validate-<date>.iso` from your management machine
-3. Set boot order to **Virtual CD/DVD** (one-time boot)
-4. Power on or reboot the node
-5. The Beacon menu appears automatically within ~60 seconds
+1. Open the BMC web console and go to **Virtual Console > Virtual Media**.
+2. Map `azl-beacon-<version>-<date>.iso` as CD/DVD.
+3. Set a one-time boot to **Virtual CD/DVD** (UEFI).
+4. Power on or reboot the node.
+5. The Beacon menu appears in about 30 to 60 seconds.
 
 ## Boot from USB
 
-Flash the ISO to a USB drive (or build directly with `-BuildUSB`):
-
-```powershell title="Flash to USB with Rufus or the build script"
-# Option A: build script writes USB directly
-.\src\Build-WinPEImage.ps1 -BuildUSB -UsbDriveLetter F
-
-# Option B: write a pre-built ISO with Rufus (DD mode recommended)
+```powershell
+.\src\Build-WinPEImage.ps1 -BuildUSB -UsbDriveLetter F     # erases F:
 ```
 
-Set the node's one-time boot order to the USB device.
+or write the ISO with a UEFI-capable tool, then one-time boot from the USB device.
 
 ## What happens at boot
 
-```
-wpeinit                   <- WinPE network stack init
-Start-AzlBeacon.ps1       <- Menu orchestrator
-  Start-NetworkBootstrap  <- DHCP detect / static IP prompt
-  Main menu               <- Choose: AD / Local Identity / Network+Firewall / Full sweep / PowerShell console
+```text
+wpeinit                    <- WinPE network stack init
+startnet.cmd               <- tries PowerShell 7 from X:\Tools, falls back to Windows PowerShell 5.1
+  Start-AzlBeacon.ps1      <- menu
+    Start-NetworkBootstrap <- DHCP detect, or a prompted static address (validated)
+    Menu                   <- AD / Local Identity / Networking+Firewall / Full sweep / Arc / Export / Settings
 ```
 
 ## Network bootstrap
 
-On boot, Beacon waits **15 seconds** for a DHCP lease on the management NIC. If none is detected, you are prompted for:
+Beacon waits 15 seconds for a DHCP lease. If none arrives you are asked for:
 
 | Prompt | Example |
 |---|---|
-| IP address | `10.10.0.50` |
+| IP address | `192.0.2.50` |
 | Subnet mask | `255.255.255.0` |
-| Default gateway | `10.10.0.1` |
-| Primary DNS | `10.10.0.10` |
+| Default gateway | `192.0.2.1` |
+| Primary DNS | `192.0.2.10` |
 
-This gives Beacon connectivity to run the validation — it has nothing to do with how the eventual Azure Local cluster nodes will be addressed.
+Each value is validated (dotted quad, contiguous mask); invalid input applies nothing. The address is only for Beacon; it has nothing to do with
+how the cluster nodes will be addressed later.
 
 ## Results
 
-Results are saved to `X:\results\validation-<timestamp>.json` for the duration of the WinPE session.
+Saved to `X:\results\` for the WinPE session: `.json`, `.log`, `.html`.
 
 > [!WARNING]
-> **Results lost on reboot**
-> WinPE runs in RAM. Copy results before rebooting:
-> ```cmd
-> net use Z: \\management-server\share password /user:domain\user
-> copy X:\results\*.json Z:\beacon-results\
-> ```
+> **Results are lost on reboot.** Use menu option **8**: a USB drive letter, an SMB share (`\\server\share`) or an HTTPS URL, with an optional redaction.
+> From a command prompt, `Start-AzlValidation.ps1 -ExportTo E -Redact` does the same.
+
+Walkthrough with sample output: [Walkthrough](walkthrough.md).

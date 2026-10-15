@@ -2,18 +2,17 @@
 
 ## Commit message format
 
-```
+```text
 type(scope): short description
 ```
 
-Types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`
+Types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test` (add `AB#<id>` when a work item exists).
 
-Examples:
-```
-feat(validation): add category 13 BGP route validation
-fix(startnet): handle static IP prompt on DHCP timeout
-docs(readme): update iDRAC boot steps for 9th gen
-chore(endpoints): regenerate endpoints.json from 2504 source docs
+```text
+feat(validation): add NTP clock-skew check
+fix(startnet): fall back to Windows PowerShell 5.1 when pwsh fails
+docs(readme): update iDRAC boot steps
+chore(endpoints): regenerate endpoints.json from the Learn-linked lists
 ```
 
 ## Branches
@@ -22,23 +21,32 @@ Use `feature/`, `fix/`, or `docs/` prefixes. PRs target `main`.
 
 ## Scripts
 
-All PowerShell scripts must pass PSScriptAnalyzer at Warning/Error severity:
+- Everything that runs inside the image (`src/Start-*.ps1`, `src/lib/*.ps1`, `src/startnet.cmd`) must run on **Windows PowerShell 5.1** and be ASCII only.
+  Build and maintenance scripts (`src/Build-WinPEImage.ps1`, `src/Convert-EndpointsToJson.ps1`, `scripts/`) need PowerShell 7.
+- `Set-StrictMode -Version Latest`; `$ErrorActionPreference = 'Stop'` (or `'Continue'` where intentional and commented).
+- Put external commands (`curl.exe`, `nslookup.exe`, network sockets) behind small functions so tests can mock them.
+- New behaviour needs a Pester test in `tests/`.
+
+Checks (CI runs the same):
 
 ```powershell
-Invoke-ScriptAnalyzer -Path src/*.ps1 -Severity Warning,Error
+Invoke-Pester -Path .\tests
+Invoke-ScriptAnalyzer -Path .\src -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
+Invoke-ScriptAnalyzer -Path .\scripts -Recurse -Settings .\PSScriptAnalyzerSettings.psd1
 ```
-
-Scripts must use:
-- `#Requires -Version 5.1` (or 7.4 for build scripts that need PS7 features)
-- `Set-StrictMode -Version Latest`
-- `$ErrorActionPreference = 'Stop'` (or `'Continue'` where intentional)
 
 ## Config files
 
 - `src/config/validation-config.json` is per-engagement and **gitignored**. Never commit it.
-- `src/config/validation-config.example.json` is the template. Keep it current.
-- `src/config/endpoints.json` is pre-built Azure endpoint data — regenerate with `Convert-EndpointsToJson.ps1` when endpoint source files update.
+- `src/config/validation-config.example.json` is the template (example values only). Keep it current.
+- `src/config/endpoints.json` is generated: run `src/Convert-EndpointsToJson.ps1 -Refresh -Strict -Force`; never edit it by hand.
 
-## No secrets
+## No secrets, no private names
 
-Never commit IP addresses used as credentials, passwords, PSKs, tokens, or subscription IDs. Use example/placeholder values in all committed files.
+Never commit passwords, PSKs, tokens, tenant or subscription ids, real domain names or customer/lab names.
+Use example values (`contoso.com`, `192.0.2.0/24`, GUIDs of zeros). The test suite fails on known private names.
+
+## Releases
+
+Versions are managed by release-please from conventional commits (`.release-please-manifest.json`, `src/lib/Beacon.Version.ps1`).
+The version shown in the banner, the results JSON, the ISO name and the CHANGELOG is that one version.
