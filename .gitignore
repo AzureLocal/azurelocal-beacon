@@ -46,3 +46,9 @@ tmp/
 # Claude Code local settings and logs
 .claude/settings.local.json
 .claude/logs/
+
+# Docs build
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+pester-results.xml

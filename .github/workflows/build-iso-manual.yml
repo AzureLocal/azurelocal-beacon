@@ -1,0 +1,27 @@
+name: ISO build (documentation only)
+
+# The WinPE ISO needs the Windows ADK plus the WinPE add-on (several GB) and an elevated DISM session.
+# That cannot run on a hosted runner, so this workflow does NOT build anything. It prints the exact
+# build and verification procedure into the run summary so the steps are one click away.
+# The build is run by a person on a Windows host: see docs/getting-started/verify-build.md.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  procedure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show the build and boot verification procedure
+        run: |
+          {
+            echo '## AzL Beacon ISO: build and verify manually'
+            echo
+            echo 'This workflow does not run the ADK build. Follow the procedure below on a Windows build host.'
+            echo
+            cat docs/getting-started/verify-build.md
+          } >> "$GITHUB_STEP_SUMMARY"
