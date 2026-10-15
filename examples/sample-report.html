@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>AzL Beacon results</title>
+<style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px;color:#222}h1{font-size:20px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid #ccc;padding:4px 8px;text-align:left;vertical-align:top}th{background:#eee}.Pass{color:#0a7a2f}.Fail{color:#b00020;font-weight:bold}.Warn{color:#a35f00}.Skip{color:#777}.ok{color:#0a7a2f}.bad{color:#b00020}.warn{color:#a35f00}.meta td{border:none;padding:1px 12px 1px 0}</style></head><body>
+<h1>AzL Beacon 1.1.0 - readiness results</h1>
+<p>Verdict: <strong class="bad">FAIL</strong> &nbsp; Pass 15 / Fail 1 / Warn 4 / Skip 5 (total 25)</p>
+<table class="meta">
+<tr><td>Run id</td><td>00000000-0000-0000-0000-0000000000aa</td></tr>
+<tr><td>Started (UTC)</td><td>2026-10-15T14:00:05Z</td></tr>
+<tr><td>Finished (UTC)</td><td>2026-10-15T14:03:41Z</td></tr>
+<tr><td>Node</td><td>MININT-EXAMPLE</td></tr>
+<tr><td>Serial</td><td>EXAMPLE0001</td></tr>
+<tr><td>Model</td><td>Example Vendor Example AX Node</td></tr>
+<tr><td>Region</td><td>eastus</td></tr>
+<tr><td>Release train</td><td>12.2609 (latest)</td></tr>
+<tr><td>Redacted</td><td>False</td></tr>
+</table><h2>Checks</h2><table><tr><th>Category</th><th>Check</th><th>Target</th><th>Status</th><th>Severity</th><th>Detail</th><th>Remediation</th></tr>
+<tr><td>Cat-1-Network</td><td>NIC-Up-WithIP</td><td>adapter</td><td class="Pass">Pass</td><td></td><td>Example NIC 25GbE / 192.0.2.21</td><td></td></tr>
+<tr><td>Cat-1-Network</td><td>Gateway-Ping</td><td>192.0.2.1</td><td class="Pass">Pass</td><td></td><td>1ms</td><td></td></tr>
+<tr><td>Cat-1-Network</td><td>MgmtSubnet-Node1-Ping</td><td>192.0.2.21</td><td class="Pass">Pass</td><td></td><td>0ms</td><td></td></tr>
+<tr><td>Cat-1-Network</td><td>NTP-192.0.2.10</td><td>192.0.2.10:123/udp</td><td class="Pass">Pass</td><td></td><td>UDP/123 answered; clock offset 1.4s vs server</td><td></td></tr>
+<tr><td>Cat-2-DNS</td><td>DNS-TCP53-192.0.2.10</td><td>192.0.2.10:53</td><td class="Pass">Pass</td><td></td><td>2ms</td><td></td></tr>
+<tr><td>Cat-2-DNS</td><td>DNS-Forward-management.azure.com</td><td>management.azure.com</td><td class="Pass">Pass</td><td></td><td>20.50.2.10</td><td></td></tr>
+<tr><td>Cat-2-DNS</td><td>DNS-Forward-node-02.corp.contoso.com</td><td>node-02.corp.contoso.com</td><td class="Warn">Warn</td><td></td><td>Expected before deployment: No such host is known</td><td></td></tr>
+<tr><td>Cat-3-AD</td><td>AD-LDAP-192.0.2.10</td><td>192.0.2.10:389</td><td class="Pass">Pass</td><td></td><td>1ms</td><td></td></tr>
+<tr><td>Cat-3-AD</td><td>AD-ADWS-192.0.2.10</td><td>192.0.2.10:9389</td><td class="Fail">Fail</td><td>critical</td><td>Timeout</td><td>Allow TCP/9389 from the nodes to the domain controller (ADWS).</td></tr>
+<tr><td>Cat-3-AD</td><td>AD-Kerberos-UDP-192.0.2.10</td><td>192.0.2.10:88/udp</td><td class="Skip">Skip</td><td></td><td>UDP cannot prove open: no reply and no ICMP unreachable (open or filtered)</td><td></td></tr>
+<tr><td>Cat-3-AD</td><td>AD-RPC-Dynamic-49152-65535</td><td>tcp 49152-65535</td><td class="Skip">Skip</td><td></td><td>Not scanned: the RPC dynamic range is too large to probe; verify the firewall rule 49152-65535/TCP from the nodes to the DCs.</td><td></td></tr>
+<tr><td>Cat-3-AD</td><td>AD-SRV-DCLocator</td><td>_ldap._tcp.dc._msdcs.corp.contoso.com</td><td class="Pass">Pass</td><td></td><td>SRV records: 2</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>Endpoint-Region</td><td>eastus</td><td class="Pass">Pass</td><td></td><td>List updated November 27th, 2025; 83 entries</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>EP-management.azure.com</td><td>management.azure.com:443</td><td class="Pass">Pass</td><td>critical</td><td>TCP+HTTPS ok -- 21ms</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>EP-login.microsoftonline.com</td><td>login.microsoftonline.com:443</td><td class="Pass">Pass</td><td>critical</td><td>TCP+HTTPS ok -- 19ms</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>EP-gbl.his.arc.azure.com</td><td>gbl.his.arc.azure.com:443</td><td class="Pass">Pass</td><td>critical</td><td>TCP+HTTPS ok -- 30ms</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>EP-eastus.obo.arc.azure.com</td><td>eastus.obo.arc.azure.com:8084</td><td class="Skip">Skip</td><td>informational</td><td>Port 8084 is a cluster-internal service port, not an outbound probe target</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>EP-crl3.digicert.com</td><td>crl3.digicert.com:80</td><td class="Warn">Warn</td><td>warning</td><td>Timeout</td><td>Allow outbound HTTP 80 to crl3.digicert.com (Azure Local benefits); HTTPS inspection must be off for these names.</td></tr>
+<tr><td>Cat-4-Endpoints</td><td>PublicIP-gbl.his.arc.azure.com</td><td>gbl.his.arc.azure.com</td><td class="Pass">Pass</td><td></td><td>Public: 20.50.2.20</td><td></td></tr>
+<tr><td>Cat-4-Endpoints</td><td>TlsInspection-login.microsoftonline.com</td><td>login.microsoftonline.com:443</td><td class="Pass">Pass</td><td></td><td>Microsoft chain (chain contains Microsoft Azure RSA TLS Issuing CA)</td><td></td></tr>
+<tr><td>Cat-5-EnvChecker</td><td>EnvChecker-Module</td><td>AzStackHci.EnvironmentChecker</td><td class="Pass">Pass</td><td></td><td>Loaded 10.2605.0.2006 from X:\Tools\Modules\AzStackHci.EnvironmentChecker\10.2605.0.2006\AzStackHci.EnvironmentChecker.psd1</td><td></td></tr>
+<tr><td>Cat-5-EnvChecker</td><td>EnvChecker-Connectivity</td><td>Invoke-AzStackHciConnectivityValidation</td><td class="Warn">Warn</td><td></td><td>41/42 checks succeeded; 1 itemised below</td><td></td></tr>
+<tr><td>Cat-5-EnvChecker</td><td>Connectivity-AzStackHci_Connectivity_Observability_crl</td><td>crl.microsoft.com</td><td class="Warn">Warn</td><td>warning</td><td>Could not reach the endpoint</td><td>https://aka.ms/hci-envch</td></tr>
+<tr><td>Cat-5-EnvChecker</td><td>EnvChecker-Network</td><td>Invoke-AzStackHciNetworkValidation</td><td class="Skip">Skip</td><td></td><td>Skipped: config is missing: infraIpPools, hostNetworkIntents. The validator needs the intent, IP pool and management subnet plus a session to each node.</td><td></td></tr>
+<tr><td>Cat-6-Arc</td><td>Arc-Readiness</td><td>arc</td><td class="Skip">Skip</td><td></td><td>No subscription given (-ArcSubscriptionId or the menu prompt); Arc checks need Azure sign-in</td><td></td></tr>
+</table></body></html>
+

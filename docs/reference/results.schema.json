@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://azurelocal.cloud/azurelocal-beacon/reference/results.schema.json",
+  "title": "AzL Beacon results document",
+  "description": "validation-<yyyyMMdd-HHmmss>.json written by Start-AzlValidation.ps1. Timestamps are UTC.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "tool", "runId", "startedUtc", "finishedUtc", "durationSeconds", "redacted", "node", "context", "summary", "results"],
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "Contract version; breaking changes bump the major part." },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "releaseTrain"],
+      "properties": {
+        "name": { "const": "AzL Beacon" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "releaseTrain": { "type": "string", "description": "Azure Local release the checks target, e.g. 12.2609 (latest)." }
+      }
+    },
+    "runId": { "type": "string", "description": "GUID; unique per run (a redacted copy shows <guid> only if redaction replaced it)." },
+    "startedUtc": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+    "finishedUtc": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+    "durationSeconds": { "type": "number", "minimum": 0 },
+    "redacted": { "type": "boolean", "description": "true when identifying values were replaced by tokens (-Redact)." },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostname", "serialNumber", "smbiosUuid", "manufacturer", "model"],
+      "properties": {
+        "hostname": { "type": "string" },
+        "serialNumber": { "type": "string" },
+        "smbiosUuid": { "type": "string" },
+        "manufacturer": { "type": "string" },
+        "model": { "type": "string" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region", "regionRequested", "oem", "arcGatewayMode", "proxyConfigured", "categories", "endpointSource"],
+      "properties": {
+        "region": { "type": "string", "description": "Region key whose endpoint list was used." },
+        "regionRequested": { "type": "string" },
+        "oem": { "type": "string" },
+        "arcGatewayMode": { "type": "boolean" },
+        "proxyConfigured": { "type": "boolean" },
+        "categories": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 6 } },
+        "endpointSource": { "type": "string", "description": "URL of the Learn-linked endpoint list." }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "pass", "fail", "warn", "skip", "verdict"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "warn": { "type": "integer", "minimum": 0 },
+        "skip": { "type": "integer", "minimum": 0 },
+        "verdict": { "enum": ["PASS", "FAIL", "NO_CHECKS"] }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["category", "name", "target", "status", "severity", "detail", "durationMs", "remediation", "source"],
+        "properties": {
+          "category": { "enum": ["Cat-1-Network", "Cat-2-DNS", "Cat-3-AD", "Cat-4-Endpoints", "Cat-5-EnvChecker", "Cat-6-Arc"] },
+          "name": { "type": "string", "minLength": 1 },
+          "target": { "type": "string" },
+          "status": { "enum": ["Pass", "Fail", "Warn", "Skip"] },
+          "severity": { "enum": ["", "critical", "warning", "informational"], "description": "Empty when the check has no severity." },
+          "detail": { "type": "string" },
+          "durationMs": { "type": "integer", "minimum": 0 },
+          "remediation": { "type": "string", "description": "What to change; empty for Pass/Skip." },
+          "source": { "type": "string", "description": "Learn / list URL or validator the requirement comes from." }
+        }
+      }
+    }
+  }
+}
