@@ -1,48 +1,51 @@
-# Category Reference
+# Category reference
 
-Detailed reference for all 6 validation categories in `Start-AzlValidation.ps1`.
+Detail for the 6 categories in `Start-AzlValidation.ps1`. Parameters: `-Categories 1,2,4`, `-Region`, `-ProxyUrl`, `-ProxyBypass`,
+`-ArcGatewayFqdn`, `-SkipEnvironmentChecker`, `-SkipArc`, `-Redact`, `-ExportTo`, `-ArcSubscriptionId`, `-ArcTenantId`, `-ArcResourceGroup`, `-ArcNodeNames`.
+Exit code: `0` no failure, `1` at least one `Fail`, `2` no checks ran.
 
-| # | Category | Key checks | Critical failure? |
+| # | Category | Key checks | Failure means |
 |---|---|---|---|
-| 1 | **Basic Network** | NIC IP-enabled, gateway ping, first node ping | Yes |
-| 2 | **DNS** | TCP/UDP 53 per DNS server, forward A-record for Azure + AD domain, reverse PTR for DC IPs | Yes |
-| 3 | **Active Directory** | TCP: LDAP 389/636, Kerberos 88, RPC 135, DNS 53 per DC; DNS SRV `_ldap._tcp.dc._msdcs.<domain>` | Yes (AD path only) |
-| 4 | **Endpoint Sweep** | TCP connect + HTTPS GET to all endpoints from the 3 source links | Critical = Fail; Warning = Warn |
-| 5 | **Environment Checker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` | Warn if module absent |
-| 6 | **Arc Integration** | `Invoke-AzStackHciArcIntegrationValidation` (optional — requires Az login) | Skip if not authenticated |
-
-## Endpoint sources (Category 4)
-
-All endpoints in `config/endpoints.json` trace to one of three Microsoft/Dell sources:
-
-| Source | Coverage |
-|---|---|
-| [Azure Local firewall requirements](https://github.com/MicrosoftDocs/azure-stack-docs/blob/main/azure-local/concepts/firewall-requirements.md) | Core Azure Local service endpoints |
-| [EastUS HCI endpoints](https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md) | Azure HCI endpoints for East US region |
-| [Dell OEM endpoints](https://github.com/Azure/AzureStack-Tools/blob/master/HCI/OEMEndpoints/Dell/DellAzureLocalEndpoints.md) | Dell-specific OEM endpoints |
+| 1 | **Basic network and time** | NIC IP-enabled, gateway ping, first node ping, NTP reachability (UDP/123) and clock offset | NIC and gateway: `Fail`. Node ping and NTP: `Warn`. Offset over 5 minutes: `Warn` |
+| 2 | **DNS** | TCP/UDP 53 per DNS server, forward A records for Azure and the AD domain, reverse PTR for DC IPs | TCP 53, forward Azure/AD and DC reverse: `Fail`. Node FQDNs: `Warn` (expected before deployment) |
+| 3 | **Active Directory** | TCP 53/88/135/389/445/464/636/3268/3269/9389 per DC, UDP 88/389/464 where testable, SRV record | TCP port or SRV: `Fail`. UDP: `Pass` on reply, `Fail` on ICMP unreachable, else `Skip` |
+| 4 | **Endpoint sweep** | Region list TCP (+HTTPS for critical), proxy/gateway aware; public IPs for Arc endpoints; HTTPS-inspection read | Critical endpoint or private Arc address: `Fail`. Others: `Warn`. Suspected inspection: `Warn` with severity `critical` |
+| 5 | **Environment Checker** | Connectivity and Network validators, itemised | `Fail` for critical failed checks; `Warn` for the rest; module problems `Warn` |
+| 6 | **Arc readiness** | Sign-in, subscription, resource providers, resource group, roles, existing Arc machines | Unregistered provider, missing roles, sign-in failure: `Fail` |
 
 ## Which categories run per path
 
-| Category | AD | Local Identity | Networking & Firewall | Full sweep |
+| Category | AD | Local Identity | Networking and Firewall | Full sweep |
 |---|---|---|---|---|
-| 1 Network | ✅ | ✅ | ✅ | ✅ |
-| 2 DNS | ✅ | ✅ | ✅ | ✅ |
-| 3 AD ports | ✅ | ❌ | ❌ | AD sub-path only |
-| 4 Endpoint sweep | ✅ | ✅ | ✅ | ✅ |
-| 5 EnvChecker | ✅ | ✅ | ✅ | ✅ |
-| 6 Arc | ⚠️ optional | ⚠️ optional | ⚠️ optional | ⚠️ optional |
+| 1 Network and time | yes | yes | yes | yes |
+| 2 DNS | yes | yes | yes | yes |
+| 3 AD ports | yes | no | no | AD sub-path only |
+| 4 Endpoint sweep | yes | yes | yes | yes |
+| 5 Environment Checker | yes | yes | yes | yes |
+| 6 Arc readiness | optional | optional | optional | optional |
 
-## Config keys (validation-config.json)
+## Config keys (`validation-config.json`)
+
+Collected by the menu at boot; for a pre-baked image copy `validation-config.example.json` and fill it in
+(the file is gitignored: it holds site data).
 
 | Key | Used by | Example |
 |---|---|---|
-| `managementGateway` | Cat-1 | `"10.10.0.1"` |
-| `nodeIps` | Cat-1 | `["10.10.1.10"]` |
-| `dnsServers` | Cat-2 | `["10.10.0.10"]` |
-| `adDomainFqdn` | Cat-2, Cat-3 | `"corp.improbability.cloud"` |
-| `dcIps` | Cat-2, Cat-3 | `["10.10.0.10", "10.10.0.11"]` |
-| `nodeFqdns` | Cat-2 | `["azl-node1.corp.improbability.cloud"]` |
-| `pingTimeoutMs` | Cat-1 | `2000` |
-| `tcpConnectTimeoutMs` | Cat-2–4 | `5000` |
-| `keyVaultFqdn` | Cat-4 (endpoint sweep) | `"kv-vault.vault.azure.net"` |
-| `azureRegion` | Cat-5 (EnvChecker) | `"eastus"` |
+| `azureRegion` | Cat 4, Cat 5 | `eastus` |
+| `oem` | Cat 4 | `dell` or empty |
+| `managementGateway` | Cat 1 | `192.0.2.1` |
+| `nodeIps` | Cat 1, Cat 5 | `["192.0.2.21"]` |
+| `dnsServers` | Cat 2, Cat 3 | `["192.0.2.10"]` |
+| `adDomainFqdn` | Cat 2, Cat 3 | `corp.contoso.com` |
+| `dcIps` | Cat 1 (NTP), 2, 3 | `["192.0.2.10", "192.0.2.11"]` |
+| `nodeFqdns` | Cat 2 | `["node-01.corp.contoso.com"]` |
+| `ntpServers` | Cat 1 | `[]` (DCs, else time.windows.com) |
+| `keyVaultFqdn` | Cat 4 | `kv-example-01.vault.azure.net` |
+| `proxyUrl`, `proxyBypass` | Cat 4, Cat 5 | `http://proxy.example.com:8080`, `["*.corp.contoso.com"]` |
+| `arcGatewayFqdn` | Cat 4, Cat 5 | `<id>.gw.arc.azure.com` |
+| `tlsInspectionHosts` | Cat 4 | `["login.microsoftonline.com", "management.azure.com"]` |
+| `infraIpPools`, `managementSubnetCidr`, `hostNetworkIntents` | Cat 5 Network validator | see example file |
+| `tcpConnectTimeoutMs`, `pingTimeoutMs` | all | `5000`, `2000` |
+| `brand` | menu banner | optional text |
+
+Arc subscription, tenant and resource group are **not** config keys: they are asked for at run time and never stored.

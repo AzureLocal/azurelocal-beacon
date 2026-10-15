@@ -1,60 +1,49 @@
-# Local Identity (AD-less) Deployment Validation
+# Local Identity (AD-less) deployment validation
 
-Select **option 2** from the Beacon main menu to validate readiness for a Local Identity (AD-less) Azure Local deployment.
+Select **option 2** from the Beacon menu to validate readiness for a Local Identity (AD-less) Azure Local deployment.
 
 ## What is Local Identity?
 
-Local Identity deployment uses a local administrator account and Azure Key Vault instead of Active Directory. There is no domain join and no AD infrastructure required on-premises.
-
-**Key differences from AD deployment:**
+Local Identity uses a local administrator account and Azure Key Vault instead of Active Directory. There is no domain join and no AD
+infrastructure on premises.
 
 | Item | AD deployment | Local Identity deployment |
 |---|---|---|
 | Identity provider | Active Directory | Local admin + Azure Key Vault |
-| Node IP | DHCP or static | **Static only — DHCP not supported** |
+| Node IP | DHCP or static | **Static only** |
 | DNS server | AD-integrated DNS | Any DNS (internal or external) |
-| Cluster type | Domain-joined | Workgroup cluster (`ADAware = 2`) |
+| Cluster type | Domain-joined | Workgroup cluster |
 | Windows Admin Center | Supported | Not supported |
 | BitLocker keys | AD-stored | Key Vault-stored |
 
 > [!WARNING]
-> **Static IP required**
-> Microsoft explicitly requires static IP addresses for all cluster nodes in a Local Identity deployment. Configure static IPs before or during validation (Beacon's network bootstrap prompts for this).
->
+> **Static IP required.** Microsoft requires static IP addresses for all cluster nodes in a Local Identity deployment. Beacon's network
+> bootstrap prompts for a static address when DHCP is not available.
+
 ## What you are prompted for
 
 | Input | Example | Required |
 |---|---|---|
-| DNS server IP(s) | `10.10.0.10, 8.8.8.8` | Yes |
-| Azure Key Vault FQDN | `kv-iic-beacon.vault.azure.net` | Optional (enables KV endpoint probe) |
+| DNS server IP(s) | `192.0.2.10, 192.0.2.12` | Yes |
+| Azure Key Vault FQDN | `kv-example-01.vault.azure.net` | Optional; replaces the Key Vault placeholder row of the endpoint sweep |
 
 ## Tests run
 
 | Category | Tests |
 |---|---|
-| **1 — Network** | NIC status, IP assigned, gateway ping |
-| **2 — DNS** | DNS TCP/UDP 53, forward resolution of Azure management endpoints |
-| **4 — Endpoint sweep** | Azure Local, Arc, and Key Vault service endpoints |
-| **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **6 — Arc** | Optional: `Invoke-AzStackHciArcIntegrationValidation` |
+| **1 - Network and time** | NIC, IP, gateway, NTP reachability and clock offset |
+| **2 - DNS** | DNS TCP/UDP 53, forward resolution of Azure management endpoints |
+| **4 - Endpoint sweep** | Region endpoint list including the Key Vault endpoint, public-IP and HTTPS-inspection checks |
+| **5 - Environment Checker** | Connectivity and Network validators |
+| **6 - Arc** | Optional, see [Arc readiness](arc-readiness.md) |
 
 > [!NOTE]
-> **Category 3 (AD ports) is skipped**
-> AD port tests are not applicable and not run in the Local Identity path.
->
+> **Category 3 (AD ports) is skipped.** AD port tests are not applicable to this path.
+
 ## Azure Key Vault requirements
 
-The deployment provisions an Azure Key Vault during deployment to store:
-
-- BitLocker recovery keys
-- Node local admin password
-- `RecoveryAdmin` password
-
-Ensure outbound HTTPS (443) to `*.vault.azure.net` is allowed through your firewall.
-
-## Arc integration (optional)
-
-After the Local Identity validation, Beacon offers an optional Arc integration check with device-code sign-in.
+The deployment creates a Key Vault for BitLocker recovery keys, the node local administrator password and the recovery admin password.
+Allow outbound HTTPS (443) to your vault name (`*.vault.azure.net`).
 
 ## Microsoft documentation
 

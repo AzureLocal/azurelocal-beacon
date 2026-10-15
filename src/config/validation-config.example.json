@@ -1,49 +1,44 @@
 {
-  "_comment": "AzL Beacon — per-engagement validation config. Copy to validation-config.json and populate all fields. validation-config.json is gitignored.",
-  "_generated": "FILL-IN",
-  "_engagement": "FILL-IN (e.g. customer-name-poc-2026)",
-
-  "dnsServers": [
-    "10.x.x.x",
-    "10.x.x.x"
-  ],
-
-  "adDomainFqdn": "yourdomain.local",
-  "adNetbios": "YOURDOMAIN",
-
-  "dcIps": [
-    "10.x.x.x",
-    "10.x.x.x"
-  ],
-
-  "dcFqdns": [
-    "dc-01.yourdomain.local",
-    "dc-02.yourdomain.local"
-  ],
-
-  "managementGateway": "10.x.x.1",
-  "managementSubnetCidr": "10.x.x.0/24",
-  "managementVlan": 0,
-
-  "nodeFqdns": [
-    "node-01.yourdomain.local",
-    "node-02.yourdomain.local"
-  ],
-
-  "nodeIps": [
-    "10.x.x.x",
-    "10.x.x.x"
-  ],
-
-  "keyVaultFqdn": "kv-your-vault-name.vault.azure.net",
-  "keyVaultName": "kv-your-vault-name",
+  "_comment": "AzL Beacon - per-engagement validation config. Copy to validation-config.json and populate. validation-config.json is gitignored. All values below are examples.",
+  "_engagement": "FILL-IN (e.g. contoso-azl-2026)",
+  "brand": "",
 
   "azureRegion": "eastus",
-  "azureTenantId": "00000000-0000-0000-0000-000000000000",
-  "clusterName": "your-cluster-name",
+  "_azureRegionNote": "One of: eastus, westeurope, australiaeast, canadacentral, centralindia, southeastasia, japaneast, southcentralus, usgovvirginia. Selects the per-region endpoint list.",
+  "oem": "",
+  "_oemNote": "Optional OEM endpoint list appended to the sweep. Available: dell. Empty = none.",
 
-  "_arcGatewayNote": "Arc gateway endpoint URLs are deployment-generated (<guid>.gw.arc.azure.com). Fill arcGatewayFqdn from the deployed gateway resource. Empty = not probed.",
+  "dnsServers": ["192.0.2.10", "192.0.2.11"],
+
+  "adDomainFqdn": "corp.contoso.com",
+  "adNetbios": "CONTOSO",
+  "dcIps": ["192.0.2.10", "192.0.2.11"],
+  "dcFqdns": ["dc-01.corp.contoso.com", "dc-02.corp.contoso.com"],
+  "ntpServers": [],
+  "_ntpNote": "Empty = the domain controllers, else time.windows.com. UDP/123 is probed and the clock offset reported.",
+
+  "managementGateway": "192.0.2.1",
+  "managementSubnetCidr": "192.0.2.0/24",
+  "managementVlan": 0,
+
+  "nodeFqdns": ["node-01.corp.contoso.com", "node-02.corp.contoso.com"],
+  "nodeIps": ["192.0.2.21", "192.0.2.22"],
+
+  "keyVaultFqdn": "kv-example-01.vault.azure.net",
+  "keyVaultName": "kv-example-01",
+  "clusterName": "example-cluster",
+
+  "proxyUrl": "",
+  "proxyBypass": [],
+  "_proxyNote": "Explicit proxy for the HTTPS probes, e.g. http://proxy.example.com:8080. Bypass entries: host, *.domain, .domain, 192.0.2.0/24, <local>.",
   "arcGatewayFqdn": "",
+  "_arcGatewayNote": "<id>.gw.arc.azure.com from your Arc gateway resource. Set = Arc gateway mode: endpoints the gateway carries are not probed directly; the gateway itself is.",
+
+  "tlsInspectionHosts": ["login.microsoftonline.com", "management.azure.com"],
+
+  "infraIpPools": [{ "StartingAddress": "192.0.2.100", "EndingAddress": "192.0.2.110" }],
+  "hostNetworkIntents": [],
+  "_envCheckerNetworkNote": "infraIpPools, managementSubnetCidr, hostNetworkIntents and a WinRM session to the node are needed for the Environment Checker NETWORK validator; without them it is reported as Skipped.",
 
   "tcpConnectTimeoutMs": 5000,
   "pingTimeoutMs": 2000

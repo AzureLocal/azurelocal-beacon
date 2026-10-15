@@ -1,46 +1,47 @@
-# Networking and Firewall Validation
+# Networking and Firewall validation
 
-Select **option 3** from the Beacon main menu to run a focused networking and firewall validation.
+Select **option 3** from the Beacon menu for a focused network and firewall validation. Use **option 9** first to set the
+region, a proxy or an Arc gateway.
 
 ## What it covers
 
-This path runs everything except the AD port tests (Category 3). It's ideal for:
+Everything except the AD port tests (Category 3). Good for:
 
-- Verifying firewall policy before any identity configuration
-- Checking endpoint reachability from the management VLAN
-- Confirming DNS is reachable
+- verifying firewall policy before any identity configuration
+- checking endpoint reachability from the management VLAN, through a proxy or an Arc gateway
+- confirming DNS, NTP and the public-address and HTTPS-inspection conditions Learn calls out
 
 ## What you are prompted for
 
 | Input | Example | Required |
 |---|---|---|
-| Management gateway IP | `10.10.0.1` | Optional (uses DHCP-detected if blank) |
-| DNS server IP(s) | `10.10.0.10` | Optional |
+| Management gateway IP | `192.0.2.1` | Optional (taken from the network bootstrap when known) |
+| DNS server IP(s) | `192.0.2.10` | Optional |
+
+Settings (option 9): region, proxy URL and bypass list, Arc gateway FQDN, OEM list (`dell`), NTP servers.
 
 ## Tests run
 
 | Category | Tests |
 |---|---|
-| **1 — Network** | NIC status, IP assigned, gateway ping |
-| **2 — DNS** | DNS TCP/UDP 53, forward resolution of key Azure endpoints |
-| **4 — Endpoint sweep** | All Azure Local + Arc + Dell endpoints |
-| **5 — EnvChecker** | `Invoke-AzStackHciConnectivityValidation` + `Invoke-AzStackHciNetworkValidation` |
-| **6 — Arc** | Optional |
+| **1 - Network and time** | NIC, IP, gateway ping, NTP and clock offset |
+| **2 - DNS** | DNS TCP/UDP 53, forward resolution of key Azure endpoints |
+| **4 - Endpoint sweep** | The region's Azure Local, Arc, ARB, AKS endpoints (plus OEM); `PublicIP-` and `TlsInspection-` checks |
+| **5 - Environment Checker** | Connectivity validator (region, proxy and Arc gateway aware); Network validator when its inputs exist |
+| **6 - Arc** | Optional |
 
-## Firewall requirements — Azure Local
+## Proxy and Arc gateway
 
-The endpoint sweep tests all endpoints from these sources:
+| Setting | Effect |
+|---|---|
+| `proxyUrl` | Endpoint rows are probed through the proxy with `CONNECT`; the proxy is TCP-checked; the TLS-inspection read goes through it too; passed to the Environment Checker |
+| `proxyBypass` | Hosts that go direct: `host`, `*.domain`, `.domain`, `10.0.0.0/8`, `<local>` |
+| `arcGatewayFqdn` | Arc gateway mode: rows with gateway support are skipped (the gateway carries them); the gateway endpoint is probed; passed as `-ARCGateway` to the Environment Checker |
 
-| Source | Endpoints | Severity |
-|---|---|---|
-| Azure Local (`firewall-requirements.md`) | ~80 endpoints | Critical / Informational |
-| Arc for Servers (`arc-endpoints.md`) | ~30 endpoints | Critical / Warning |
-| Dell AX OEM (`DellAzureLocalEndpoints.md`) | ~11 endpoints | Warning |
+## Firewall requirements
 
-> [!TIP]
-> **See the full list**
-> See [Endpoint List](../reference/endpoints.md) for every endpoint tested.
->
+See [Endpoint list](../reference/endpoints.md) for the per-region counts and how each row is probed.
+
 ## Microsoft documentation
 
 - [Azure Local firewall requirements](https://learn.microsoft.com/azure/azure-local/concepts/firewall-requirements)

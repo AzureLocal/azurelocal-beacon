@@ -25,28 +25,24 @@
 
 .OUTPUTS
     Hashtable with keys:
-      IpAddress      [string]  — configured IPv4 address, or empty string
-      Configured     [bool]    — $true if any routable IP is assigned
-      DhcpAcquired   [bool]    — $true if IP came from DHCP
-      StaticApplied  [bool]    — $true if operator entered static config
-      GatewayOk      [bool]    — ping result for the default gateway
-      DnsOk          [bool]    — DNS resolution of management.azure.com
-      HttpsOk        [bool]    — outbound HTTPS probe to login.microsoftonline.com:443
-      GatewayIp      [string]  — gateway IP (blank if not determined)
-      DnsServer      [string]  — primary DNS server in use (blank if not determined)
-      AdapterName    [string]  — NIC name the IP was configured on
+      IpAddress      [string]  - configured IPv4 address, or empty string
+      Configured     [bool]    - $true if any routable IP is assigned
+      DhcpAcquired   [bool]    - $true if IP came from DHCP
+      StaticApplied  [bool]    - $true if operator entered static config
+      GatewayOk      [bool]    - ping result for the default gateway
+      DnsOk          [bool]    - DNS resolution of management.azure.com
+      HttpsOk        [bool]    - outbound HTTPS probe to login.microsoftonline.com:443
+      GatewayIp      [string]  - gateway IP (blank if not determined)
+      DnsServer      [string]  - primary DNS server in use (blank if not determined)
+      AdapterName    [string]  - NIC name the IP was configured on
 
 .NOTES
     Author:       Kristopher Turner
     Contact:      kris@hybridsolutions.cloud
-    Version:      1.0.0
-    LastUpdated:  2026-06-19
-    ScriptVersion = "1.0.0"
+    Version:      see src/lib/Beacon.Version.ps1
+    LastUpdated:  2026-10-15
     TaskReference = "azurelocal-beacon/phase-3-network-bootstrap"
     DocumentationRef = "docs/validation/network-firewall.md"
-    ChangeLog     = @(
-        "1.0.0 - 2026-06-19 - Initial implementation"
-    )
     Compatibility: PowerShell 5.1 (WinPE) and PowerShell 7. No PS7-only syntax used.
     PSScriptAnalyzer: passes at Warning/Error severity.
 #>
@@ -95,7 +91,7 @@ function Get-RoutableIPv4 {
             }
         }
     } catch {
-        # CIM may fail in minimal WinPE — try ipconfig parse
+        # CIM may fail in minimal WinPE - try ipconfig parse
         try {
             $ipcfg = & ipconfig 2>&1
             foreach ($line in $ipcfg) {
@@ -106,7 +102,7 @@ function Get-RoutableIPv4 {
                     }
                 }
             }
-        } catch { }
+        } catch { Write-Verbose "probe failed: $($_.Exception.Message)" }
     }
     return ''
 }
@@ -118,7 +114,12 @@ function Get-AdapterName {
     try {
         $adapters = Get-NetAdapter -ErrorAction Stop | Where-Object { $_.Status -eq 'Up' }
         if ($adapters) { return ($adapters | Select-Object -First 1).Name }
-    } catch { }
+    } catch { Write-Verbose "probe failed: $($_.Exception.Message)" }
+    # WinPE has no NetAdapter module: ask WMI for the connected adapter's connection name
+    try {
+        $cim = Get-CimInstance Win32_NetworkAdapter -Filter 'NetConnectionStatus=2' -ErrorAction Stop | Where-Object { $_.NetConnectionID } | Select-Object -First 1
+        if ($cim) { return $cim.NetConnectionID }
+    } catch { Write-Verbose "WMI adapter lookup failed: $($_.Exception.Message)" }
     # Fallback: common WinPE name
     return 'Ethernet'
 }
@@ -134,7 +135,7 @@ function Get-DefaultGateway {
                 return $nic.DefaultIPGateway[0]
             }
         }
-    } catch { }
+    } catch { Write-Verbose "probe failed: $($_.Exception.Message)" }
     return ''
 }
 
@@ -149,7 +150,7 @@ function Get-PrimaryDns {
                 return $nic.DNSServerSearchOrder[0]
             }
         }
-    } catch { }
+    } catch { Write-Verbose "probe failed: $($_.Exception.Message)" }
     return ''
 }
 
@@ -188,7 +189,7 @@ function Test-TcpPort {
     }
 }
 
-function Prompt-WithDefault {
+function Read-ValueWithDefault {
     param([string]$Prompt, [string]$Default = '')
     if ($Default) {
         $response = Read-Host "$Prompt [$Default]"
@@ -199,6 +200,28 @@ function Prompt-WithDefault {
         return $response.Trim()
     }
 }
+
+function Test-Ipv4Address {
+    <# True for a dotted-quad IPv4 address (each octet 0-255). Pure. #>
+    param([string]$Text)
+    $ip = $null
+    if ($Text -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { return $false }
+    return [System.Net.IPAddress]::TryParse($Text, [ref]$ip)
+}
+
+function Test-SubnetMask {
+    <# True for a contiguous IPv4 subnet mask (e.g. 255.255.255.0). Pure. #>
+    param([string]$Text)
+    if (-not (Test-Ipv4Address $Text)) { return $false }
+    [uint64]$n = 0
+    foreach ($o in $Text.Split('.')) { $n = ($n * 256) + [uint64]$o }
+    if ($n -eq 0) { return $false }
+    [uint64]$inv = 4294967295 - $n
+    return (($inv -band ($inv + 1)) -eq 0)
+}
+
+# Dot-sourcing (Pester) loads the functions only.
+if ($MyInvocation.InvocationName -eq '.') { return }
 
 # ============================================================
 # Main execution
@@ -219,7 +242,7 @@ $state = @{
 
 Write-BootLine ''
 Write-BootLine '------------------------------------------------------------' -Color Cyan
-Write-BootLine '  Network Bootstrap — AzL Beacon' -Color Cyan
+Write-BootLine '  Network Bootstrap - AzL Beacon' -Color Cyan
 Write-BootLine '------------------------------------------------------------' -Color Cyan
 
 # Step 1: Wait for DHCP
@@ -241,7 +264,7 @@ if ($detectedIp) {
     if ($state.GatewayIp) { Write-BootLine "       Gateway : $($state.GatewayIp)" -Color White }
     if ($state.DnsServer)  { Write-BootLine "       DNS     : $($state.DnsServer)" -Color White }
 } else {
-    # Step 3: No DHCP — prompt for static IP
+    # Step 3: No DHCP - prompt for static IP
     Write-BootLine ''
     Write-BootLine '  [WARN] No DHCP address detected.' -Color Yellow
     Write-BootLine '  Enter static network configuration, or press Enter to skip.' -Color Yellow
@@ -250,12 +273,16 @@ if ($detectedIp) {
     $adapterName = Get-AdapterName
     $state.AdapterName = $adapterName
 
-    $ipInput   = Prompt-WithDefault "  IP address"
-    $maskInput = Prompt-WithDefault "  Subnet mask" -Default '255.255.255.0'
-    $gwInput   = Prompt-WithDefault "  Default gateway"
-    $dnsInput  = Prompt-WithDefault "  Primary DNS server"
+    $ipInput   = Read-ValueWithDefault "  IP address"
+    $maskInput = Read-ValueWithDefault "  Subnet mask" -Default '255.255.255.0'
+    $gwInput   = Read-ValueWithDefault "  Default gateway"
+    $dnsInput  = Read-ValueWithDefault "  Primary DNS server"
 
-    if ($ipInput -and $gwInput) {
+    $inputOk = ($ipInput -and $gwInput -and (Test-Ipv4Address $ipInput) -and (Test-Ipv4Address $gwInput) -and (Test-SubnetMask $maskInput) -and (-not $dnsInput -or (Test-Ipv4Address $dnsInput)))
+    if ($ipInput -and -not $inputOk) {
+        Write-BootLine '  [WARN] Invalid address, mask, gateway or DNS entry; nothing applied.' -Color Yellow
+    }
+    if ($inputOk) {
         Write-BootLine "  Applying static IP to adapter '$adapterName'..." -Color Cyan
         try {
             & netsh interface ip set address name=`"$adapterName`" static $ipInput $maskInput $gwInput | Out-Null
@@ -280,7 +307,7 @@ if ($detectedIp) {
             Write-BootLine "  [FAIL] netsh error: $($_.Exception.Message)" -Color Red
         }
     } else {
-        Write-BootLine "  Skipping static IP — no valid input. Network tests will fail." -Color Yellow
+        Write-BootLine "  Skipping static IP - no valid input. Network tests will fail." -Color Yellow
     }
 }
 
