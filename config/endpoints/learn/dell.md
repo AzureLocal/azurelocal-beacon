@@ -4,11 +4,11 @@ This page provides a comprehensive overview of the necessary endpoints for deplo
 
 Each hardware vendor provided [Solution Builder Extension (SBE)](https://learn.microsoft.com/en-us/azure/azure-local/update/solution-builder-extension) will require some minimal endpoints to allow for discovery and download of [SBE](https://learn.microsoft.com/en-us/azure/azure-local/update/solution-builder-extension) updates for your solution.
 
-Refer to the table in the following document to determine if your solution supports an SBE as well is to review SBE release notes or and other documentation: https://learn.microsoft.com/en-us/azure/azure-local/update/solution-builder-extension?view=azloc-2605#identify-a-solution-builder-extension-update-for-your-hardware
+Refer to the table in the following document to determine if your solution supports an SBE as well is to review SBE release notes or and other documentation: https://learn.microsoft.com/en-us/azure/azure-local/update/solution-builder-extension?view=azloc-24113#identify-a-solution-builder-extension-update-for-your-hardware
 
 In addition to [SBE](https://learn.microsoft.com/en-us/azure/azure-local/update/solution-builder-extension) endpoints, some OEM hardware vendors will require additional endpoints for there specific use cases as noted below.
 
-**Last updated on June 5th, 2026** — Verified current against azloc-2605 (2026-04-09). AX-760 confirmed SBE-supported per Dell KB 000224407.
+**Last updated on March 19, 2025**
 
 | Id | Endpoint Description | Endpoint URL                                                           | Port | Notes                                                    | Arc gateway support | Required for                 |
 |----|---------------------|------------------------------------------------------------------------|------|----------------------------------------------------------|---------------------|------------------------------|
@@ -16,4 +16,5 @@ In addition to [SBE](https://learn.microsoft.com/en-us/azure/azure-local/update/
 | 2  | SBE Manifest redirection link     | aka.ms/AzureStackSBEUpdate/DellEmc                                   | 443  | Microsoft redirection to the explicit OEM SBE manifest endpoint. | No                 | Deployment & Post deployment |
 | 3  | Digicert Certificate Revocation Status | http://crl3.digicert.com/* | 80 | Enables Dell SBE Download Catalog Signer Verification | No | Deployment & Post deployment |
 | 4  | Digicert Certificate Revocation Status | http://crl4.digicert.com/* | 80 | Enables Dell SBE Download Catalog Signer Verification | No | Deployment & Post deployment |
+
 

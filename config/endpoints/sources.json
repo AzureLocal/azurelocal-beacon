@@ -1,0 +1,19 @@
+{
+  "_comment": "Where each snapshot in config/endpoints/learn/ comes from. Microsoft Learn (firewall-requirements) links to these per-region lists. Re-fetch with: Convert-EndpointsToJson.ps1 -Refresh",
+  "learnUrl": "https://learn.microsoft.com/azure/azure-local/concepts/firewall-requirements",
+  "releaseTrain": "12.2609 (latest)",
+  "regions": {
+    "eastus":        { "displayName": "East US",        "file": "eastus.md",        "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/EastUSendpoints/eastus-hci-endpoints.md",                  "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md" },
+    "westeurope":    { "displayName": "West Europe",    "file": "westeurope.md",    "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/WestEuropeendpoints/westeurope-hci-endpoints.md",          "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/WestEuropeendpoints/westeurope-hci-endpoints.md" },
+    "australiaeast": { "displayName": "Australia East", "file": "australiaeast.md", "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/AustraliaEastendpoints/AustraliaEast-hci-endpoints.md",    "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/AustraliaEastendpoints/AustraliaEast-hci-endpoints.md" },
+    "canadacentral": { "displayName": "Canada Central", "file": "canadacentral.md", "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/CanadaCentralEndpoints/canadacentral-hci-endpoints.md",    "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/CanadaCentralEndpoints/canadacentral-hci-endpoints.md" },
+    "centralindia":  { "displayName": "India Central",  "file": "centralindia.md",  "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/IndiaCentralEndpoints/IndiaCentral-hci-endpoints.md",       "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/IndiaCentralEndpoints/IndiaCentral-hci-endpoints.md" },
+    "southeastasia": { "displayName": "Southeast Asia", "file": "southeastasia.md", "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/SouthEastAsiaEndpoints/southeastasia-hci-endpoints.md",    "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/SouthEastAsiaEndpoints/southeastasia-hci-endpoints.md" },
+    "japaneast":     { "displayName": "Japan East",     "file": "japaneast.md",     "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/JapanEastEndpoints/japaneast-hci-endpoints.md",            "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/JapanEastEndpoints/japaneast-hci-endpoints.md" },
+    "southcentralus": { "displayName": "South Central US", "file": "southcentralus.md", "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/SouthCentralUSEndpoints/southcentralus-hci-endpoints.md", "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/SouthCentralUSEndpoints/southcentralus-hci-endpoints.md" },
+    "usgovvirginia": { "displayName": "US Gov Virginia", "file": "usgovvirginia.md", "url": "https://raw.githubusercontent.com/CristianEdwards/AzureStack-Tools/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md", "page": "https://github.com/CristianEdwards/AzureStack-Tools/blob/master/HCI/usgovvirginia-hci-endpoints/usgovvirginia-hci-endpoints.md", "cloud": "AzureUSGovernment" }
+  },
+  "oem": {
+    "dell": { "displayName": "Dell", "file": "dell.md", "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/OEMEndpoints/Dell/DellAzureLocalEndpoints.md", "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/OEMEndpoints/Dell/DellAzureLocalEndpoints.md" }
+  }
+}

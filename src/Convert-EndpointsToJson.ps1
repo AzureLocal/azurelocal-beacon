@@ -1,507 +1,445 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
-    Parses the three Azure Local endpoint markdown files into a structured JSON file for WinPE validation.
+    Builds src/config/endpoints.json from the per-region Azure Local endpoint lists that
+    Microsoft Learn (firewall-requirements) links to.
 
 .DESCRIPTION
-    Reads azurelocal-endpoints.md, arc-endpoints.md, and dell-endpoints.md from
-    config/endpoints/ and produces src/config/endpoints.json.
+    Reads the snapshots in config/endpoints/learn/ (one markdown file per region plus OEM
+    lists), parses them STRICTLY and writes src/config/endpoints.json (schema 2.0).
 
-    Each entry in the JSON includes:
-      name, host, port, protocol, category, severity (critical|warning|informational),
-      sourceFile, notes, wildcard (bool), probeHost (concrete host for wildcard entries).
+    Strict means every row must yield a valid host (DNS name, optional wildcard, no spaces,
+    no backticks, no scheme) and a numeric port (1-65535). Rows that do not are never
+    guessed at: they are listed in the output's "rejected" array and reported, and
+    -Strict turns any rejection into an error. Cells that carry several hosts or ports are
+    split into one entry each. Placeholder rows (your Arc gateway id, your key vault name)
+    are kept and flagged so the validation engine can substitute them from configuration.
 
-    Severity assignment rules:
-      - Authentication, ARM, Arc agent hybrid-identity = critical
-      - Deployment-blocking container registries = critical
-      - Monitoring, updates, CRLs = warning
-      - Informational/post-deployment-only = informational
+    Each entry carries: id, component, host, port, protocol, path, wildcard, probeHost,
+    probeHostBasis, placeholder, severity, phase, requiredFor, arcGateway, arcGatewayNote,
+    probe, notes, source (URL of the Learn-linked list).
 
-    Wildcard hosts: a representative probeHost is set where a concrete example is
-    documented in the markdown; otherwise wildcard=true and probeHost is empty.
-
-    Output is written to the path provided by -OutputPath (default: script-relative
-    config\endpoints.json). File is stable-sorted by category then host so diffs are
-    clean across regenerations.
+    -Refresh re-downloads the snapshots from config/endpoints/sources.json first. Without
+    it the conversion is fully offline and deterministic (apart from generatedUtc).
 
 .PARAMETER EndpointsDir
-    Path to the directory containing the three endpoint markdown files.
-    Default: auto-detected relative to this script (../config/endpoints).
+    Folder that holds sources.json and the learn/ snapshots. Default: <repo>\config\endpoints.
 
 .PARAMETER OutputPath
-    Destination JSON file path.
-    Default: <scriptroot>\config\endpoints.json
+    Destination JSON. Default: <scriptroot>\config\endpoints.json.
+
+.PARAMETER Refresh
+    Download the snapshots again before converting.
+
+.PARAMETER Strict
+    Fail when any row is rejected.
 
 .PARAMETER Force
-    Overwrite the output file without prompting if it already exists.
+    Overwrite an existing output file.
 
 .EXAMPLE
-    .\Convert-EndpointsToJson.ps1
-    Parses all three endpoint files and writes config\endpoints.json.
-
-.EXAMPLE
-    .\Convert-EndpointsToJson.ps1 -EndpointsDir C:\repo\config\azure\endpoints -OutputPath C:\out\endpoints.json
-    Explicit paths.
+    .\Convert-EndpointsToJson.ps1 -Force
+    Regenerate endpoints.json from the committed snapshots.
 
 .NOTES
-    Version:      1.0
-    Last Updated: 2026-06-10
-    Prerequisites: PowerShell 5.1 or later. No external modules required.
-    PSScriptAnalyzer: passes at Warning/Error severity.
+    Build-time script. PowerShell 5.1 or 7. PSScriptAnalyzer clean.
 #>
-
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
     [string]$EndpointsDir = '',
-
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
     [string]$OutputPath = '',
-
-    [Parameter(Mandatory = $false)]
+    [switch]$Refresh,
+    [switch]$Strict,
     [switch]$Force
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-#region --- Path resolution ---
+$script:ConverterVersion = '2.0'
 
-function Resolve-EndpointsDir {
-    param([string]$Provided)
-    if ($Provided -ne '' -and (Test-Path $Provided -PathType Container)) {
-        return (Resolve-Path $Provided).Path
-    }
-    # Navigate from src/ up one level to repo root, then into config/endpoints
-    $scriptDir = $PSScriptRoot
-    if (-not $scriptDir) { $scriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent }
-    $candidate = Join-Path $scriptDir '..\config\endpoints'
-    $candidate = [System.IO.Path]::GetFullPath($candidate)
-    if (Test-Path $candidate -PathType Container) { return $candidate }
-    throw "Cannot locate endpoint markdown directory. Pass -EndpointsDir explicitly."
+#region --- Value validation ---
+
+function Test-EndpointHostName {
+    <# True when the string is a plausible DNS name; a leading or embedded '*' is allowed. #>
+    param([string]$Name)
+    if ([string]::IsNullOrWhiteSpace($Name)) { return $false }
+    if ($Name.Length -gt 253) { return $false }
+    if ($Name -match '[\s`<>"'',;|\\/:]') { return $false }
+    if ($Name -notmatch '^[a-z0-9*]([a-z0-9*-]*[a-z0-9*])?(\.[a-z0-9*]([a-z0-9*-]*[a-z0-9*])?)+$') { return $false }
+    $tld = ($Name -split '\.')[-1]
+    if ($tld -notmatch '^([a-z]{2,24}|xn--[a-z0-9-]+)$') { return $false }
+    return $true
 }
 
-function Resolve-OutputPath {
-    param([string]$Provided)
-    if ($Provided -ne '') { return $Provided }
-    $scriptDir = $PSScriptRoot
-    if (-not $scriptDir) { $scriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent }
-    return Join-Path $scriptDir 'config\endpoints.json'
+function Get-PlaceholderKind {
+    param([string]$Name)
+    if ($Name -like 'yourarcgatewayendpointid.*') { return 'arcGateway' }
+    if ($Name -like 'yourhcikeyvaultname.*') { return 'keyVault' }
+    return ''
+}
+
+function ConvertTo-CleanCell {
+    param([string]$Text)
+    if ($null -eq $Text) { return '' }
+    $t = $Text -replace '`', '' -replace '<br\s*/?>', ' ' -replace '\*\*', ''
+    $t = $t -replace '\[([^\]]*)\]\([^)]*\)', '$1'     # markdown links -> text
+    return $t.Trim()
 }
 
 #endregion
 
-#region --- Severity + category maps ---
+#region --- Row parsing ---
 
-function Get-Severity {
-    param([string]$Component, [string]$Notes)
-    $combined = ($Component + ' ' + $Notes).ToLower()
-    # Authentication and ARM are always critical
-    if ($combined -match 'auth|entra|arm token|token fetch|management\.azure\.com|login\.|key vault') {
-        return 'critical'
+function Split-EndpointCell {
+    <# One URL cell -> zero or more @{ Host; Path; Port } candidates (Port = 0 when absent). #>
+    param([string]$Cell)
+    $clean = ConvertTo-CleanCell $Cell
+    $parts = @($clean -split '(?:\s*[,;]\s*|\s+and\s+|\s+)' | Where-Object { $_ -ne '' })
+    $result = New-Object System.Collections.Generic.List[object]
+    foreach ($p in $parts) {
+        $x = $p.Trim().TrimEnd('.', ')', '(')
+        $x = $x -replace '^[a-z][a-z0-9+.-]*://', ''
+        $path = ''
+        $slash = $x.IndexOf('/')
+        if ($slash -ge 0) {
+            $path = $x.Substring($slash)
+            $x = $x.Substring(0, $slash)
+        }
+        $port = 0
+        if ($x -match '^(.+):(\d{1,5})$') { $x = $Matches[1]; $port = [int]$Matches[2] }
+        if ($path -eq '/*') { $path = '' }
+        $result.Add(@{ Host = $x.ToLowerInvariant(); Path = $path; Port = $port })
     }
-    if ($combined -match 'arc agent|arc-enabled|arc server|arc resource bridge|arb') {
-        return 'critical'
+    return $result
+}
+
+function Split-PortCell {
+    <# '443' | '80, 443' | '80/443' | '80 and 443' -> int[]; returns $null when not numeric. #>
+    param([string]$Cell)
+    $clean = ConvertTo-CleanCell $Cell
+    if ($clean -eq '') { return $null }
+    $tokens = @($clean -split '(?:\s*[,;/]\s*|\s+and\s+|\s+)' | Where-Object { $_ -ne '' })
+    $ports = New-Object System.Collections.Generic.List[int]
+    foreach ($t in $tokens) {
+        if ($t -notmatch '^\d{1,5}$') { return $null }
+        $n = [int]$t
+        if ($n -lt 1 -or $n -gt 65535) { return $null }
+        $ports.Add($n)
     }
-    if ($combined -match 'deployment' -and $combined -notmatch 'post.deployment.only') {
-        return 'critical'
+    if ($ports.Count -eq 0) { return $null }
+    return $ports.ToArray()
+}
+
+function ConvertFrom-ArcGatewayCell {
+    param([string]$Cell)
+    $c = ConvertTo-CleanCell $Cell
+    $mode = 'no'
+    if ($c -match '^Yes') { $mode = 'yes' }
+    elseif ($c -match '^Not required') { $mode = 'notRequired' }
+    elseif ($c -match '^No\.?\s+Arc registration') { $mode = 'registration' }
+    return @{ Mode = $mode; Note = $c }
+}
+
+function Get-PhaseFromRequiredFor {
+    param([string]$RequiredFor)
+    $r = $RequiredFor.ToLowerInvariant()
+    if ($r -match 'deployment' -and $r -match 'post') {
+        if ($r -match '^post') { return 'post-deployment' }
+        return 'both'
     }
-    if ($combined -match 'monitor|telemetry|metric|diagn|billing|licens') {
+    if ($r -match '^post') { return 'post-deployment' }
+    if ($r -match 'deploy') { return 'deployment' }
+    return 'both'
+}
+
+function Get-EndpointSeverity {
+    <#
+    critical      = deployment/registration cannot proceed without it (identity, ARM, Arc agent,
+                    ARB, deployment bits, billing/diagnostics registration)
+    warning       = needed, but a failure does not block the first deployment step
+                    (revocation lists, monitoring, updates, OEM, time)
+    informational = optional feature or post-deployment only
+    #>
+    param([string]$Component, [string]$Phase, [string]$HostName, [int]$Port, [string]$Notes)
+    $c = $Component.ToLowerInvariant()
+    if ($Phase -eq 'post-deployment') { return 'informational' }
+    if ($c -match 'defender|wac|windows admin center') { return 'informational' }
+    if ($Notes -match '(?i)only if using|required only|optional') { return 'informational' }
+    if ($c -match 'crl|benefits|monitoring|update|oem|sbe|digicert') { return 'warning' }
+    if ($Port -eq 80) { return 'warning' }
+    if ($Port -eq 123) { return 'warning' }
+    if ($c -match 'authentication|management|arc agent|arc gateway|arb infra|deployment|diag') { return 'critical' }
+    if ($c -match 'aks infra') {
+        if ($HostName -match 'mcr\.microsoft\.com|azurecr\.io|dp\.kubernetesconfiguration|sts\.windows\.net') { return 'critical' }
         return 'warning'
     }
-    if ($combined -match 'update|patch|crl|revocation|ocsp|package|gallery|deliver') {
-        return 'warning'
-    }
-    if ($combined -match 'defender|wac|windows admin center|post.dep') {
-        return 'informational'
-    }
-    # Default
     return 'warning'
 }
 
-#endregion
-
-#region --- Wildcard probe-host resolution ---
-
-# For wildcard FQDNs, map to a documented concrete representative host.
-# Only entries confirmed in the source markdown files are listed here.
-$script:WildcardProbeHosts = @{
-    '*.servicebus.windows.net'                         = 'azgn123456789.servicebus.windows.net'
-    'azgn*.servicebus.windows.net'                     = 'azgn123456789.servicebus.windows.net'
-    '*.his.arc.azure.com'                              = 'eus.his.arc.azure.com'
-    '*.guestconfiguration.azure.com'                   = 'eastus-gas.guestconfiguration.azure.com'
-    '*.guestnotificationservice.azure.com'             = 'guestnotificationservice.azure.com'
-    '*.waconazure.com'                                 = 'portal.waconazure.com'
-    '*.blob.core.windows.net'                          = 'sttotepocwit01.blob.core.windows.net'
-    '*.data.mcr.microsoft.com'                         = 'eastus.data.mcr.microsoft.com'
-    '*.mcr.microsoft.com'                              = 'mcr.microsoft.com'
-    '*.dl.delivery.mp.microsoft.com'                   = 'tlu.dl.delivery.mp.microsoft.com'
-    '*.do.dsp.mp.microsoft.com'                        = 'dl.delivery.mp.microsoft.com'
-    '*.prod.do.dsp.mp.microsoft.com'                   = 'dl.delivery.mp.microsoft.com'
-    '*.prod.hot.ingest.monitor.core.windows.net'       = 'dc.prod.hot.ingest.monitor.core.windows.net'
-    '*.prod.warm.ingest.monitor.core.windows.net'      = 'qos.prod.warm.ingest.monitor.core.windows.net'
-    '*.dp.kubernetesconfiguration.azure.com'           = 'eastus.dp.kubernetesconfiguration.azure.com'
-    '*.web.core.windows.net'                           = 'arcplatformcliextprod.z13.web.core.windows.net'
-    '*.arc.azure.net'                                  = 'eastus.arc.azure.net'
-    '*.blob.storage.azure.net'                         = 'msdownload.blob.storage.azure.net'
-    '*.endpoint.security.microsoft.com'                = 'unitedstates.endpoint.security.microsoft.com'
-    '*.login.microsoft.com'                            = 'eastus.login.microsoft.com'
-    '*.pypi.org'                                       = 'pypi.org'
-    '*.pythonhosted.org'                               = 'pythonhosted.org'
-    '*.ods.opinsights.azure.com'                       = 'law-tote-poc-azl-eus-01.ods.opinsights.azure.com'
-    '*.oms.opinsights.azure.com'                       = 'law-tote-poc-azl-eus-01.oms.opinsights.azure.com'
-    '*.monitoring.azure.com'                           = 'eastus.monitoring.azure.com'
-    '*.ingest.monitor.azure.com'                       = 'eastus.ingest.monitor.azure.com'
-    '*.metrics.ingest.monitor.azure.com'               = 'eastus.metrics.ingest.monitor.azure.com'
-    '*.prod.microsoftmetrics.com'                      = 'global.prod.microsoftmetrics.com'
-    'pypi.org'                                         = 'pypi.org'
-    'pythonhosted.org'                                 = 'pythonhosted.org'
-}
-
-function Get-WildcardInfo {
-    param([string]$Hostname)
-    $isWildcard = $Hostname.StartsWith('*') -or $Hostname.Contains('*')
-    $probeHost = ''
-    if ($isWildcard -and $script:WildcardProbeHosts.ContainsKey($Hostname)) {
-        $probeHost = $script:WildcardProbeHosts[$Hostname]
-    }
-    return @{ IsWildcard = $isWildcard; ProbeHost = $probeHost }
-}
-
-#endregion
-
-#region --- Template-host normalisation ---
-
-# Some rows in the markdown use placeholder text instead of real hostnames.
-# These are skipped or substituted.
-$script:SkipHosts = @(
-    'yourarcgatewayendpointid.gw.arc.azure.com'  # unique per deployment; excluded from generic list
-    'yourhcikeyvaultname.vault.azure.net'          # substituted by validation-config.json keyVaultFqdn
-    '<log-analytics-workspace-id>.ods.opinsights.azure.com'
-    '<data-collection-endpoint>.eastus.ingest.monitor.azure.com'
-)
-
-#endregion
-
-#region --- Markdown table parsers ---
-
-function ConvertFrom-AzureLocalEndpointsTable {
+function Get-WildcardProbeHost {
     <#
-    Parses azurelocal-endpoints.md pipe table format:
-    | Id | Azure Local Component | Endpoint URL | Port | Notes | Arc gateway support | Required for |
+    Representative concrete host for a wildcard row. Basis 'list' = another row of the SAME
+    list matches the wildcard (strongest). 'curated' = widely documented concrete name,
+    NOT taken from the Learn list (a failure is only ever a warning).
     #>
-    param([string[]]$Lines, [string]$SourceFile)
-
-    $entries = [System.Collections.Generic.List[hashtable]]::new()
-    $inTable = $false
-
-    foreach ($line in $Lines) {
-        $trimmed = $line.Trim()
-        if ($trimmed.StartsWith('|') -and $trimmed -match '\|\s*\d+\s*\|') {
-            $inTable = $true
-        }
-        if (-not $inTable) { continue }
-        if (-not $trimmed.StartsWith('|')) { $inTable = $false; continue }
-        # Skip header and separator rows
-        if ($trimmed -match '^\|\s*Id\s*\|' -or $trimmed -match '^\|\s*-') { continue }
-
-        $cols = $trimmed.Split('|') | ForEach-Object { $_.Trim() }
-        # cols[0] = empty, cols[1]=Id, cols[2]=Component, cols[3]=URL, cols[4]=Port, cols[5]=Notes
-        if ($cols.Count -lt 5) { continue }
-
-        $rawHost = $cols[3].Trim()
-        # Strip leading https:// if present in the URL column
-        $rawHost = $rawHost -replace '^https?://', ''
-        # Strip trailing path for hosts like crl.microsoft.com/pkiinfra
-        # Keep the path for probing purposes — extract just the hostname
-        $hostOnly = $rawHost -replace '/.*$', ''
-        if ([string]::IsNullOrWhiteSpace($hostOnly)) { continue }
-        if ($script:SkipHosts -contains $hostOnly) { continue }
-
-        $portStr = $cols[4].Trim()
-        $port = 443
-        if ($portStr -match '^\d+$') { $port = [int]$portStr }
-
-        $component = if ($cols[2]) { $cols[2].Trim() } else { 'Azure Local' }
-        $notes = if ($cols[5]) { $cols[5].Trim() } else { '' }
-        $requiredFor = if ($cols.Count -gt 6) { $cols[6].Trim() } else { '' }
-
-        # Protocol: NTP rows use UDP 123; everything else is TCP/HTTPS
-        $protocol = if ($port -eq 123) { 'UDP' } elseif ($port -eq 80) { 'HTTP' } else { 'HTTPS' }
-
-        $severity = Get-Severity -Component $component -Notes $notes
-        $wildcardInfo = Get-WildcardInfo -Hostname $hostOnly
-
-        $entry = @{
-            name        = "$component : $hostOnly"
-            host        = $hostOnly
-            port        = $port
-            protocol    = $protocol
-            category    = $component
-            severity    = $severity
-            sourceFile  = $SourceFile
-            notes       = $notes
-            requiredFor = $requiredFor
-            wildcard    = $wildcardInfo.IsWildcard
-            probeHost   = $wildcardInfo.ProbeHost
-        }
-        $entries.Add($entry)
+    param([string]$Wildcard, [string[]]$ConcreteHosts, [string]$Region)
+    $regex = '^' + (([regex]::Escape($Wildcard)) -replace '\\\*', '[a-z0-9-]+(\.[a-z0-9-]+)*') + '$'
+    $match = @($ConcreteHosts | Where-Object { $_ -ne $Wildcard -and $_ -match $regex }) | Select-Object -First 1
+    if ($match) { return @{ Host = $match; Basis = 'list' } }
+    $curated = @{
+        # Documented in the Defender for Endpoint network requirements; not part of the Learn list.
+        '*.endpoint.security.microsoft.com' = 'unitedstates.endpoint.security.microsoft.com'
     }
-    return $entries
+    if ($curated.ContainsKey($Wildcard)) {
+        return @{ Host = ($curated[$Wildcard] -replace '\{region\}', $Region); Basis = 'curated' }
+    }
+    return @{ Host = ''; Basis = '' }
 }
 
-function ConvertFrom-ArcEndpointsTable {
+function ConvertFrom-EndpointMarkdown {
     <#
-    Parses arc-endpoints.md — multiple sections, each with a pipe table.
-    Header format varies: | # | Endpoint | Port | Protocol | Purpose | When |
-                      or: | # | Endpoint | Port | Purpose |
+    Strict parser for the Learn-linked endpoint tables.
+    Returns @{ Entries = [hashtable[]]; Rejected = [hashtable[]] }.
     #>
-    param([string[]]$Lines, [string]$SourceFile)
+    param(
+        [Parameter(Mandatory)] [AllowEmptyString()] [string[]]$Lines,
+        [Parameter(Mandatory)] [string]$SourceUrl,
+        [string]$Region = '',
+        [string]$DefaultComponent = 'Azure Local'
+    )
 
-    $entries = [System.Collections.Generic.List[hashtable]]::new()
-    $currentSection = 'Arc'
+    $entries = New-Object System.Collections.Generic.List[hashtable]
+    $rejected = New-Object System.Collections.Generic.List[hashtable]
+    $map = $null
 
+    $lineNo = 0
     foreach ($line in $Lines) {
-        $trimmed = $line.Trim()
+        $lineNo++
+        $t = $line.Trim()
+        if (-not $t.StartsWith('|')) { $map = $null; continue }
+        $cells = @($t.Trim('|').Split('|') | ForEach-Object { $_.Trim() })
 
-        # Track section headings to assign category
-        if ($trimmed -match '^##\s+(.+)') {
-            $currentSection = $Matches[1].Trim()
-        }
-
-        if (-not $trimmed.StartsWith('|')) { continue }
-        # Skip header and separator rows
-        if ($trimmed -match '^\|\s*#\s*\|' -or $trimmed -match '^\|\s*-') { continue }
-        # Must start with a number row
-        if ($trimmed -notmatch '^\|\s*\d+\s*\|') { continue }
-
-        $cols = $trimmed.Split('|') | ForEach-Object { $_.Trim() }
-        if ($cols.Count -lt 4) { continue }
-
-        # Format A: | # | Endpoint | Port | Protocol | Purpose | When |
-        # Format B: | # | Endpoint | Port | Purpose |
-        $rawHost = $cols[2].Trim()
-        $rawHost = $rawHost.Trim('`')
-
-        $hostOnly = $rawHost -replace '^https?://', '' -replace '/.*$', ''
-        if ([string]::IsNullOrWhiteSpace($hostOnly)) { continue }
-        if ($script:SkipHosts -contains $hostOnly) { continue }
-
-        $portStr = $cols[3].Trim()
-        $port = 443
-        if ($portStr -match '^\d+$') { $port = [int]$portStr }
-
-        # Determine if format has explicit Protocol column
-        $protocol = 'HTTPS'
-        $notes = ''
-        if ($cols.Count -ge 6 -and $cols[4] -match '^(HTTPS|HTTP|WSS|UDP|TCP)') {
-            $protocol = $cols[4].Trim().ToUpper()
-            $notes = if ($cols.Count -gt 5) { $cols[5].Trim() } else { '' }
-        } elseif ($cols.Count -ge 5) {
-            $notes = $cols[4].Trim()
-        }
-
-        if ($port -eq 123) { $protocol = 'UDP' }
-        if ($port -eq 80 -and $protocol -eq 'HTTPS') { $protocol = 'HTTP' }
-
-        $severity = Get-Severity -Component $currentSection -Notes $notes
-        $wildcardInfo = Get-WildcardInfo -Hostname $hostOnly
-
-        $entry = @{
-            name        = "$currentSection : $hostOnly"
-            host        = $hostOnly
-            port        = $port
-            protocol    = $protocol
-            category    = $currentSection
-            severity    = $severity
-            sourceFile  = $SourceFile
-            notes       = $notes
-            requiredFor = ''
-            wildcard    = $wildcardInfo.IsWildcard
-            probeHost   = $wildcardInfo.ProbeHost
-        }
-        $entries.Add($entry)
-    }
-    return $entries
-}
-
-function ConvertFrom-DellEndpointsTable {
-    <#
-    Parses dell-endpoints.md pipe table.
-    Header: | Id | Endpoint Description | Endpoint URL | Port | Notes | Arc gateway support | Required for |
-    #>
-    param([string[]]$Lines, [string]$SourceFile)
-
-    $entries = [System.Collections.Generic.List[hashtable]]::new()
-    $inTable = $false
-
-    foreach ($line in $Lines) {
-        $trimmed = $line.Trim()
-        if ($trimmed -match '^\|\s*\d+\s*\|') { $inTable = $true }
-        if (-not $inTable) { continue }
-        if (-not $trimmed.StartsWith('|')) { $inTable = $false; continue }
-        if ($trimmed -match '^\|\s*Id\s*\|' -or $trimmed -match '^\|\s*-') { continue }
-
-        $cols = $trimmed.Split('|') | ForEach-Object { $_.Trim() }
-        if ($cols.Count -lt 4) { continue }
-
-        $component = if ($cols[2]) { $cols[2].Trim() } else { 'Dell SBE' }
-        $rawHost = $cols[3].Trim()
-        $rawHost = $rawHost -replace '^https?://', ''
-        $hostOnly = $rawHost -replace '/.*$', ''
-        if ([string]::IsNullOrWhiteSpace($hostOnly)) { continue }
-
-        $portStr = $cols[4].Trim()
-        $port = 443
-        if ($portStr -match '^\d+$') { $port = [int]$portStr }
-
-        $notes = if ($cols.Count -gt 5) { $cols[5].Trim() } else { '' }
-        $protocol = if ($port -eq 80) { 'HTTP' } else { 'HTTPS' }
-
-        $severity = Get-Severity -Component $component -Notes $notes
-        # SBE/Dell endpoints are always warning — not deployment blockers
-        if ($severity -eq 'critical') { $severity = 'warning' }
-
-        $wildcardInfo = Get-WildcardInfo -Hostname $hostOnly
-
-        $entry = @{
-            name        = "Dell SBE : $hostOnly"
-            host        = $hostOnly
-            port        = $port
-            protocol    = $protocol
-            category    = 'Dell SBE'
-            severity    = $severity
-            sourceFile  = $SourceFile
-            notes       = $notes
-            requiredFor = 'Deployment & Post deployment'
-            wildcard    = $wildcardInfo.IsWildcard
-            probeHost   = $wildcardInfo.ProbeHost
-        }
-        $entries.Add($entry)
-    }
-    return $entries
-}
-
-#endregion
-
-#region --- Deduplication ---
-
-function Merge-EndpointList {
-    [CmdletBinding()]
-    param([System.Collections.Generic.List[hashtable]]$Entries)
-
-    # Deduplicate on host+port combination. When duplicates exist, prefer the
-    # entry with higher severity (critical > warning > informational).
-    $severityRank = @{ critical = 0; warning = 1; informational = 2 }
-    $seen = @{}
-    $result = [System.Collections.Generic.List[hashtable]]::new()
-
-    foreach ($entry in $Entries) {
-        $key = "$($entry.host.ToLower()):$($entry.port)"
-        if ($seen.ContainsKey($key)) {
-            # Keep higher-severity entry
-            $existing = $seen[$key]
-            if ($severityRank[$entry.severity] -lt $severityRank[$existing.severity]) {
-                $seen[$key] = $entry
+        if ($null -eq $map) {
+            $hdr = @($cells | ForEach-Object { $_.ToLowerInvariant() })
+            $urlIdx = [array]::IndexOf($hdr, 'endpoint url')
+            $portIdx = [array]::IndexOf($hdr, 'port')
+            if ($urlIdx -ge 0 -and $portIdx -ge 0) {
+                $map = @{
+                    Url = $urlIdx; Port = $portIdx
+                    Component = -1; Notes = -1; Gateway = -1; Required = -1; Id = -1
+                }
+                for ($i = 0; $i -lt $hdr.Count; $i++) {
+                    switch -Regex ($hdr[$i]) {
+                        '^id$|^#$'                                  { $map.Id = $i }
+                        'component|endpoint description'            { $map.Component = $i }
+                        '^notes$'                                   { $map.Notes = $i }
+                        'arc gateway'                               { $map.Gateway = $i }
+                        'required for'                              { $map.Required = $i }
+                    }
+                }
             }
-        } else {
-            $seen[$key] = $entry
+            continue
+        }
+        if ($t -match '^\|[\s:|-]+\|?$') { continue }   # separator row
+
+        $get = {
+            param([int]$i)
+            if ($i -ge 0 -and $i -lt $cells.Count) { return (ConvertTo-CleanCell $cells[$i]) }
+            return ''
+        }
+        $rowId = & $get $map.Id
+        $component = & $get $map.Component
+        if ($component -eq '') { $component = $DefaultComponent }
+        $urlCell = & $get $map.Url
+        $notes = & $get $map.Notes
+        $requiredFor = & $get $map.Required
+        $gw = ConvertFrom-ArcGatewayCell (& $get $map.Gateway)
+
+        $reject = {
+            param([string]$why)
+            $rejected.Add(@{ line = $lineNo; id = $rowId; component = $component; value = $urlCell; reason = $why })
+        }
+
+        $ports = Split-PortCell (& $get $map.Port)
+        $hostCandidates = @(Split-EndpointCell $urlCell)
+        if ($hostCandidates.Count -eq 0) { & $reject 'empty endpoint cell'; continue }
+
+        foreach ($cand in $hostCandidates) {
+            $hostName = $cand.Host
+            $placeholder = Get-PlaceholderKind $hostName
+            if (-not (Test-EndpointHostName $hostName)) {
+                & $reject "not a host name: '$hostName'"
+                continue
+            }
+            $candPorts = $ports
+            if ($cand.Port -gt 0) { $candPorts = @($cand.Port) }
+            if ($null -eq $candPorts) { & $reject "port is not numeric for '$hostName'"; continue }
+
+            foreach ($port in $candPorts) {
+                $protocol = 'HTTPS'
+                if ($port -eq 123) { $protocol = 'UDP' } elseif ($port -eq 80) { $protocol = 'HTTP' }
+                $phase = Get-PhaseFromRequiredFor $requiredFor
+                $probe = $true
+                $skipReason = ''
+                if ($port -eq 8084) {
+                    # Per Beacon policy: 8084 is a node/cluster-internal service port, not an outbound
+                    # firewall rule. Listed by Learn for AKS Arc post-deployment; never probed.
+                    $probe = $false
+                    $skipReason = 'Port 8084 is a cluster-internal service port, not an outbound probe target'
+                }
+                $severity = Get-EndpointSeverity -Component $component -Phase $phase -HostName $hostName -Port $port -Notes $notes
+                if (-not $probe) { $severity = 'informational' }
+                $entries.Add(@{
+                    id             = $rowId
+                    component      = $component
+                    host           = $hostName
+                    port           = $port
+                    protocol       = $protocol
+                    path           = $cand.Path
+                    wildcard       = $hostName.Contains('*')
+                    probeHost      = ''
+                    probeHostBasis = ''
+                    placeholder    = $placeholder
+                    severity       = $severity
+                    phase          = $phase
+                    requiredFor    = $requiredFor
+                    arcGateway     = $gw.Mode
+                    arcGatewayNote = $gw.Note
+                    probe          = $probe
+                    skipReason     = $skipReason
+                    notes          = $notes
+                    source         = $SourceUrl
+                })
+            }
         }
     }
 
-    # Collect and sort: severity asc (critical first), then category, then host
-    $sorted = $seen.Values | Sort-Object @{Expression = { $severityRank[$_.severity] }}, category, host
-    foreach ($item in $sorted) {
-        $result.Add($item)
+    # Representative probe hosts for wildcard rows (needs the full concrete host list)
+    $concrete = @($entries | Where-Object { -not $_.wildcard -and $_.placeholder -eq '' } | ForEach-Object { $_.host })
+    foreach ($e in $entries) {
+        if ($e.wildcard) {
+            $pr = Get-WildcardProbeHost -Wildcard $e.host -ConcreteHosts $concrete -Region $Region
+            $e.probeHost = $pr.Host
+            $e.probeHostBasis = $pr.Basis
+        }
     }
-    return $result
+    return @{ Entries = $entries.ToArray(); Rejected = $rejected.ToArray() }
+}
+
+function Merge-EndpointEntries {
+    <# Collapse duplicates on host+port+path; keep the more severe, join differing notes. #>
+    param([hashtable[]]$Entries)
+    $rank = @{ critical = 0; warning = 1; informational = 2 }
+    $seen = [ordered]@{}
+    foreach ($e in $Entries) {
+        $key = '{0}:{1}{2}' -f $e.host, $e.port, $e.path
+        if (-not $seen.Contains($key)) { $seen[$key] = $e; continue }
+        if ($rank[$e.severity] -lt $rank[$seen[$key].severity]) { $seen[$key] = $e }
+    }
+    return @($seen.Values | Sort-Object @{ Expression = { $rank[$_.severity] } }, component, host, port)
 }
 
 #endregion
 
 #region --- Main ---
 
-$resolvedEndpointsDir = Resolve-EndpointsDir -Provided $EndpointsDir
-$resolvedOutputPath = Resolve-OutputPath -Provided $OutputPath
+function Invoke-EndpointConversion {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [string]$EndpointsDir,
+        [string]$OutputPath,
+        [switch]$Refresh,
+        [switch]$Strict,
+        [switch]$Force
+    )
+    $sources = Get-Content (Join-Path $EndpointsDir 'sources.json') -Raw | ConvertFrom-Json
+    $learnDir = Join-Path $EndpointsDir 'learn'
+    if (-not (Test-Path $learnDir)) { New-Item -ItemType Directory -Path $learnDir -Force | Out-Null }
 
-Write-Verbose "Endpoints directory : $resolvedEndpointsDir"
-Write-Verbose "Output path         : $resolvedOutputPath"
+    $all = @(
+        foreach ($r in $sources.regions.PSObject.Properties) { @{ Kind = 'region'; Key = $r.Name; Def = $r.Value } }
+        foreach ($o in $sources.oem.PSObject.Properties) { @{ Kind = 'oem'; Key = $o.Name; Def = $o.Value } }
+    )
 
-$azlFile   = Join-Path $resolvedEndpointsDir 'azurelocal-endpoints.md'
-$arcFile   = Join-Path $resolvedEndpointsDir 'arc-endpoints.md'
-$dellFile  = Join-Path $resolvedEndpointsDir 'dell-endpoints.md'
-
-foreach ($f in @($azlFile, $arcFile, $dellFile)) {
-    if (-not (Test-Path $f)) {
-        throw "Required endpoint file not found: $f"
-    }
-}
-
-$allEntries = [System.Collections.Generic.List[hashtable]]::new()
-
-Write-Output "Parsing azurelocal-endpoints.md ..."
-$azlLines = Get-Content $azlFile
-$azlEntries = ConvertFrom-AzureLocalEndpointsTable -Lines $azlLines -SourceFile 'azurelocal-endpoints.md'
-foreach ($e in $azlEntries) { $allEntries.Add($e) }
-Write-Output "  -> $($azlEntries.Count) entries parsed"
-
-Write-Output "Parsing arc-endpoints.md ..."
-$arcLines = Get-Content $arcFile
-$arcEntries = ConvertFrom-ArcEndpointsTable -Lines $arcLines -SourceFile 'arc-endpoints.md'
-foreach ($e in $arcEntries) { $allEntries.Add($e) }
-Write-Output "  -> $($arcEntries.Count) entries parsed"
-
-Write-Output "Parsing dell-endpoints.md ..."
-$dellLines = Get-Content $dellFile
-$dellEntries = ConvertFrom-DellEndpointsTable -Lines $dellLines -SourceFile 'dell-endpoints.md'
-foreach ($e in $dellEntries) { $allEntries.Add($e) }
-Write-Output "  -> $($dellEntries.Count) entries parsed"
-
-$deduped = Merge-EndpointList -Entries $allEntries
-Write-Output "Deduplication: $($allEntries.Count) raw -> $($deduped.Count) unique host:port entries"
-
-# Build ordered output objects for stable JSON serialisation
-$outputList = [System.Collections.Generic.List[PSCustomObject]]::new()
-foreach ($entry in $deduped) {
-    $obj = [PSCustomObject][ordered]@{
-        name        = $entry.name
-        host        = $entry.host
-        port        = $entry.port
-        protocol    = $entry.protocol
-        category    = $entry.category
-        severity    = $entry.severity
-        sourceFile  = $entry.sourceFile
-        notes       = $entry.notes
-        requiredFor = $entry.requiredFor
-        wildcard    = $entry.wildcard
-        probeHost   = $entry.probeHost
-    }
-    $outputList.Add($obj)
-}
-
-# Ensure output directory exists
-$outputDir = Split-Path $resolvedOutputPath -Parent
-if (-not (Test-Path $outputDir)) {
-    if ($PSCmdlet.ShouldProcess($outputDir, 'Create directory')) {
-        New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
-    }
-}
-
-if ((Test-Path $resolvedOutputPath) -and -not $Force) {
-    Write-Warning "Output file already exists: $resolvedOutputPath. Use -Force to overwrite."
-} else {
-    if ($PSCmdlet.ShouldProcess($resolvedOutputPath, 'Write endpoints JSON')) {
-        $wrapper = [PSCustomObject][ordered]@{
-            generatedUtc    = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')
-            sourceDirectory = $resolvedEndpointsDir
-            totalEndpoints  = $outputList.Count
-            endpoints       = $outputList
+    $regions = [ordered]@{}
+    $oems = [ordered]@{}
+    $totalRejected = 0
+    foreach ($item in $all) {
+        $file = Join-Path $learnDir $item.Def.file
+        if ($Refresh) {
+            Write-Verbose "Downloading $($item.Def.url)"
+            Invoke-WebRequest -Uri $item.Def.url -OutFile $file -UseBasicParsing -TimeoutSec 60
         }
-        $wrapper | ConvertTo-Json -Depth 5 | Set-Content -Path $resolvedOutputPath -Encoding UTF8
-        Write-Output "Written: $resolvedOutputPath ($($outputList.Count) endpoints)"
+        if (-not (Test-Path $file)) { throw "Snapshot missing: $file (run with -Refresh)" }
+        $lines = Get-Content $file
+        $lastUpdated = ''
+        $lu = $lines | Where-Object { $_ -match '(?i)last updated on' } | Select-Object -First 1
+        if ($lu -and $lu -match '(?i)last updated on\s+([^*]+?)\*') { $lastUpdated = $Matches[1].Trim() }
+
+        $defaultComp = 'Azure Local'
+        if ($item.Kind -eq 'oem') { $defaultComp = "OEM ($($item.Def.displayName))" }
+        $regionKey = ''
+        if ($item.Kind -eq 'region') { $regionKey = $item.Key }
+        $parsed = ConvertFrom-EndpointMarkdown -Lines $lines -SourceUrl $item.Def.page -Region $regionKey -DefaultComponent $defaultComp
+        if ($item.Kind -eq 'oem') {
+            foreach ($e in $parsed.Entries) { $e.component = $defaultComp; $e.severity = 'warning'; $e.phase = 'both' }
+        }
+        $merged = Merge-EndpointEntries -Entries $parsed.Entries
+        $totalRejected += $parsed.Rejected.Count
+        foreach ($rj in $parsed.Rejected) {
+            Write-Warning ("[{0}] line {1}: rejected '{2}' -- {3}" -f $item.Key, $rj.line, $rj.value, $rj.reason)
+        }
+        $block = [ordered]@{
+            displayName = $item.Def.displayName
+            sourceUrl   = $item.Def.page
+            lastUpdated = $lastUpdated
+            cloud       = 'AzureCloud'
+            count       = $merged.Count
+            endpoints   = @($merged | ForEach-Object {
+                [pscustomobject][ordered]@{
+                    id = $_.id; component = $_.component; host = $_.host; port = $_.port; protocol = $_.protocol
+                    path = $_.path; wildcard = $_.wildcard; probeHost = $_.probeHost; probeHostBasis = $_.probeHostBasis
+                    placeholder = $_.placeholder; severity = $_.severity; phase = $_.phase; requiredFor = $_.requiredFor
+                    arcGateway = $_.arcGateway; arcGatewayNote = $_.arcGatewayNote; probe = $_.probe
+                    skipReason = $_.skipReason; notes = $_.notes; source = $_.source
+                }
+            })
+            rejected    = @($parsed.Rejected | ForEach-Object { [pscustomobject]$_ })
+        }
+        if ($item.Def.PSObject.Properties.Name -contains 'cloud') { $block.cloud = $item.Def.cloud }
+        if ($item.Kind -eq 'region') { $regions[$item.Key] = $block } else { $oems[$item.Key] = $block }
+        Write-Information ("  {0,-15} {1,3} endpoints, {2} rejected" -f $item.Key, $merged.Count, $parsed.Rejected.Count) -InformationAction Continue
     }
+
+    if ($Strict -and $totalRejected -gt 0) { throw "$totalRejected row(s) rejected and -Strict is set." }
+
+    $doc = [pscustomobject][ordered]@{
+        schemaVersion = '2.0'
+        releaseTrain  = $sources.releaseTrain
+        learnUrl      = $sources.learnUrl
+        generatedUtc  = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
+        converter     = "Convert-EndpointsToJson.ps1 $($script:ConverterVersion)"
+        regions       = [pscustomobject]$regions
+        oem           = [pscustomobject]$oems
+    }
+    if ((Test-Path $OutputPath) -and -not $Force) {
+        Write-Warning "Output exists: $OutputPath. Use -Force to overwrite."
+        return $doc
+    }
+    if ($PSCmdlet.ShouldProcess($OutputPath, 'Write endpoints.json')) {
+        $doc | ConvertTo-Json -Depth 8 | Set-Content -Path $OutputPath -Encoding UTF8
+        Write-Information "Written: $OutputPath" -InformationAction Continue
+    }
+    return $doc
 }
+
+# Dot-sourcing (tests) loads the functions only.
+if ($MyInvocation.InvocationName -eq '.') { return }
+
+$scriptDir = $PSScriptRoot
+if (-not $EndpointsDir) { $EndpointsDir = [IO.Path]::GetFullPath((Join-Path $scriptDir '..\config\endpoints')) }
+if (-not $OutputPath) { $OutputPath = Join-Path $scriptDir 'config\endpoints.json' }
+$null = Invoke-EndpointConversion -EndpointsDir $EndpointsDir -OutputPath $OutputPath -Refresh:$Refresh -Strict:$Strict -Force:$Force
 
 #endregion
