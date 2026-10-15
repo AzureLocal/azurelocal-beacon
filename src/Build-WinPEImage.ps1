@@ -15,11 +15,11 @@
       5. Add WinPE optional components (WMI, NetFX, Scripting, PowerShell, StorageWMI, DismCmdlets)
          with matching en-us language packs.
       6. Extract PowerShell 7 into \Tools\PowerShell7 inside the mounted image.
-      7. Stage AzStackHci.EnvironmentChecker module into \Tools\Modules. Copies from local
-         -ModuleCachePath (default C:\build\modules) if present; otherwise downloads from
-         PSGallery with a 5-minute timeout and caches locally. FAILS the build if unavailable.
-      8. Copy Start-AzlValidation.ps1 and the config folder into \Tools.
-      9. Write startnet.cmd into \Windows\System32\startnet.cmd.
+      7. Stage the pinned AzStackHci.EnvironmentChecker module (tools/modules, see
+         modules.lock.json) into \Tools\Modules. The build fails EARLY if it is missing.
+      8. Copy the in-image scripts, lib/ and the config folder into \Tools.
+      9. Write startnet.cmd into \Windows\System32\startnet.cmd (version/brand tokens replaced) and
+         build-manifest.json into \Tools (ADK/PS7/module versions and hashes, drivers, scripts).
      10. Set scratch space to 512 MB.
      11. Unmount and commit the image.
      12. Build ISO via MakeWinPEMedia.
@@ -48,16 +48,28 @@
 
 .PARAMETER PS7ZipPath
     Path to a PowerShell-7.x-win-x64.zip file to extract into the image.
-    If omitted, the script downloads the latest PS 7 LTS release zip from GitHub.
+    If omitted, the script downloads the release zip from GitHub (the latest stable release, or
+    -PS7Version if given). The zip is ALWAYS verified against a SHA256: the hashes.sha256 asset
+    published with the PowerShell release (download) or -PS7ZipSha256 (supplied file).
+
+.PARAMETER PS7ZipSha256
+    Expected SHA256 of -PS7ZipPath (from the hashes.sha256 asset of that PowerShell release).
+    If a supplied zip has no expected hash the build fails unless -AllowUnverifiedPS7 is set.
+
+.PARAMETER PS7Version
+    Exact PowerShell release to download, e.g. 7.6.6. Default: latest stable release.
+
+.PARAMETER AllowUnverifiedPS7
+    Accept a supplied -PS7ZipPath that has no expected hash (the computed hash is still recorded in
+    the build manifest). Not recommended.
+
+.PARAMETER Brand
+    Optional single line shown under the banner (for example your organisation name). ASCII only.
+    Nothing vendor-specific is hard-coded in the image.
 
 .PARAMETER ConfigPath
     Path to the folder containing per-POC config files that will be copied into
     \Tools\config inside the image. Defaults to src/winpe/config relative to the repo root.
-
-.PARAMETER SkipModuleDownload
-    Skip the Save-Module step for AzStackHci.EnvironmentChecker.
-    Use on air-gapped build machines. The module can be pre-staged manually at
-    <WorkspacePath>\mount\Tools\Modules before the unmount step.
 
 .PARAMETER BuildUSB
     If set, also writes the image to a USB drive after ISO creation.
@@ -84,13 +96,13 @@
     Build without attempting to download from PowerShell Gallery.
 
 .NOTES
-    Version:       1.0
-    Last Updated:  2026-06-10
+    Version:       see src/lib/Beacon.Version.ps1
+    Last Updated:  2026-10-15
     Prerequisites:
       - Windows ADK (winget install Microsoft.WindowsADK)
       - WinPE Add-on  (winget install Microsoft.ADKPEAddon)
       - Must run as Administrator (DISM mount requires elevation)
-      - Internet access required unless -SkipModuleDownload and -PS7ZipPath are both supplied
+      - Internet access is only needed to download PowerShell 7 (supply -PS7ZipPath and -PS7ZipSha256 to build offline)
     Related:
       - docs/index.md                      -- full validation lifecycle and coverage matrix
       - src/Start-AzlValidation.ps1        -- validation script bundled in the image
@@ -114,13 +126,22 @@ param(
     [string]$PS7ZipPath = '',
 
     [Parameter(Mandatory = $false)]
+    [string]$PS7ZipSha256 = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$PS7Version = '',
+
+    [Parameter(Mandatory = $false)]
+    [switch]$AllowUnverifiedPS7,
+
+    [Parameter(Mandatory = $false)]
+    [string]$Brand = '',
+
+    [Parameter(Mandatory = $false)]
     [string]$ConfigPath = '',
 
     [Parameter(Mandatory = $false)]
     [string]$ModulesPath = (Join-Path $PSScriptRoot '..\tools\modules'),
-
-    [Parameter(Mandatory = $false)]
-    [switch]$SkipModuleDownload,
 
     [Parameter(Mandatory = $false)]
     [switch]$BuildUSB,
@@ -132,8 +153,10 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+. (Join-Path $PSScriptRoot 'lib\Beacon.Version.ps1')
+
 # ============================================================
-# Constants — derived from parameters at runtime
+# Constants - derived from parameters at runtime
 # ============================================================
 $ADK_ROOT       = 'C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit'
 $WINPE_ADK_ROOT = Join-Path $ADK_ROOT 'Windows Preinstallation Environment'
@@ -184,7 +207,7 @@ function Write-Step {
 }
 
 # ============================================================
-# Cleanup helper — dismounts any lingering mount
+# Cleanup helper - dismounts any lingering mount
 # ============================================================
 function Invoke-MountCleanup {
     [CmdletBinding()]
@@ -227,47 +250,201 @@ function Assert-AdkInstalled {
 }
 
 # ============================================================
-# PS7 zip acquisition
+# PS7 zip acquisition and verification
 # ============================================================
-function Get-ResolvedPS7Zip {
+function Get-ExpectedZipHash {
+    <# Finds the SHA256 for a file name in a hashes.sha256 text ('<hash> *<name>' or '<hash>  <name>'). Pure. #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false)]
-        [string]$ProvidedPath
+        [Parameter(Mandatory)] [string]$HashFileText,
+        [Parameter(Mandatory)] [string]$FileName
+    )
+    foreach ($line in ($HashFileText -split "`r?`n")) {
+        if ($line -match '^\s*([0-9a-fA-F]{64})\s+\*?(.+?)\s*$' -and $Matches[2] -eq $FileName) {
+            return $Matches[1].ToLowerInvariant()
+        }
+    }
+    return $null
+}
+
+function Test-FileSha256 {
+    <# True when the file's SHA256 equals Expected (case-insensitive). #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$Path,
+        [Parameter(Mandatory)] [string]$Expected
+    )
+    $actual = (Get-FileHash -Path $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+    return ($actual -eq $Expected.Trim().ToLowerInvariant())
+}
+
+function Get-ResolvedPS7Zip {
+    <#
+    Returns @{ Path; Sha256; Version; Verified; Source }. Throws when the hash does not match, or when
+    no expected hash can be established (unless -AllowUnverified).
+    #>
+    [CmdletBinding()]
+    param(
+        [string]$ProvidedPath,
+        [string]$ExpectedSha256 = '',
+        [string]$Version = '',
+        [switch]$AllowUnverified
     )
 
     if ($ProvidedPath -and (Test-Path $ProvidedPath)) {
         Write-Step "Using provided PS7 zip: $ProvidedPath"
-        return $ProvidedPath
+        $actual = (Get-FileHash -Path $ProvidedPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $ver = ''
+        if ((Split-Path $ProvidedPath -Leaf) -match 'PowerShell-(\d+\.\d+\.\d+[^-]*)-win-x64') { $ver = $Matches[1] }
+        if ($ExpectedSha256) {
+            if ($actual -ne $ExpectedSha256.Trim().ToLowerInvariant()) {
+                throw "PS7 zip SHA256 mismatch. Expected $ExpectedSha256 but the file is $actual."
+            }
+            Write-Step 'PS7 zip SHA256 verified against -PS7ZipSha256.' -Level Success
+            return @{ Path = $ProvidedPath; Sha256 = $actual; Version = $ver; Verified = $true; Source = 'provided' }
+        }
+        if (-not $AllowUnverified) {
+            throw "PS7 zip '$ProvidedPath' has no expected hash. Pass -PS7ZipSha256 (from the release's hashes.sha256) or -AllowUnverifiedPS7. Computed: $actual"
+        }
+        Write-Warning "PS7 zip accepted UNVERIFIED (-AllowUnverifiedPS7). SHA256 $actual"
+        return @{ Path = $ProvidedPath; Sha256 = $actual; Version = $ver; Verified = $false; Source = 'provided' }
     }
 
     if ($ProvidedPath -and -not (Test-Path $ProvidedPath)) {
         Write-Warning "PS7ZipPath '$ProvidedPath' not found. Downloading from GitHub."
     }
 
-    Write-Step 'Querying GitHub for latest PowerShell 7 LTS release...'
+    Write-Step 'Querying GitHub for the PowerShell 7 release...'
     try {
-        $headers   = @{ 'User-Agent' = 'AzlPocWinPEBuilder/1.0' }
-        $releases  = Invoke-RestMethod -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases' `
-                         -Headers $headers -TimeoutSec 30
-        $release   = $releases | Where-Object {
-            (-not $_.prerelease) -and ($_.assets | Where-Object { $_.name -like 'PowerShell-*-win-x64.zip' })
-        } | Select-Object -First 1
-
+        $headers = @{ 'User-Agent' = 'AzlBeaconBuilder/1.1' }
+        if ($Version) {
+            $release = Invoke-RestMethod -Uri "https://api.github.com/repos/PowerShell/PowerShell/releases/tags/v$Version" -Headers $headers -TimeoutSec 30
+        } else {
+            $releases = Invoke-RestMethod -Uri 'https://api.github.com/repos/PowerShell/PowerShell/releases' -Headers $headers -TimeoutSec 30
+            $release = $releases | Where-Object {
+                (-not $_.prerelease) -and ($_.assets | Where-Object { $_.name -like 'PowerShell-*-win-x64.zip' })
+            } | Select-Object -First 1
+        }
         if ($null -eq $release) { throw 'No suitable PowerShell release found on GitHub.' }
 
-        $asset = $release.assets | Where-Object { $_.name -like 'PowerShell-*-win-x64.zip' } |
-                 Select-Object -First 1
-        $dest  = Join-Path $env:TEMP $asset.name
+        $asset = $release.assets | Where-Object { $_.name -like 'PowerShell-*-win-x64.zip' } | Select-Object -First 1
+        $hashAsset = $release.assets | Where-Object { $_.name -eq 'hashes.sha256' } | Select-Object -First 1
+        if ($null -eq $asset) { throw "Release $($release.tag_name) has no win-x64 zip." }
+        $expected = $null
+        if ($hashAsset) {
+            $hashText = (Invoke-WebRequest -Uri $hashAsset.browser_download_url -UseBasicParsing -Headers $headers -TimeoutSec 30).Content
+            if ($hashText -is [byte[]]) { $hashText = [System.Text.Encoding]::UTF8.GetString($hashText) }
+            $expected = Get-ExpectedZipHash -HashFileText $hashText -FileName $asset.name
+        }
+        if (-not $expected -and $ExpectedSha256) { $expected = $ExpectedSha256.Trim().ToLowerInvariant() }
+        if (-not $expected) { throw "No SHA256 published for $($asset.name) (hashes.sha256 asset missing or without an entry); refusing to use an unverified download." }
 
+        $dest = Join-Path ([IO.Path]::GetTempPath()) $asset.name
         Write-Step "Downloading $($asset.name) from GitHub..."
         Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest -UseBasicParsing
-        Write-Step "Downloaded to $dest" -Level Success
-        return $dest
+        if (-not (Test-FileSha256 -Path $dest -Expected $expected)) {
+            Remove-Item $dest -Force -ErrorAction SilentlyContinue
+            throw "SHA256 mismatch for downloaded $($asset.name) (expected $expected)."
+        }
+        Write-Step "Downloaded and SHA256-verified: $dest" -Level Success
+        return @{ Path = $dest; Sha256 = $expected; Version = ($release.tag_name -replace '^v', ''); Verified = $true; Source = 'github' }
     }
     catch {
-        throw "Failed to download PowerShell 7 LTS: $_`nProvide -PS7ZipPath to use a cached file."
+        throw "Failed to obtain PowerShell 7: $_`nProvide -PS7ZipPath with -PS7ZipSha256 to use a cached file."
     }
+}
+
+# ============================================================
+# ADK / WinPE add-on version detection and build manifest
+# ============================================================
+function Get-AdkVersionInfo {
+    <# ADK and WinPE add-on versions from the Uninstall registry keys (both views). Missing = ''. #>
+    [CmdletBinding()]
+    param()
+    $keys = @(
+        'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+        'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    )
+    $info = @{ AdkVersion = ''; WinPEAddonVersion = '' }
+    foreach ($k in $keys) {
+        foreach ($p in @(Get-ItemProperty -Path $k -ErrorAction SilentlyContinue)) {
+            if (-not ($p.PSObject.Properties.Name -contains 'DisplayName')) { continue }
+            $name = "$($p.DisplayName)"
+            $ver = ''
+            if ($p.PSObject.Properties.Name -contains 'DisplayVersion') { $ver = "$($p.DisplayVersion)" }
+            if ($name -match 'Windows Assessment and Deployment Kit Windows Preinstallation Environment') { $info.WinPEAddonVersion = $ver }
+            elseif ($name -match '^Windows Assessment and Deployment Kit$') { $info.AdkVersion = $ver }
+        }
+    }
+    return $info
+}
+
+function Test-AdkVersionExpectation {
+    <# Returns @{ Ok; Message }. Prefix like '10.1.26100' matches '10.1.26100.2454'. Pure. #>
+    [CmdletBinding()]
+    param([string]$Version, [Parameter(Mandatory)] [string]$ExpectedPrefix)
+    if (-not $Version) { return @{ Ok = $false; Message = 'ADK version could not be read from the registry' } }
+    if ($Version.StartsWith($ExpectedPrefix)) { return @{ Ok = $true; Message = "ADK $Version matches expected $ExpectedPrefix.*" } }
+    return @{ Ok = $false; Message = "ADK $Version differs from the tested $ExpectedPrefix.*; the build continues but boot behaviour is untested" }
+}
+
+function Get-StartnetContent {
+    <# Replaces the @@...@@ tokens in startnet.cmd. Brand is reduced to safe ASCII and cmd-escaped. Pure. #>
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [string]$Template, [Parameter(Mandatory)] [string]$Version, [string]$Brand = '')
+    $line = ''
+    $safe = ($Brand -replace '[^\x20-\x7E]', '').Trim()
+    if ($safe) {
+        $safe = $safe -replace '([&|<>^])', '^$1' -replace '%', '%%'
+        $line = "echo   $safe"
+    }
+    $out = $Template -replace '@@BEACON_VERSION@@', "v$Version"
+    if ($line) {
+        $out = $out -replace '(?m)^@@BRAND_LINE@@', $line.Replace('$', '$$')
+    } else {
+        $out = $out -replace '(?m)^@@BRAND_LINE@@\r?\n', ''
+    }
+    return $out
+}
+
+function New-BuildManifest {
+    <# Pure: assembles the build manifest object from collected facts. #>
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [hashtable]$Facts)
+    return [pscustomobject][ordered]@{
+        schemaVersion      = '1.0'
+        tool               = [pscustomobject][ordered]@{ name = 'AzL Beacon'; version = $Facts.Version; releaseTrain = $Facts.ReleaseTrain }
+        builtUtc           = $Facts.BuiltUtc
+        gitCommit          = $Facts.GitCommit
+        builder            = [pscustomobject][ordered]@{ powershell = $Facts.BuilderPowerShell; os = $Facts.BuilderOs }
+        adk                = [pscustomobject][ordered]@{
+            adkVersion        = $Facts.AdkVersion
+            winpeAddonVersion = $Facts.WinPEAddonVersion
+            expectedPrefix    = $Facts.AdkExpectedPrefix
+            matchesExpected   = $Facts.AdkMatches
+        }
+        powershell7        = [pscustomobject][ordered]@{
+            version = $Facts.PS7Version; sha256 = $Facts.PS7Sha256; verified = $Facts.PS7Verified; source = $Facts.PS7Source
+        }
+        environmentChecker = [pscustomobject][ordered]@{ version = $Facts.EnvCheckerVersion; manifestSha256 = $Facts.EnvCheckerManifestSha256 }
+        endpoints          = [pscustomobject][ordered]@{ sha256 = $Facts.EndpointsSha256; generatedUtc = $Facts.EndpointsGeneratedUtc }
+        scripts            = @($Facts.Scripts)
+        drivers            = @($Facts.Drivers)
+    }
+}
+
+function Get-FileHashEntries {
+    <# @{ path (relative); sha256 } for every file under Root matching Include. #>
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [string]$Root, [string[]]$Include = @('*'))
+    if (-not (Test-Path $Root)) { return @() }
+    $rootFull = (Resolve-Path $Root).Path.TrimEnd('\')
+    return @(Get-ChildItem -Path $Root -Recurse -File -Include $Include -ErrorAction SilentlyContinue | Sort-Object FullName | ForEach-Object {
+            [pscustomobject][ordered]@{
+                path   = $_.FullName.Substring($rootFull.Length + 1).Replace('\', '/')
+                sha256 = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            }
+        })
 }
 
 # ============================================================
@@ -368,11 +545,14 @@ function Invoke-MakeWinPEMedia {
     Write-Step "$MediaType created: $Destination" -Level Success
 }
 
+# Dot-sourcing (Pester tests) loads the functions only.
+if ($MyInvocation.InvocationName -eq '.') { return }
+
 # ============================================================
 # Main build -- runs in script scope so parameters are visible
 # ============================================================
 
-Write-Step '=== AzL Beacon -- WinPE Image Build ===' -Level Info
+Write-Step "=== AzL Beacon $script:BeaconVersion -- WinPE Image Build ===" -Level Info
 
 # --- Pre-flight ---
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
@@ -386,7 +566,21 @@ if ($BuildUSB -and [string]::IsNullOrWhiteSpace($UsbDriveLetter)) {
     throw '-BuildUSB requires -UsbDriveLetter (e.g. -UsbDriveLetter F).'
 }
 
-$resolvedPS7Zip = Get-ResolvedPS7Zip -ProvidedPath $PS7ZipPath
+# Fail early, before anything is mounted: the Environment Checker module must be staged in the repo.
+$repoModuleCheck = Join-Path $ModulesPath $PS_GALLERY_MODULE
+if (-not (Test-Path $repoModuleCheck)) {
+    throw "Module '$PS_GALLERY_MODULE' not found at '$ModulesPath'. Run scripts/Update-BeaconModules.ps1 first."
+}
+
+$adkInfo = Get-AdkVersionInfo
+$adkCheck = Test-AdkVersionExpectation -Version $adkInfo.AdkVersion -ExpectedPrefix $script:BeaconAdkExpectation.AdkVersionPrefix
+$adkLevel = 'Success'
+if (-not $adkCheck.Ok) { $adkLevel = 'Warning' }
+Write-Step $adkCheck.Message -Level $adkLevel
+if (-not $adkInfo.WinPEAddonVersion) { Write-Warning 'WinPE add-on version could not be read; recorded as empty in the build manifest.' }
+
+$ps7 = Get-ResolvedPS7Zip -ProvidedPath $PS7ZipPath -ExpectedSha256 $PS7ZipSha256 -Version $PS7Version -AllowUnverified:$AllowUnverifiedPS7
+$resolvedPS7Zip = $ps7.Path
 $resolvedConfig = Get-ResolvedConfigPath -ProvidedPath $ConfigPath
 
 # Resolve all paths to absolute so MakeWinPEMedia and DISM work
@@ -451,7 +645,7 @@ try {
                     $infContent = Get-Content $inf.FullName -ErrorAction SilentlyContinue
                     $verLine = $infContent | Where-Object { $_ -match '^\s*DriverVer\s*=' } | Select-Object -First 1
                     if ($verLine -and $verLine -match '=\s*(.+)$') { $driverVer = $Matches[1].Trim() }
-                } catch { }
+                } catch { Write-Verbose "DriverVer not read from $($inf.Name)" }
                 $logLine = "    $($inf.Name)"
                 if ($driverVer) { $logLine += "  [DriverVer=$driverVer]" }
                 Write-Step $logLine
@@ -532,19 +726,18 @@ try {
     )
     foreach ($scriptName in $inImageScripts) {
         $scriptSrc = Join-Path $PSScriptRoot $scriptName
-        if (Test-Path $scriptSrc) {
-            if ($PSCmdlet.ShouldProcess($toolsDest, "Copy $scriptName")) {
-                Copy-Item -Path $scriptSrc -Destination $toolsDest -Force
-                Write-Step "Copied $scriptName." -Level Success
-            }
-        } else {
-            $warnMsg = "$scriptName not found at $scriptSrc."
-            if ($scriptName -eq 'Start-AzlValidation.ps1') {
-                Write-Warning "$warnMsg Rebuild will not boot correctly without this file."
-            } else {
-                Write-Warning "$warnMsg The interactive menu may not function."
-            }
+        if (-not (Test-Path $scriptSrc)) { throw "In-image script not found: $scriptSrc" }
+        if ($PSCmdlet.ShouldProcess($toolsDest, "Copy $scriptName")) {
+            Copy-Item -Path $scriptSrc -Destination $toolsDest -Force
+            Write-Step "Copied $scriptName." -Level Success
         }
+    }
+    # Shared libraries dot-sourced by the scripts above
+    $libSrc = Join-Path $PSScriptRoot 'lib'
+    if (-not (Test-Path $libSrc)) { throw "Library folder not found: $libSrc" }
+    if ($PSCmdlet.ShouldProcess((Join-Path $toolsDest 'lib'), 'Copy lib folder')) {
+        Copy-Item -Path $libSrc -Destination $toolsDest -Recurse -Force
+        Write-Step 'Copied lib/.' -Level Success
     }
 
     $configDest = Join-Path $toolsDest 'config'
@@ -561,6 +754,11 @@ try {
                 Copy-Item -Path $cfgExamp -Destination $cfgJson -Force
                 Write-Step 'Seeded validation-config.json from example (no engagement config provided).' -Level Warning
             }
+            if ($Brand -and (Test-Path $cfgJson)) {
+                $cfgObj = Get-Content $cfgJson -Raw | ConvertFrom-Json
+                $cfgObj | Add-Member -MemberType NoteProperty -Name brand -Value $Brand -Force
+                $cfgObj | ConvertTo-Json -Depth 10 | Set-Content -Path $cfgJson -Encoding UTF8
+            }
         }
     }
     else {
@@ -576,8 +774,40 @@ try {
         throw "startnet.cmd not found at $startnetSrc. It must exist in src/winpe/."
     }
     if ($PSCmdlet.ShouldProcess($startnetDest, 'Install startnet.cmd')) {
-        Copy-Item -Path $startnetSrc -Destination $startnetDest -Force
+        $startnetText = Get-StartnetContent -Template (Get-Content $startnetSrc -Raw) -Version $script:BeaconVersion -Brand $Brand
+        [System.IO.File]::WriteAllText($startnetDest, $startnetText, [System.Text.Encoding]::ASCII)
         Write-Step 'startnet.cmd installed.' -Level Success
+    }
+
+    # --- Step 9b: Build manifest (inside the image) ---
+    Write-Step 'Step 9b: Writing build-manifest.json...'
+    $envManifestPath = Get-ChildItem -Path $repoModuleCheck -Recurse -Filter 'AzStackHci.EnvironmentChecker.psd1' -Depth 2 | Select-Object -First 1
+    $endpointsFile = Join-Path $resolvedConfig 'endpoints.json'
+    $endpointsGenerated = ''
+    if (Test-Path $endpointsFile) {
+        $endpointsGenerated = "$((Get-Content $endpointsFile -Raw | ConvertFrom-Json).generatedUtc)"
+    }
+    $gitCommit = ''
+    try { $gitCommit = "$(& git -C (Split-Path $PSScriptRoot -Parent) rev-parse HEAD 2>$null)".Trim() } catch { $gitCommit = '' }
+    $facts = @{
+        Version = $script:BeaconVersion; ReleaseTrain = $script:BeaconReleaseTrain
+        BuiltUtc = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'); GitCommit = $gitCommit
+        BuilderPowerShell = $PSVersionTable.PSVersion.ToString(); BuilderOs = [System.Environment]::OSVersion.VersionString
+        AdkVersion = $adkInfo.AdkVersion; WinPEAddonVersion = $adkInfo.WinPEAddonVersion
+        AdkExpectedPrefix = $script:BeaconAdkExpectation.AdkVersionPrefix; AdkMatches = [bool]$adkCheck.Ok
+        PS7Version = $ps7.Version; PS7Sha256 = $ps7.Sha256; PS7Verified = [bool]$ps7.Verified; PS7Source = $ps7.Source
+        EnvCheckerVersion = $(if ($envManifestPath) { Split-Path (Split-Path $envManifestPath.FullName -Parent) -Leaf } else { '' })
+        EnvCheckerManifestSha256 = $(if ($envManifestPath) { (Get-FileHash $envManifestPath.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } else { '' })
+        EndpointsSha256 = $(if (Test-Path $endpointsFile) { (Get-FileHash $endpointsFile -Algorithm SHA256).Hash.ToLowerInvariant() } else { '' })
+        EndpointsGeneratedUtc = $endpointsGenerated
+        Scripts = @(Get-FileHashEntries -Root $PSScriptRoot -Include @('*.ps1', '*.cmd') | Where-Object { $_.path -notmatch '^(Build-|Convert-)' })
+        Drivers = @(if ($resolvedDriverPath -and (Test-Path $resolvedDriverPath)) { Get-FileHashEntries -Root $resolvedDriverPath -Include @('*.inf', '*.sys', '*.cat', '*.dll') })
+    }
+    $buildManifest = New-BuildManifest -Facts $facts
+    $buildManifestJson = $buildManifest | ConvertTo-Json -Depth 6
+    if ($PSCmdlet.ShouldProcess((Join-Path $toolsDest 'build-manifest.json'), 'Write build manifest')) {
+        Set-Content -Path (Join-Path $toolsDest 'build-manifest.json') -Value $buildManifestJson -Encoding UTF8
+        Write-Step 'build-manifest.json written into the image.' -Level Success
     }
 
     # --- Step 10: Scratch space ---
@@ -603,9 +833,21 @@ catch {
 # --- Step 12: Build ISO ---
 Write-Step 'Step 12: Building ISO...'
 $datestamp = Get-Date -Format 'yyyyMMdd'
-$isoPath   = Join-Path $OutputPath "azl-validate-$datestamp.iso"
+$isoPath   = Join-Path $OutputPath "azl-beacon-$script:BeaconVersion-$datestamp.iso"
 if ($PSCmdlet.ShouldProcess($isoPath, 'Build WinPE ISO')) {
     Invoke-MakeWinPEMedia -MediaType 'ISO' -Destination $isoPath
+    # Sidecar manifest next to the ISO: same content plus the ISO's own hash (cannot be inside the ISO).
+    if (Test-Path $isoPath) {
+        $sidecar = $buildManifestJson | ConvertFrom-Json
+        $sidecar | Add-Member -MemberType NoteProperty -Name iso -Value ([pscustomobject][ordered]@{
+                fileName = (Split-Path $isoPath -Leaf)
+                sizeBytes = (Get-Item $isoPath).Length
+                sha256 = (Get-FileHash $isoPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            }) -Force
+        $sidecarPath = [IO.Path]::ChangeExtension($isoPath, 'build-manifest.json')
+        $sidecar | ConvertTo-Json -Depth 6 | Set-Content -Path $sidecarPath -Encoding UTF8
+        Write-Step "Build manifest: $sidecarPath" -Level Success
+    }
 }
 
 # --- Step 13: Optional USB ---

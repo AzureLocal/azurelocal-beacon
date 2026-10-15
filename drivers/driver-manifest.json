@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "1.0",
+  "generatedUtc": "2026-10-15T15:26:30Z",
+  "sets": [
+    {
+      "name": "dell-ax",
+      "source": "Dell Solution Builder Extension SBE_Dell_AX-16G-45n0c_5.0.2603.1641 (Bundle_SBE_Dell_AX-16G-45n0c_5.0.2603.1641.zip, DriversGE\\Network)",
+      "infs": [
+        {
+          "path": "dell-ax/broadcom-5720/b57nd60a.inf",
+          "provider": "%BRCM%",
+          "class": "Net",
+          "driverVer": "07/03/2025,221.0.8.0"
+        },
+        {
+          "path": "dell-ax/broadcom-bnxt/bnxtnd.inf",
+          "provider": "%brcm%",
+          "class": "net",
+          "driverVer": "12/17/2025,236.1.152.0"
+        },
+        {
+          "path": "dell-ax/intel-e810/icea.inf",
+          "provider": "%Intel%",
+          "class": "Net",
+          "driverVer": "04/11/2025,1.17.73.0"
+        },
+        {
+          "path": "dell-ax/intel-e823/scea.inf",
+          "provider": "%Intel%",
+          "class": "Net",
+          "driverVer": "04/11/2025,1.16.58.0"
+        },
+        {
+          "path": "dell-ax/mellanox-cx/mlx5.inf",
+          "provider": "%Mellanox%",
+          "class": "Net",
+          "driverVer": "04/16/2024,24.4.26429.0"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "dell-ax/broadcom-5720/b57nd60a.cat",
+      "size": 95545,
+      "sha256": "59863d55fe0b484828fded097dcd2f42ea36e37b2829eadb0f48c2a17ed11bc9"
+    },
+    {
+      "path": "dell-ax/broadcom-5720/b57nd60a.inf",
+      "size": 429812,
+      "sha256": "ef80c1bf5ef7ea1065f7789cb1321602a79d7cd766c89c8ff749ea8f6444c3d6"
+    },
+    {
+      "path": "dell-ax/broadcom-5720/b57nd60a.sys",
+      "size": 511408,
+      "sha256": "b50309d2607e175bfa2621923c45be9fa4f34b2cbdf52be7c4092e3de87df166"
+    },
+    {
+      "path": "dell-ax/broadcom-bnxt/bnxtnd.cat",
+      "size": 133375,
+      "sha256": "528774f1cfba5af5f0604ab8f47939c5f211835605fbe6f1021b7d4260c340c7"
+    },
+    {
+      "path": "dell-ax/broadcom-bnxt/bnxtnd.inf",
+      "size": 356424,
+      "sha256": "d55fff1c1a38b2eefb08e3c9eaa3b5b0981d8e611f42f2e5f625b595e9ec9c77"
+    },
+    {
+      "path": "dell-ax/broadcom-bnxt/bnxtnd.sys",
+      "size": 658456,
+      "sha256": "60be47426012a4b046196422002f10816a9afe3cca3a54ea7bf0fe603e6b32dc"
+    },
+    {
+      "path": "dell-ax/intel-e810/icea.cat",
+      "size": 12776,
+      "sha256": "dfce5d068c35e25f8fa8a5a660f246734507277089071b590e4d173b7bc27543"
+    },
+    {
+      "path": "dell-ax/intel-e810/icea.inf",
+      "size": 88597,
+      "sha256": "cdd01657eb5c1fe2fe55145f087d9475b529f60dab53adaab8e25edfda863843"
+    },
+    {
+      "path": "dell-ax/intel-e810/icea.sys",
+      "size": 2982520,
+      "sha256": "6f841692b3cff7e48a51ac7fa901d52ea0b64f9f376b661290182b399feb8ba9"
+    },
+    {
+      "path": "dell-ax/intel-e810/manifest_icea.man",
+      "size": 29659,
+      "sha256": "0631735f53bbe44488f21acc492363f3d870bd00cab89c6097ba426994d7f205"
+    },
+    {
+      "path": "dell-ax/intel-e823/scea.cat",
+      "size": 11386,
+      "sha256": "05bd6b4e1c6b3373265dfcd3dd2041a79d9288396468e2323cf974a1ad3e3fea"
+    },
+    {
+      "path": "dell-ax/intel-e823/scea.inf",
+      "size": 76022,
+      "sha256": "f5a60fb26b8ae96d5a961fdfc57e380f50f64fb6f76842552f0fad56b4e717a6"
+    },
+    {
+      "path": "dell-ax/intel-e823/scea.sys",
+      "size": 2986088,
+      "sha256": "84a743f8ebb3e390dcfb0bf4546cf4db0211496bfd25209b5e8d18dc10c25602"
+    },
+    {
+      "path": "dell-ax/mellanox-cx/mlx5.cat",
+      "size": 567930,
+      "sha256": "0cb254f5551ab86e360c0f8cd49c868006f22fff53e55bc60678723b1689a44d"
+    },
+    {
+      "path": "dell-ax/mellanox-cx/mlx5.inf",
+      "size": 2937807,
+      "sha256": "0bc941acad1324d3272582a3e9a787df854f8ac276ac05c04b7244bb76c846af"
+    },
+    {
+      "path": "dell-ax/mellanox-cx/Mlx5.man",
+      "size": 155763,
+      "sha256": "cc7880d9f66e52810576426ce8a0921beb6c27da4e93db097b345cc9a052de48"
+    },
+    {
+      "path": "dell-ax/mellanox-cx/mlx5.sys",
+      "size": 3018960,
+      "sha256": "23d7c2bc0116021fb747794b7733f895d86edf2faeb573c5397fd068b9c894c8"
+    },
+    {
+      "path": "dell-ax/mellanox-cx/mlx5ui.dll",
+      "size": 329320,
+      "sha256": "1f37a5f60517fe975a2f9ed154b8445a1e3e5529cf051e76ccb1554440e4a88c"
+    }
+  ]
+}

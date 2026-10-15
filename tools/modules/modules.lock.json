@@ -1,0 +1,11 @@
+{
+  "modules": [
+    {
+      "name": "AzStackHci.EnvironmentChecker",
+      "version": "10.2605.0.2006",
+      "manifestSha256": "1f12d66d671233fc2d90ee052bf0c04f9d4ff7e9d7085142407d3d1f970d3fdc",
+      "source": "https://www.powershellgallery.com/packages/AzStackHci.EnvironmentChecker",
+      "pinnedUtc": "2026-10-15T00:00:00Z"
+    }
+  ]
+}
