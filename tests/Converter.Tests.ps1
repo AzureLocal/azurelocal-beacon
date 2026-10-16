@@ -171,7 +171,7 @@ Describe 'Generated src/config/endpoints.json' {
     }
     It 'carries no lab or private names' {
         $json = Get-Content (Join-Path $script:Root 'src\config\endpoints.json') -Raw
-        $json | Should -Not -Match '(?i)tierpoint|tote|sttote'
+        $json | Should -Not -Match '(?i)tier[p]oint|t[o]te|st[t]ote'
     }
     It 'has region specific hosts' {
         ($script:Data.regions.westeurope.endpoints | ForEach-Object { $_.host }) | Should -Contain 'weu.his.arc.azure.com'

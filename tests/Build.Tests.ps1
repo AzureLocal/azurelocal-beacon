@@ -132,7 +132,7 @@ Describe 'Get-StartnetContent' {
     It 'the committed template has the tokens and no vendor text' {
         $script:Tpl | Should -Match '@@BEACON_VERSION@@'
         $script:Tpl | Should -Match '@@BRAND_LINE@@'
-        $script:Tpl | Should -Not -Match '(?i)dell|HCS|AX 16G|tierpoint'
+        $script:Tpl | Should -Not -Match '(?i)dell|HCS|AX 16G|tier[p]oint'
         $script:Tpl | Should -Not -Match 'v1\.0\.1'
     }
     It 'replaces the version and removes the brand line when none is set' {

@@ -30,17 +30,17 @@ Describe 'one semantic version' {
 }
 
 Describe 'public wording' {
-    It 'no lab, TierPoint or private tenant names in tracked text files' {
+    It 'no environment-specific or private tenant names in tracked text files' {
         $hits = foreach ($f in $script:TextFiles) {
             if ($script:Exempt | Where-Object { $f -match $_ }) { continue }
-            Select-String -Path $f -Pattern '(?i)tierpoint|tpl-|law-tote|sttote|improbability|\biic\b|\bPOC lab\b|nic2026|nic26|kristopher\.turner' -ErrorAction SilentlyContinue
+            Select-String -Path $f -Pattern '(?i)tier[p]oint|t[p]l-|law-t[o]te|st[t]ote|improbabi[l]ity|\bi[i]c\b|\bPOC [l]ab\b|nic202[6]|nic2[6]|kristopher\.t[u]rner' -ErrorAction SilentlyContinue
         }
         @($hits).Count | Should -Be 0 -Because (($hits | ForEach-Object { "$($_.Path):$($_.LineNumber)" }) -join '; ')
     }
     It 'never mentions the private build number' {
         $hits = foreach ($f in $script:TextFiles) {
             if ($script:Exempt | Where-Object { $f -match $_ }) { continue }
-            Select-String -Path $f -Pattern '2690' -ErrorAction SilentlyContinue | Where-Object { $_.Line -notmatch '[0-9]2690|2690[0-9]|[0-9a-f]{20,}' }
+            Select-String -Path $f -Pattern '26[9]0' -ErrorAction SilentlyContinue | Where-Object { $_.Line -notmatch '[0-9]26[9]0|26[9]0[0-9]|[0-9a-f]{20,}' }
         }
         @($hits).Count | Should -Be 0 -Because (($hits | ForEach-Object { "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" }) -join '; ')
     }

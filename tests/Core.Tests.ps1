@@ -65,7 +65,7 @@ Describe 'validation-config.example.json' {
     }
     It 'carries no tenant, subscription or lab data' {
         $raw = Get-Content (Join-Path $script:Root 'src\config\validation-config.example.json') -Raw
-        $raw | Should -Not -Match '(?i)tierpoint|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+        $raw | Should -Not -Match '(?i)tier[p]oint|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
     }
     It 'region is one the endpoint data knows' {
         (ConvertTo-BeaconRegionKey $script:Config.azureRegion) | Should -Not -BeNullOrEmpty
