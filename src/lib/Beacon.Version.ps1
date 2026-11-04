@@ -1,6 +1,6 @@
 # AzL Beacon - single source of truth for version strings. Dot-sourced by every in-image script.
 # The line below is bumped by release-please (see release-please-config.json extra-files).
-$script:BeaconVersion = '1.1.0' # x-release-please-version
+$script:BeaconVersion = '1.2.0' # x-release-please-version
 
 # Results JSON contract version (docs/reference/results.schema.json). Bump on breaking changes only.
 $script:BeaconSchemaVersion = '1.1'
