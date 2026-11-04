@@ -11,9 +11,10 @@ BeforeAll {
 }
 
 Describe 'Version' {
-    It 'is one semantic version 1.1.0' {
+    It 'is a semantic version matching the release manifest' {
         $script:BeaconVersion | Should -Match '^\d+\.\d+\.\d+$'
-        $script:BeaconVersion | Should -Be '1.1.0'
+        $manifest = Get-Content (Join-Path $script:Root '.release-please-manifest.json') -Raw | ConvertFrom-Json
+        $script:BeaconVersion | Should -Be $manifest.'.'
     }
     It 'names the release train as 12.2609 (latest) and never the private build' {
         $script:BeaconReleaseTrain | Should -Be '12.2609 (latest)'
