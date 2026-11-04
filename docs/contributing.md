@@ -27,6 +27,7 @@ cd docs; npm install; npm run docs:build     # dead links fail the build
 ```
 
 CI runs the same (`.github/workflows/ci.yml`), plus a Markdown link check.
+Results tests compare the reported tool version with `src/lib/Beacon.Version.ps1`, so a release bump does not require changing a hard-coded test version.
 
 ## Updating the endpoint list
 
