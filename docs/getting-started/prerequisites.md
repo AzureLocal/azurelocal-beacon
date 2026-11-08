@@ -31,6 +31,28 @@ NIC drivers for Dell AX 16G nodes are bundled under `drivers/dell-ax/` (Dell Sol
 | Intel E823 | `scea.inf` | 1.16.58.0 |
 | Mellanox ConnectX mlx5 | `mlx5.inf` | 24.4.26429.0 |
 
+## On the node (runtime)
+
+| Requirement | Details |
+|---|---|
+| **Boot** | UEFI boot of the ISO from virtual media or USB; the image is WinPE amd64 (x64 hardware only) |
+| **PowerShell** | PowerShell 7 is bundled in the image (downloaded and SHA256-verified at build time), so nothing is installed on the node |
+| **Environment Checker** | `AzStackHci.EnvironmentChecker` is vendored and pinned in `tools/modules/modules.lock.json` (currently 10.2605.0.2006); no Az modules are used at runtime |
+| **Credentials** | Nothing is stored in the image or the repository. The Arc readiness category uses an OAuth2 device-code sign-in from the menu; the token lives in memory only |
+| **Ports from the node** | HTTPS 443 to the regional Azure endpoints and the sign-in/ARM endpoints (`login.microsoftonline.com`, `management.azure.com`; the `.us` equivalents for Azure Government); DNS 53 UDP/TCP; NTP 123 UDP; for the Active Directory category TCP 53/88/135/389/445/464/636/3268/3269/9389 and UDP 88/389/464 to a domain controller |
+
+## Azure roles for the Arc readiness category
+
+The signed-in account is checked against the resource group, and Beacon reports Pass, Warn or Fail:
+
+- **Owner** on the resource group, or
+- **Azure Connected Machine Onboarding** plus **Azure Connected Machine Resource Administrator** to register the Arc machines, and for the Azure Local deployment itself **Contributor** plus **User Access Administrator** (or **Role Based Access Control Administrator**).
+
+The resource providers it checks as required: Microsoft.HybridCompute, Microsoft.GuestConfiguration, Microsoft.HybridConnectivity, Microsoft.AzureStackHCI, Microsoft.Kubernetes, Microsoft.KubernetesConfiguration, Microsoft.ExtendedLocation, Microsoft.ResourceConnector, Microsoft.Insights, Microsoft.Authorization (Microsoft.HybridContainerService only when AKS Arc is planned). Registering them needs permission to register providers on the subscription.
+
+## Running the tests
+
+`Invoke-Pester -Path .\tests` needs Pester 5.5 or later (the CI workflow installs `Pester` with `-MinimumVersion 5.5.0` and `PSScriptAnalyzer` 1.22.0 or later). No ADK is needed for the tests.
 ## Network requirements
 
 The management VLAN where Beacon boots needs outbound HTTPS (443) to the Azure endpoints of your region

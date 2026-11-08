@@ -42,6 +42,12 @@ See a full run with sample output: [walkthrough](docs/getting-started/walkthroug
 | PowerShell 7.4+ | `winget install Microsoft.PowerShell` |
 | Administrator rights | DISM mount requires elevation |
 | Internet access | Only to download PowerShell 7 (verified by SHA256); not needed with `-PS7ZipPath` and `-PS7ZipSha256` |
+| Pester 5.5+ | Only to run the unit tests (`Invoke-Pester -Path .\tests`); no ADK needed for them |
+| Disk space | About 15 GB free |
+
+### On the node
+
+UEFI boot of an x64 server. Outbound HTTPS 443 to the regional Azure endpoints, DNS 53 and NTP 123 from the management VLAN (the AD category also tests the DC ports listed above). Azure Arc readiness signs in with a device code and needs Owner on the resource group, or Azure Connected Machine Onboarding plus Resource Administrator (and Contributor plus User Access Administrator for the deployment). Nothing is stored. Details: [Prerequisites](docs/getting-started/prerequisites.md).
 
 ### NIC drivers
 
