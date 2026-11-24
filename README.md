@@ -20,7 +20,7 @@ categories of these 6, grounded in Microsoft Learn:
 | 1 | Basic network and time | NIC up, IP assigned, gateway, node ping, NTP/W32Time reachability and clock skew |
 | 2 | DNS | Forward and reverse lookups, TCP/UDP 53, AD domain resolution |
 | 3 | Active Directory | TCP 53/88/135/389/445/464/636/3268/3269/9389, UDP 88/389/464 where testable, DC SRV record (AD path only) |
-| 4 | Azure endpoint sweep | The per-region endpoint list Learn links to (9 regions + optional Dell OEM), Arc gateway and proxy aware; Arc endpoints must resolve publicly; HTTPS-inspection detection |
+| 4 | Azure endpoint sweep | The per-region endpoint list Learn links to (9 regions, eight commercial and Azure US Government `usgovvirginia`, plus optional Dell OEM), Arc gateway and proxy aware; Arc endpoints must resolve publicly; HTTPS-inspection detection |
 | 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` and `Invoke-AzStackHciNetworkValidation` (Microsoft's validators), failed checks itemised. Bundled `AzStackHci.EnvironmentChecker` 10.2605.0.2006: the latest on the PowerShell Gallery (checked 2026-11-24; Microsoft has published no newer build for 12.2611) |
 | 6 | Arc readiness | Device-code sign-in and Azure REST checks: resource providers, resource group, Arc roles, existing Arc machines. No Az modules, nothing stored |
 
@@ -46,9 +46,25 @@ Key Vault, the proxy and the Network ATC intents.
 
 `validation-config.json` keeps only Beacon's own settings (`oem`, `arcGatewayFqdn`, `tlsInspectionHosts`, timeouts, `brand`) when a
 run reads `infrastructure.yml`; it is the whole config only on an image built without one (the menu collects the values at boot).
-With `-InfrastructureFile` the results go to `<provisioning.simplified.evidence_path>\discovery\beacon` (or `hardware.discovery.output_directory\beacon`),
+With `-InfrastructureFile` the results go to `<hardware.discovery.output_directory>\beacon` when the file has that key, else `<provisioning.simplified.evidence_path>\discovery\beacon`,
 next to the hardware discovery files that Sonar's Discovery view reads, and the JSON records the file's name, SHA-256, schema version and
 cluster name (`context.infrastructure`). See [Results schema](docs/reference/results-schema.md).
+
+### Where Beacon fits in the Azure Local tool chain
+
+Beacon is the **readiness check before the deployment**. It checks the network, identity and Azure side only, not the hardware.
+
+```text
+Surveyor (sizing handoff) -> Trailwright (infrastructure.yml) -> hardware discovery -> Beacon -> ZTP -> toolkit OS configuration, gate, ARM deploy -> Ranger / Sonar
+```
+
+| Direction | What | Name |
+|---|---|---|
+| In | The environment file Trailwright wrote and hardware discovery filled | `infrastructure.yml` (schema 5), read with `-InfrastructureFile` on `Start-AzlValidation.ps1`, `Build-WinPEImage.ps1` and `ConvertTo-BeaconValidationConfig.ps1` |
+| Out | The results of the run | `validation-<timestamp>.json` (schema 1.2, `docs/reference/results.schema.json`), a log and an HTML report. With `-InfrastructureFile` they go to `<hardware.discovery.output_directory>\beacon` when the file has that key, else `<provisioning.simplified.evidence_path>\discovery\beacon`, else ZTP's default `%ProgramData%\AzureLocalZtp\<site_name>\evidence\discovery\beacon` |
+| Read by | [Sonar](https://github.com/AzureLocal/azurelocal-sonar) | The Discovery view shows the Beacon results next to the toolkit's hardware discovery files; the results keep the file's name, SHA-256, schema version and cluster name (`context.infrastructure`) |
+
+Beacon never writes to `infrastructure.yml`. A failed category is fixed in the environment (DNS, NTP, firewall, Active Directory, Azure) and the check is run again; the file is changed only when the plan itself was wrong.
 
 See a full run with sample output: [walkthrough](docs/getting-started/walkthrough.md) and [examples/](examples/).
 
@@ -74,8 +90,8 @@ UEFI boot of an x64 server. Outbound HTTPS 443 to the regional Azure endpoints, 
 
 ### NIC drivers
 
-Dell AX 16G NIC drivers are bundled in `drivers/dell-ax/` (Dell SBE `5.0.2603.1641`; hashes in `drivers/driver-manifest.json`) and injected by
-default. For other hardware supply your own: `-DriverPath C:\my-drivers` (see [drivers](docs/drivers/dell-ax.md#other-oems)).
+Dell AX 16G NIC drivers are bundled in `drivers/dell-ax/` (extracted from Dell SBE `5.0.2603.1641`; hashes in `drivers/driver-manifest.json`) and injected by
+default. **Check the bundle version before you rely on it:** the build records the SBE version in `build-manifest.json`, and a newer Dell package for your model may exist (the toolkit's pre-cluster gate names `5.0.2609.1611` for 16G-45n0c-Intel). The bundled drivers have not been re-vendored from it; to use newer ones follow [Updating drivers](docs/drivers/dell-ax.md#updating-drivers). For other hardware supply your own: `-DriverPath C:\my-drivers` (see [drivers](docs/drivers/dell-ax.md#other-oems)).
 
 ---
 
