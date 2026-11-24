@@ -1,7 +1,7 @@
 {
-  "_comment": "Where each snapshot in config/endpoints/learn/ comes from. Microsoft Learn (firewall-requirements) links to these per-region lists. Re-fetch with: Convert-EndpointsToJson.ps1 -Refresh",
+  "_comment": "Where each snapshot in config/endpoints/learn/ comes from. Microsoft Learn (firewall-requirements) links to these per-region lists. releaseTrain is the release Beacon targets; the snapshots were fetched for 12.2609 and kept unchanged for 12.2611, whose release notes add no endpoint. Re-fetch with: Convert-EndpointsToJson.ps1 -Refresh",
   "learnUrl": "https://learn.microsoft.com/azure/azure-local/concepts/firewall-requirements",
-  "releaseTrain": "12.2609 (latest)",
+  "releaseTrain": "12.2611 (latest)",
   "regions": {
     "eastus":        { "displayName": "East US",        "file": "eastus.md",        "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/EastUSendpoints/eastus-hci-endpoints.md",                  "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md" },
     "westeurope":    { "displayName": "West Europe",    "file": "westeurope.md",    "url": "https://raw.githubusercontent.com/Azure/AzureStack-Tools/master/HCI/WestEuropeendpoints/westeurope-hci-endpoints.md",          "page": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/WestEuropeendpoints/westeurope-hci-endpoints.md" },

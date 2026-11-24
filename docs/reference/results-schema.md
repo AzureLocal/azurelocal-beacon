@@ -17,7 +17,7 @@ With `-Redact` only the redacted document is written. A copy of the Environment 
 ```json
 {
   "schemaVersion": "1.1",
-  "tool": { "name": "AzL Beacon", "version": "1.1.0", "releaseTrain": "12.2609 (latest)" },
+  "tool": { "name": "AzL Beacon", "version": "1.1.0", "releaseTrain": "12.2611 (latest)" },
   "runId": "00000000-0000-0000-0000-0000000000aa",
   "startedUtc": "2026-10-15T14:00:05Z",
   "finishedUtc": "2026-10-15T14:03:41Z",

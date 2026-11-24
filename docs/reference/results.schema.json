@@ -15,7 +15,7 @@
       "properties": {
         "name": { "const": "AzL Beacon" },
         "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
-        "releaseTrain": { "type": "string", "description": "Azure Local release the checks target, e.g. 12.2609 (latest)." }
+        "releaseTrain": { "type": "string", "description": "Azure Local release the checks target, e.g. 12.2611 (latest)." }
       }
     },
     "runId": { "type": "string", "description": "GUID; unique per run (a redacted copy shows <guid> only if redaction replaced it)." },

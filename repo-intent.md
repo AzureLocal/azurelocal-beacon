@@ -1,6 +1,6 @@
 # Repo intent: azurelocal-beacon
 
-**AzL Beacon: pre-deployment endpoint, network and Arc readiness validation for Azure Local (12.2609, latest). Bootable WinPE diagnostic image; no installed OS required.**
+**AzL Beacon: pre-deployment endpoint, network and Arc readiness validation for Azure Local (12.2611, latest). Bootable WinPE diagnostic image; no installed OS required.**
 
 ## What this repo is
 

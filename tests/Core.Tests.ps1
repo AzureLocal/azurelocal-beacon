@@ -16,8 +16,8 @@ Describe 'Version' {
         $manifest = Get-Content (Join-Path $script:Root '.release-please-manifest.json') -Raw | ConvertFrom-Json
         $script:BeaconVersion | Should -Be $manifest.'.'
     }
-    It 'names the release train as 12.2609 (latest) and never the private build' {
-        $script:BeaconReleaseTrain | Should -Be '12.2609 (latest)'
+    It 'names the release train as 12.2611 (latest) and never the private build' {
+        $script:BeaconReleaseTrain | Should -Be '12.2611 (latest)'
     }
 }
 

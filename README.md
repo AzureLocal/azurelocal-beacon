@@ -1,6 +1,6 @@
 # AzL Beacon
 
-**Pre-deployment endpoint, network and Arc readiness validation for Azure Local 12.2609 (latest).**
+**Pre-deployment endpoint, network and Arc readiness validation for Azure Local 12.2611 (latest).**
 
 Boots from BMC virtual media or USB: no installed OS, no domain join, no licensing required.
 Boot it on bare metal before you touch the deployment wizard. Know your environment is ready.

@@ -1,7 +1,7 @@
 # Overview
 
 AzL Beacon is a WinPE bootable diagnostic image that validates Azure Local deployment readiness before any operating system is installed
-on the target nodes. It targets Azure Local 12.2609 (latest).
+on the target nodes. It targets Azure Local 12.2611 (latest; 12.2611.1004.9, OS build 26100.33822). The endpoint snapshots were fetched for 12.2609 and kept unchanged: the 2611 release notes add no endpoint. The bundled Environment Checker is 10.2605.0.2006.
 
 ## How it works
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2.0",
-  "releaseTrain": "12.2609 (latest)",
+  "releaseTrain": "12.2611 (latest)",
   "learnUrl": "https://learn.microsoft.com/azure/azure-local/concepts/firewall-requirements",
   "generatedUtc": "2026-10-15T14:23:41Z",
   "converter": "Convert-EndpointsToJson.ps1 2.0",

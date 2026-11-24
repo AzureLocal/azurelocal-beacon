@@ -2,7 +2,7 @@
 
 ![AzL Beacon Banner](assets/images/azurelocal-beacon-banner.svg)
 
-**Pre-deployment endpoint, network and Arc readiness validation for Azure Local 12.2609 (latest).**
+**Pre-deployment endpoint, network and Arc readiness validation for Azure Local 12.2611 (latest).**
 
 When deploying Azure Local there are scenarios where no existing systems are present on the management or compute VLANs: no jump host,
 no reachable domain controller, no way to plug in a laptop on the right network. You need to know the network is functional *before* the

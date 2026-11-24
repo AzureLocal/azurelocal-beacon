@@ -6,7 +6,7 @@ $script:BeaconVersion = '1.2.0' # x-release-please-version
 $script:BeaconSchemaVersion = '1.1'
 
 # Azure Local release train the endpoint data and checks are written against.
-$script:BeaconReleaseTrain = '12.2609 (latest)'
+$script:BeaconReleaseTrain = '12.2611 (latest)'
 
 # Tested WinPE build inputs. Build-WinPEImage.ps1 records what it actually found in build-manifest.json.
 $script:BeaconAdkExpectation = @{

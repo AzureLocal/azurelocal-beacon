@@ -44,8 +44,8 @@ Describe 'public wording' {
         }
         @($hits).Count | Should -Be 0 -Because (($hits | ForEach-Object { "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" }) -join '; ')
     }
-    It 'release wording is 12.2609 (latest)' {
-        (Get-Content (Join-Path $script:Root 'README.md') -Raw) | Should -Match '12\.2609 \(latest\)'
+    It 'release wording is 12.2611 (latest)' {
+        (Get-Content (Join-Path $script:Root 'README.md') -Raw) | Should -Match '12.2611 \(latest\)'
     }
     It 'no hard-coded vendor banner left anywhere' {
         $hits = foreach ($f in $script:TextFiles) {

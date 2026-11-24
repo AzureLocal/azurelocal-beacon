@@ -161,7 +161,7 @@ Describe 'Get-StartnetContent' {
 Describe 'New-BuildManifest' {
     It 'records versions, hashes, drivers and scripts' {
         $m = New-BuildManifest -Facts @{
-            Version = '1.1.0'; ReleaseTrain = '12.2609 (latest)'; BuiltUtc = '2026-10-15T10:00:00Z'; GitCommit = 'abc123'
+            Version = '1.1.0'; ReleaseTrain = '12.2611 (latest)'; BuiltUtc = '2026-10-15T10:00:00Z'; GitCommit = 'abc123'
             BuilderPowerShell = '7.6.6'; BuilderOs = 'Windows'; AdkVersion = '10.1.26100.2454'; WinPEAddonVersion = '10.1.26100.2454'
             AdkExpectedPrefix = '10.1.26100'; AdkMatches = $true; PS7Version = '7.6.6'; PS7Sha256 = ('a' * 64); PS7Verified = $true; PS7Source = 'github'
             EnvCheckerVersion = '10.2605.0.2006'; EnvCheckerManifestSha256 = ('b' * 64); EndpointsSha256 = ('c' * 64); EndpointsGeneratedUtc = '2026-10-15T09:00:00Z'

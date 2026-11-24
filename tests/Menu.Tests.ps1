@@ -108,7 +108,7 @@ Describe 'banner and menu text has no stale or vendor-specific content' {
     It 'banner shows the single product version and release train, no vendor branding' {
         $b = (Get-BannerLines) -join "`n"
         $b | Should -Match ([regex]::Escape("v$script:BeaconVersion"))
-        $b | Should -Match '12\.2609 \(latest\)'
+        $b | Should -Match '12.2611 \(latest\)'
         $b | Should -Not -Match '(?i)dell|HCS Platform|AX 16G|tier[p]oint'
     }
     It 'banner can show an optional brand line' {

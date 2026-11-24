@@ -142,7 +142,7 @@ Describe 'Generated src/config/endpoints.json' {
     }
     It 'has schemaVersion 2.0 and the release train' {
         $script:Data.schemaVersion | Should -Be '2.0'
-        $script:Data.releaseTrain | Should -Be '12.2609 (latest)'
+        $script:Data.releaseTrain | Should -Be '12.2611 (latest)'
     }
     It 'has region <_>' -ForEach @('eastus', 'westeurope', 'australiaeast', 'canadacentral', 'centralindia', 'southeastasia', 'japaneast', 'southcentralus', 'usgovvirginia') {
         $script:Data.regions.PSObject.Properties.Name | Should -Contain $_
