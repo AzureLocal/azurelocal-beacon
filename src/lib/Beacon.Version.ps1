@@ -3,7 +3,7 @@
 $script:BeaconVersion = '1.2.0' # x-release-please-version
 
 # Results JSON contract version (docs/reference/results.schema.json). Bump on breaking changes only.
-$script:BeaconSchemaVersion = '1.1'
+$script:BeaconSchemaVersion = '1.2'
 
 # Azure Local release train the endpoint data and checks are written against.
 $script:BeaconReleaseTrain = '12.2611 (latest)'

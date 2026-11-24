@@ -24,28 +24,39 @@ Exit code: `0` no failure, `1` at least one `Fail`, `2` no checks ran.
 | 5 Environment Checker | yes | yes | yes | yes |
 | 6 Arc readiness | optional | optional | optional | optional |
 
-## Config keys (`validation-config.json`)
+## Config keys (`validation-config.json`) and where they come from
 
-Collected by the menu at boot; for a pre-baked image copy `validation-config.example.json` and fill it in
+The source of every engagement value is the Azure Local `infrastructure.yml` (azurelocal-toolkit variables registry, schema 5).
+`Start-AzlValidation.ps1 -InfrastructureFile` reads it directly; for WinPE, `Build-WinPEImage.ps1 -InfrastructureFile`
+(or `ConvertTo-BeaconValidationConfig.ps1`) writes `validation-config.json` from it. `-Plan` prints each value with its key.
+Without an infrastructure file the menu collects the values at boot, or you copy `validation-config.example.json` and fill it in
 (the file is gitignored: it holds site data).
 
-| Key | Used by | Example |
+| Key | Used by | infrastructure.yml key |
 |---|---|---|
-| `azureRegion` | Cat 4, Cat 5 | `eastus` |
-| `oem` | Cat 4 | `dell` or empty |
-| `managementGateway` | Cat 1 | `192.0.2.1` |
-| `nodeIps` | Cat 1, Cat 5 | `["192.0.2.21"]` |
-| `dnsServers` | Cat 2, Cat 3 | `["192.0.2.10"]` |
-| `adDomainFqdn` | Cat 2, Cat 3 | `corp.contoso.com` |
-| `dcIps` | Cat 1 (NTP), 2, 3 | `["192.0.2.10", "192.0.2.11"]` |
-| `nodeFqdns` | Cat 2 | `["node-01.corp.contoso.com"]` |
-| `ntpServers` | Cat 1 | `[]` (DCs, else time.windows.com) |
-| `keyVaultFqdn` | Cat 4 | `kv-example-01.vault.azure.net` |
-| `proxyUrl`, `proxyBypass` | Cat 4, Cat 5 | `http://proxy.example.com:8080`, `["*.corp.contoso.com"]` |
-| `arcGatewayFqdn` | Cat 4, Cat 5 | `<id>.gw.arc.azure.com` |
-| `tlsInspectionHosts` | Cat 4 | `["login.microsoftonline.com", "management.azure.com"]` |
-| `infraIpPools`, `managementSubnetCidr`, `hostNetworkIntents` | Cat 5 Network validator | see example file |
-| `tcpConnectTimeoutMs`, `pingTimeoutMs` | all | `5000`, `2000` |
-| `brand` | menu banner | optional text |
+| `azureRegion` | Cat 4, Cat 5 | `azure.location` |
+| `managementGateway` | Cat 1 | `networking.management.gateway` |
+| `managementSubnetCidr` | Cat 5 Network validator | `networking.management.subnet` |
+| `managementVlan` | menu | `networking.management.vlan_id` |
+| `nodeIps` | Cat 1, Cat 5 | `nodes[].management.ip_address`, or the `nodes[].network_adapters[]` port with role `management` |
+| `nodeFqdns` | Cat 2 | `nodes[].name` + `identity.active_directory.domain_fqdn` |
+| `dnsServers` | Cat 2, Cat 3 | `networking.management.dns_servers` |
+| `ntpServers` | Cat 1 | `networking.ntp_servers` (empty: the DCs, else time.windows.com) |
+| `adDomainFqdn`, `adNetbios` | Cat 2, Cat 3 | `identity.active_directory.domain_fqdn`, `netbios_name` (empty when `scenario.identity` is `local_identity`) |
+| `dcIps`, `dcFqdns` | Cat 1 (NTP), 2, 3 | `identity.active_directory.domain_controllers` (addresses and names) |
+| `keyVaultName`, `keyVaultFqdn` | Cat 4 | `cluster.key_vault.name` (+ `vault.azure.net`, or `vault.usgovcloudapi.net` for `scenario.cloud: government`) |
+| `clusterName` | banner, redaction | `cluster.name` |
+| `proxyUrl`, `proxyBypass` | Cat 4, Cat 5 | `networking.outbound.proxy.url`, `bypass` (`scenario.outbound_path` proxy or proxy_arc_gateway); the Azure Firewall explicit proxy for `private_path` |
+| `infraIpPools` | Cat 5 Network validator | `networking.management.infrastructure_pool` |
+| `hostNetworkIntents` | Cat 5 Network validator | `networking.intents` (adapter names through `network_adapters[].os_name_override`) |
+| `oem` | Cat 4 | Beacon setting; `dell` when `hardware.vendor` is Dell |
+| `arcGatewayFqdn` | Cat 4, Cat 5 | Beacon setting: the registry names the Arc gateway resource (`networking.outbound.arc_gateway.name`), not its `<id>.gw.arc.azure.com` endpoint |
+| `tlsInspectionHosts` | Cat 4 | Beacon setting, default `["login.microsoftonline.com", "management.azure.com"]` |
+| `tcpConnectTimeoutMs`, `pingTimeoutMs` | all | Beacon settings, default `5000`, `2000` |
+| `brand` | menu banner | Beacon setting, optional text |
 
-Arc subscription, tenant and resource group are **not** config keys: they are asked for at run time and never stored.
+The Beacon settings are the only keys Beacon keeps in its own config when it runs from `infrastructure.yml`; any other key there is ignored.
+
+The Arc subscription, tenant and resource group are **not** written to a config file. With `-InfrastructureFile` the run uses
+`azure.subscription_id`, `tenant_id`, `resource_group` and the node names (`nodes[].arc_machine_name`, else `name`) in memory;
+otherwise they are asked for at run time. `ConvertTo-BeaconValidationConfig.ps1` writes them only with `-IncludeAzureTargets`.

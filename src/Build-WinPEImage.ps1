@@ -71,6 +71,12 @@
     Path to the folder containing per-POC config files that will be copied into
     \Tools\config inside the image. Defaults to src/winpe/config relative to the repo root.
 
+.PARAMETER InfrastructureFile
+    The Azure Local infrastructure.yml of the engagement. The build converts it (ConvertTo-BeaconValidationConfig.ps1)
+    into the image's \Tools\config\validation-config.json, so WinPE, which has no YAML parser, tests the values
+    the infrastructure file holds. Needs the powershell-yaml module on the build host. The Azure subscription,
+    tenant and resource group are not written into the image.
+
 .PARAMETER BuildUSB
     If set, also writes the image to a USB drive after ISO creation.
     Requires -UsbDriveLetter.
@@ -139,6 +145,9 @@ param(
 
     [Parameter(Mandatory = $false)]
     [string]$ConfigPath = '',
+
+    [Parameter(Mandatory = $false)]
+    [string]$InfrastructureFile = '',
 
     [Parameter(Mandatory = $false)]
     [string]$ModulesPath = (Join-Path $PSScriptRoot '..\tools\modules'),
@@ -582,6 +591,9 @@ if (-not $adkInfo.WinPEAddonVersion) { Write-Warning 'WinPE add-on version could
 $ps7 = Get-ResolvedPS7Zip -ProvidedPath $PS7ZipPath -ExpectedSha256 $PS7ZipSha256 -Version $PS7Version -AllowUnverified:$AllowUnverifiedPS7
 $resolvedPS7Zip = $ps7.Path
 $resolvedConfig = Get-ResolvedConfigPath -ProvidedPath $ConfigPath
+if ($InfrastructureFile -and -not (Test-Path -LiteralPath $InfrastructureFile -PathType Leaf)) {
+    throw "InfrastructureFile '$InfrastructureFile' not found."
+}
 
 # Resolve all paths to absolute so MakeWinPEMedia and DISM work
 # regardless of the working directory when the script is invoked.
@@ -746,11 +758,18 @@ try {
             Copy-Item -Path $resolvedConfig -Destination $configDest -Recurse -Force
             Write-Step "Config copied from $resolvedConfig." -Level Success
 
-            # Seed a blank validation-config.json from the example if no real one was copied.
+            # infrastructure.yml wins: the image carries the config generated from it.
+            # Otherwise seed a blank validation-config.json from the example if no real one was copied.
             # The menu collects actual values at runtime via Write-ValidationConfigOverrides.
             $cfgJson  = Join-Path $configDest 'validation-config.json'
             $cfgExamp = Join-Path $configDest 'validation-config.example.json'
-            if (-not (Test-Path $cfgJson) -and (Test-Path $cfgExamp)) {
+            if ($InfrastructureFile) {
+                $convertArgs = @{ InfrastructureFile = $InfrastructureFile; OutputPath = $cfgJson }
+                if (Test-Path $cfgJson) { $convertArgs['SettingsPath'] = $cfgJson }   # keep Beacon's own settings (oem, Arc gateway endpoint, timeouts)
+                & (Join-Path $PSScriptRoot 'ConvertTo-BeaconValidationConfig.ps1') @convertArgs
+                Write-Step "validation-config.json generated from $([System.IO.Path]::GetFileName($InfrastructureFile))." -Level Success
+            }
+            elseif (-not (Test-Path $cfgJson) -and (Test-Path $cfgExamp)) {
                 Copy-Item -Path $cfgExamp -Destination $cfgJson -Force
                 Write-Step 'Seeded validation-config.json from example (no engagement config provided).' -Level Warning
             }

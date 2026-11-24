@@ -8,7 +8,10 @@ Beacon writes three files per run next to each other:
 | `validation-<yyyyMMdd-HHmmss>.log` | Plain text table of every check |
 | `validation-<yyyyMMdd-HHmmss>.html` | Self-contained report (no scripts, no external assets) |
 
-In WinPE the folder is `X:\results\`; elsewhere `$env:TEMP`. The timestamp in the file name is UTC.
+In WinPE the folder is `X:\results\`; elsewhere `$env:TEMP`. With `-InfrastructureFile` (and no `-ResultsPath`) it is
+`<discovery folder>\beacon`: the discovery folder is `hardware.discovery.output_directory` when the file sets it, else
+`provisioning.simplified.evidence_path\discovery`, the folder Sonar's Discovery view reads, so the results sit with the
+deployment evidence. The timestamp in the file name is UTC.
 With `-Redact` only the redacted document is written. A copy of the Environment Checker's own report
 (`AzStackHciEnvironmentReport.json`) is added when it exists and `-Redact` is not used.
 
@@ -16,8 +19,8 @@ With `-Redact` only the redacted document is written. A copy of the Environment 
 
 ```json
 {
-  "schemaVersion": "1.1",
-  "tool": { "name": "AzL Beacon", "version": "1.1.0", "releaseTrain": "12.2611 (latest)" },
+  "schemaVersion": "1.2",
+  "tool": { "name": "AzL Beacon", "version": "1.2.0", "releaseTrain": "12.2611 (latest)" },
   "runId": "00000000-0000-0000-0000-0000000000aa",
   "startedUtc": "2026-10-15T14:00:05Z",
   "finishedUtc": "2026-10-15T14:03:41Z",
@@ -31,7 +34,8 @@ With `-Redact` only the redacted document is written. A copy of the Environment 
     "region": "eastus", "regionRequested": "East US", "oem": "dell",
     "arcGatewayMode": false, "proxyConfigured": false,
     "categories": [1, 2, 3, 4, 5, 6],
-    "endpointSource": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md"
+    "endpointSource": "https://github.com/Azure/AzureStack-Tools/blob/master/HCI/EastUSendpoints/eastus-hci-endpoints.md",
+    "infrastructure": { "fileName": "infrastructure.yml", "sha256": "<64 hex characters>", "schemaVersion": "5.6.0", "clusterName": "example-azl-01" }
   },
   "summary": { "total": 25, "pass": 15, "fail": 1, "warn": 4, "skip": 5, "verdict": "FAIL" },
   "results": [
@@ -61,6 +65,7 @@ With `-Redact` only the redacted document is written. A copy of the Environment 
 | `startedUtc`, `finishedUtc` | UTC, `yyyy-MM-ddTHH:mm:ssZ`. (Earlier builds wrote local time with a `Z`.) |
 | `node` | Hostname and SMBIOS identity. Empty strings when WMI is unavailable. |
 | `context.region` | Region key actually used. If it differs from `regionRequested`, the requested region had no list and `eastus` was used (also reported as a `Warn`). |
+| `context.infrastructure` | Schema 1.2. Only when the run read `infrastructure.yml` (`-InfrastructureFile`): its file name (`<infrastructure-file>` when redacted), SHA-256, `_metadata.schema_version` and `cluster.name`, so Sonar and the evidence can tie the results to the file. |
 | `summary.verdict` | `PASS` (no `Fail`), `FAIL`, or `NO_CHECKS`. |
 | `results[].category` | `Cat-1-Network`, `Cat-2-DNS`, `Cat-3-AD`, `Cat-4-Endpoints`, `Cat-5-EnvChecker`, `Cat-6-Arc`. |
 | `results[].status` | `Pass`, `Fail` (potential deployment blocker), `Warn` (review), `Skip` (not applicable or not provable). |

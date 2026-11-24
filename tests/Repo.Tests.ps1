@@ -7,7 +7,7 @@ BeforeAll {
     $script:Tracked = @(& git -C $script:Root ls-files 2>$null | Where-Object { $_ -and $_ -notmatch '^(tools/modules|drivers)/' })
     $script:TextFiles = $script:Tracked | Where-Object { $_ -match '\.(md|ps1|psd1|json|yml|yaml|cmd|mts|txt)$' } | ForEach-Object { Join-Path $script:Root $_ } | Where-Object { Test-Path $_ }
     # files that legitimately talk about the things the rules forbid
-    $script:Exempt = @('tests\\Repo\.Tests\.ps1$', 'tests\\Menu\.Tests\.ps1$', 'tests\\Build\.Tests\.ps1$', '\.ai\\', '\.claude\\', '\.github\\copilot', 'config\\endpoints\\learn\\')
+    $script:Exempt = @('tests\\Repo\.Tests\.ps1$', 'tests\\Menu\.Tests\.ps1$', 'tests\\Build\.Tests\.ps1$', 'tests\\Infrastructure\.Tests\.ps1$', 'tests\\fixtures\\', '\.ai\\', '\.claude\\', '\.github\\copilot', 'config\\endpoints\\learn\\')
 }
 
 Describe 'one semantic version' {

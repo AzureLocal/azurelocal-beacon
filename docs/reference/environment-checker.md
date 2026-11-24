@@ -7,7 +7,7 @@ Beacon bundles Microsoft's `AzStackHci.EnvironmentChecker` module and runs two o
 | Item | Value |
 |---|---|
 | Module | `AzStackHci.EnvironmentChecker` (PowerShell Gallery, signed by Microsoft Corporation) |
-| Pinned version | `10.2605.0.2006`, recorded in `tools/modules/modules.lock.json` with the SHA256 of the manifest |
+| Pinned version | `10.2605.0.2006`, recorded in `tools/modules/modules.lock.json` with the SHA256 of the manifest. It is the latest version on the PowerShell Gallery (published 2026-06-12, checked 2026-11-24 for Azure Local 12.2611); Learn says to install the latest Gallery version and names no 2611-specific build. |
 | In the image | `X:\Tools\Modules\AzStackHci.EnvironmentChecker\10.2605.0.2006\AzStackHci.EnvironmentChecker.psd1` |
 | Verify / refresh | `scripts/Update-BeaconModules.ps1` verifies the pin and checks that all 245 script files are validly signed; `-Refresh` re-downloads the pinned version; `-Version x -Refresh -UpdateLock` moves the pin after the signature check |
 

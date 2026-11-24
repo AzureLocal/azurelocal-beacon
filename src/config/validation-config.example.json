@@ -1,5 +1,5 @@
 {
-  "_comment": "AzL Beacon - per-engagement validation config. Copy to validation-config.json and populate. validation-config.json is gitignored. All values below are examples.",
+  "_comment": "AzL Beacon - per-engagement validation config. The source of these values is the Azure Local infrastructure.yml: run Start-AzlValidation.ps1 -InfrastructureFile, or generate this file with ConvertTo-BeaconValidationConfig.ps1 (Build-WinPEImage.ps1 -InfrastructureFile does it for WinPE). Fill it by hand only when there is no infrastructure.yml. With -InfrastructureFile only the Beacon settings here are read: oem, arcGatewayFqdn, tlsInspectionHosts, tcpConnectTimeoutMs, pingTimeoutMs, brand. validation-config.json is gitignored. All values below are examples.",
   "_engagement": "FILL-IN (e.g. contoso-azl-2026)",
   "brand": "",
 

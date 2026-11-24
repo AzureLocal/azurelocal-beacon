@@ -32,8 +32,13 @@ PowerShell 7 is extracted into the image (best effort; Windows PowerShell 5.1 is
 .\src\Build-WinPEImage.ps1 -BuildUSB -UsbDriveLetter F      # also write a USB stick (erases it)
 .\src\Build-WinPEImage.ps1 -DriverPath C:\my-drivers        # other hardware, see the drivers page
 .\src\Build-WinPEImage.ps1 -Brand "Contoso Labs"            # optional line under the boot banner
+.\src\Build-WinPEImage.ps1 -InfrastructureFile D:\azl\infrastructure.yml   # bake the engagement values in (needs powershell-yaml)
 .\src\Build-WinPEImage.ps1 -WhatIf                          # pre-flight only
 ```
+
+With `-InfrastructureFile` the build writes the image's `validation-config.json` from the Azure Local `infrastructure.yml`
+(`ConvertTo-BeaconValidationConfig.ps1`); Beacon's own settings (`oem`, `arcGatewayFqdn`, timeouts, `brand`) are kept from an existing
+`src/config/validation-config.json`. The Azure subscription, tenant and resource group are not written into the image.
 
 > [!CAUTION]
 > **The USB drive is reformatted.** Verify the drive letter first.

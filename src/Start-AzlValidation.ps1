@@ -15,13 +15,31 @@
          (vendored AzStackHci.EnvironmentChecker; failed checks are itemised)
       6  Arc readiness: device-code sign-in + ARM REST checks (no Az modules); memory only
 
-    Test targets come from config\validation-config.json and config\endpoints.json.
-    There is deliberately NO drive/disk check.
+    Test targets come from the Azure Local infrastructure.yml (-InfrastructureFile: the azurelocal-toolkit
+    variables registry, schema 5) or, without it, from config\validation-config.json (generated from
+    infrastructure.yml by ConvertTo-BeaconValidationConfig.ps1, or hand-filled when there is no file).
+    Endpoints come from config\endpoints.json. There is deliberately NO drive/disk check.
+
+    With -InfrastructureFile the results go to <discovery folder>\beacon, next to the folder Sonar's
+    Discovery view reads (provisioning.simplified.evidence_path\discovery), unless -ResultsPath is given.
 
     Exit codes: 0 no critical failures, 1 one or more failures, 2 no checks ran.
 
+.PARAMETER InfrastructureFile
+    The Azure Local infrastructure.yml (or .json). Every engagement value is read from it; validation-config.json
+    is not needed. Reading YAML needs the powershell-yaml module; in WinPE use an image built with
+    Build-WinPEImage.ps1 -InfrastructureFile instead.
+
+.PARAMETER Plan
+    Print each value the run would use and the infrastructure.yml key it came from, then exit 0 without
+    probing anything or writing a file.
+
 .PARAMETER ConfigPath
     Folder with validation-config.json and endpoints.json. Default: <scriptroot>\config.
+
+.PARAMETER ValidationConfigFile
+    A validation-config.json somewhere other than ConfigPath (used when the run delegates category 5 to
+    Windows PowerShell 5.1 with a config generated from -InfrastructureFile).
 
 .PARAMETER ResultsPath
     Where results are written. Default X:\results in WinPE, otherwise $env:TEMP.
@@ -71,6 +89,12 @@
     delegates category 5 to Windows PowerShell 5.1).
 
 .EXAMPLE
+    .\Start-AzlValidation.ps1 -InfrastructureFile D:\azl\infrastructure.yml -Plan
+
+.EXAMPLE
+    .\Start-AzlValidation.ps1 -InfrastructureFile D:\azl\infrastructure.yml -SkipArc
+
+.EXAMPLE
     .\Start-AzlValidation.ps1 -Categories 1,2,4 -Region westeurope -ResultsPath C:\Temp\results
 
 .EXAMPLE
@@ -82,7 +106,10 @@
 
 [CmdletBinding()]
 param(
+    [string]$InfrastructureFile = '',
+    [switch]$Plan,
     [string]$ConfigPath = '',
+    [string]$ValidationConfigFile = '',
     [string]$ResultsPath = '',
     [string[]]$Categories = @(),
     [switch]$SkipEnvironmentChecker,
@@ -112,6 +139,7 @@ $script:ScriptRoot = $PSScriptRoot
 . (Join-Path $script:ScriptRoot 'lib\Beacon.EnvChecker.ps1')
 . (Join-Path $script:ScriptRoot 'lib\Beacon.Arc.ps1')
 . (Join-Path $script:ScriptRoot 'lib\Beacon.Results.ps1')
+. (Join-Path $script:ScriptRoot 'lib\Beacon.Infrastructure.ps1')
 
 $script:StartTime = Get-Date
 $script:StartTimeUtc = [DateTime]::UtcNow
@@ -452,7 +480,7 @@ function Add-EnvCheckerResults {
 
 function Invoke-EnvCheckerDelegated {
     <# From PowerShell 7, run category 5 in Windows PowerShell 5.1 (the module is net472) and merge the results. #>
-    param([string]$ConfigDir, [string]$ResultsDir, [string]$RegionName)
+    param([string]$ConfigDir, [string]$ResultsDir, [string]$RegionName, [string]$ConfigFile = '')
     $cat = 'Cat-5-EnvChecker'
     $ps51 = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
     if (-not (Test-Path $ps51)) { return $false }
@@ -461,6 +489,7 @@ function Invoke-EnvCheckerDelegated {
         $a = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $script:ScriptRoot 'Start-AzlValidation.ps1'),
             '-Categories', '5', '-ConfigPath', $ConfigDir, '-ResultsPath', $ResultsDir, '-PartialResultsPath', $tmp, '-Region', $RegionName)
         if ($ProxyUrl) { $a += @('-ProxyUrl', $ProxyUrl) }
+        if ($ConfigFile) { $a += @('-ValidationConfigFile', $ConfigFile) }
         & $ps51 @a
         if (Test-Path $tmp) {
             $rows = @(Get-Content $tmp -Raw | ConvertFrom-Json)
@@ -475,7 +504,7 @@ function Invoke-EnvCheckerDelegated {
 }
 
 function Invoke-Category5EnvironmentChecker {
-    param([object]$ValidationConfig, [string]$ConfigDir, [string]$ResultsDir, [string]$RegionKey, [switch]$SkipChecks, [bool]$KeepReport = $true)
+    param([object]$ValidationConfig, [string]$ConfigDir, [string]$ResultsDir, [string]$RegionKey, [switch]$SkipChecks, [bool]$KeepReport = $true, [string]$ConfigFile = '')
     $cat = 'Cat-5-EnvChecker'
     Out-ConsoleLine -Message "`n[Category 5] Azure Local Environment Checker (Microsoft validator)" -Color ([System.ConsoleColor]::Cyan)
 
@@ -484,7 +513,7 @@ function Invoke-Category5EnvironmentChecker {
         return
     }
     if ($PSVersionTable.PSEdition -eq 'Core' -and -not $PartialResultsPath -and -not $env:BEACON_ENVCHECKER_INPROCESS) {
-        if (Invoke-EnvCheckerDelegated -ConfigDir $ConfigDir -ResultsDir $ResultsDir -RegionName $RegionKey) { return }
+        if (Invoke-EnvCheckerDelegated -ConfigDir $ConfigDir -ResultsDir $ResultsDir -RegionName $RegionKey -ConfigFile $ConfigFile) { return }
     }
 
     $manifest = Resolve-EnvCheckerManifest -Roots (Get-EnvCheckerModuleRoots -ScriptRoot $script:ScriptRoot)
@@ -550,12 +579,22 @@ function Invoke-Category5EnvironmentChecker {
 }
 
 function Get-ArcInputs {
-    <# Arc inputs from parameters, else process environment (set by the menu; never from disk). #>
-    param([string]$Subscription, [string]$Tenant, [string]$ResourceGroup, [string[]]$Nodes, [string]$Cloud, [string]$ProxyUrl)
+    <#
+    Arc inputs from parameters, else process environment (set by the menu), else the infrastructure.yml values
+    (azure.subscription_id, tenant_id, resource_group, nodes[]) that -InfrastructureFile holds in memory.
+    A hand-filled validation-config.json never supplies them.
+    #>
+    param([string]$Subscription, [string]$Tenant, [string]$ResourceGroup, [string[]]$Nodes, [string]$Cloud, [string]$ProxyUrl, [object]$Infrastructure = $null)
     if (-not $Subscription) { $Subscription = "$env:BEACON_ARC_SUBSCRIPTION" }
     if (-not $Tenant) { $Tenant = "$env:BEACON_ARC_TENANT" }
     if (-not $ResourceGroup) { $ResourceGroup = "$env:BEACON_ARC_RG" }
     if (@($Nodes).Count -eq 0) { $Nodes = @(ConvertTo-StringList $env:BEACON_ARC_NODES) }
+    if ($null -ne $Infrastructure) {
+        if (-not $Subscription) { $Subscription = "$($Infrastructure.arcSubscriptionId)" }
+        if (-not $Tenant) { $Tenant = "$($Infrastructure.arcTenantId)" }
+        if (-not $ResourceGroup) { $ResourceGroup = "$($Infrastructure.arcResourceGroup)" }
+        if (@($Nodes).Count -eq 0) { $Nodes = @(ConvertTo-StringList $Infrastructure.arcNodeNames) }
+    }
     return @{ SubscriptionId = $Subscription; TenantId = $Tenant; ResourceGroup = $ResourceGroup; NodeNames = @($Nodes); Cloud = $Cloud; ProxyUrl = $ProxyUrl; ClientId = "$env:BEACON_ARC_CLIENT_ID" }
 }
 
@@ -618,6 +657,31 @@ function Write-ValidationSummary {
     Out-ConsoleLine -Message '================================================================' -Color $w
 }
 
+function Write-BeaconPlan {
+    <# -Plan: every value the run uses and the infrastructure.yml key it came from. No probe, no file. #>
+    param([object]$Config, [string]$ResultsDir, [string]$Region)
+    $w = [System.ConsoleColor]::White
+    Out-ConsoleLine -Message '' -Color $w
+    Out-ConsoleLine -Message '  Plan: the values this run uses (no check runs, nothing is written)' -Color ([System.ConsoleColor]::Cyan)
+    $sources = $null
+    if ($Config.PSObject.Properties.Name -contains '_sources') { $sources = $Config._sources }
+    foreach ($p in $Config.PSObject.Properties) {
+        if ($p.Name -like '_*') { continue }
+        $v = $p.Value
+        $text = "$v"
+        if ($v -is [System.Array]) {
+            $text = (@($v | ForEach-Object { if ($_ -is [string]) { $_ } else { ($_ | ConvertTo-Json -Compress -Depth 4) } }) -join ', ')
+        }
+        if (($p.Name -eq 'arcSubscriptionId' -or $p.Name -eq 'arcTenantId') -and $text) { $text = '(set)' }
+        $from = '(validation-config.json)'
+        if ($sources -and ($sources.PSObject.Properties.Name -contains $p.Name)) { $from = $sources.($p.Name) }
+        Out-ConsoleLine -Message ('    {0,-22} = {1}' -f $p.Name, $text) -Color $w
+        Out-ConsoleLine -Message ('    {0,-22}   from {1}' -f '', $from) -Color ([System.ConsoleColor]::DarkGray)
+    }
+    Out-ConsoleLine -Message ("  Region list  : {0}" -f $Region) -Color $w
+    Out-ConsoleLine -Message ("  Results      : {0}" -f $ResultsDir) -Color $w
+}
+
 function Get-ExitCode {
     param([object[]]$Results)
     $r = @($Results)
@@ -642,9 +706,36 @@ Out-ConsoleLine -Message "  $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')  (Azure Lo
 Out-ConsoleLine -Message '================================================================' -Color ([System.ConsoleColor]::Cyan)
 
 $resolvedConfigPath = Get-ConfigDirectory -Provided $ConfigPath -ScriptRoot $script:ScriptRoot
-$resolvedResultsPath = Get-ResultsDirectory -Provided $ResultsPath
 
-$cfg = Resolve-ConfigDefaults -Config (Import-JsonConfig -FilePath (Join-Path $resolvedConfigPath 'validation-config.json'))
+$infraDoc = $null
+$infraContext = $null
+$generatedConfigFile = ''
+if ($InfrastructureFile) {
+    try {
+        $infraDoc = Import-BeaconInfrastructureFile -Path $InfrastructureFile
+    } catch {
+        Out-ConsoleLine -Message "  ERROR: $($_.Exception.Message)" -Color ([System.ConsoleColor]::Red)
+        exit 2
+    }
+    # Beacon's own settings (oem, Arc gateway endpoint, TLS hosts, timeouts, brand) still come from its config when there is one.
+    $settings = $null
+    $settingsFile = Join-Path $resolvedConfigPath 'validation-config.json'
+    if ($ValidationConfigFile) { $settingsFile = $ValidationConfigFile }
+    if (Test-Path -LiteralPath $settingsFile) { $settings = Import-JsonConfig -FilePath $settingsFile }
+    $cfg = Resolve-ConfigDefaults -Config (ConvertTo-BeaconValidationConfig -Infrastructure $infraDoc -SourceName ([System.IO.Path]::GetFileName($InfrastructureFile)) -Settings $settings)
+    $infraContext = Get-BeaconInfrastructureContext -Path $InfrastructureFile -Infrastructure $infraDoc
+    $scopeNote = Get-BeaconInfrastructureScopeNote -Infrastructure $infraDoc
+    if ($scopeNote) { Out-ConsoleLine -Message "  WARNING: $scopeNote" -Color ([System.ConsoleColor]::Yellow) }
+    if (-not $ResultsPath) {
+        $evidenceDir = Get-BeaconEvidenceDirectory -Infrastructure $infraDoc
+        if ($evidenceDir) { $ResultsPath = $evidenceDir }
+    }
+} else {
+    $cfgFile = Join-Path $resolvedConfigPath 'validation-config.json'
+    if ($ValidationConfigFile) { $cfgFile = $ValidationConfigFile }
+    $cfg = Resolve-ConfigDefaults -Config (Import-JsonConfig -FilePath $cfgFile)
+}
+$resolvedResultsPath = Get-ResultsDirectory -Provided $ResultsPath
 $epData = Import-JsonConfig -FilePath (Join-Path $resolvedConfigPath 'endpoints.json')
 
 $effRegion = if ($Region) { $Region } else { "$($cfg.azureRegion)" }
@@ -662,6 +753,17 @@ if ($cfg.brand) { Out-ConsoleLine -Message "  $($cfg.brand)" -Color ([System.Con
 $runCategories = ConvertTo-CategoryList -Categories $Categories
 Out-ConsoleLine -Message "  Categories   : $($runCategories -join ', ')" -Color ([System.ConsoleColor]::DarkGray)
 
+if ($Plan) {
+    Write-BeaconPlan -Config $cfg -ResultsDir $resolvedResultsPath -Region $epSet.Region
+    exit 0
+}
+
+# Category 5 from PowerShell 7 runs in a Windows PowerShell 5.1 child, which cannot read YAML: hand it the generated config.
+if ($infraDoc -and ($runCategories -contains 5) -and -not $SkipEnvironmentChecker -and $PSVersionTable.PSEdition -eq 'Core') {
+    $generatedConfigFile = Join-Path ([IO.Path]::GetTempPath()) ("beacon-config-{0}.json" -f ([guid]::NewGuid().ToString('N')))
+    $cfg | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $generatedConfigFile -Encoding utf8BOM
+}
+
 if ($runCategories -contains 1) { Invoke-Category1Network -ValidationConfig $cfg }
 if ($runCategories -contains 2) { Invoke-Category2DnsCheck -ValidationConfig $cfg }
 if ($runCategories -contains 3) { Invoke-Category3ActiveDirectory -ValidationConfig $cfg }
@@ -669,12 +771,18 @@ if ($runCategories -contains 4) {
     Invoke-Category4EndpointSweep -ValidationConfig $cfg -EndpointData $epData -RegionName $effRegion -ProxyUrl $effProxy -ProxyBypass $effBypass -GatewayFqdn $effGateway
 }
 if ($runCategories -contains 5) {
-    Invoke-Category5EnvironmentChecker -ValidationConfig $cfg -ConfigDir $resolvedConfigPath -ResultsDir $resolvedResultsPath -RegionKey $epSet.Region -SkipChecks:$SkipEnvironmentChecker -KeepReport (-not $Redact)
+    try {
+        Invoke-Category5EnvironmentChecker -ValidationConfig $cfg -ConfigDir $resolvedConfigPath -ResultsDir $resolvedResultsPath -RegionKey $epSet.Region -SkipChecks:$SkipEnvironmentChecker -KeepReport (-not $Redact) -ConfigFile $generatedConfigFile
+    } finally {
+        if ($generatedConfigFile -and (Test-Path $generatedConfigFile)) { Remove-Item -LiteralPath $generatedConfigFile -Force -ErrorAction SilentlyContinue }
+    }
 }
 if ($runCategories -contains 6) {
     $arcCloud = 'AzureCloud'
     if ($epSet.Cloud) { $arcCloud = $epSet.Cloud }
-    $arcIn = Get-ArcInputs -Subscription $ArcSubscriptionId -Tenant $ArcTenantId -ResourceGroup $ArcResourceGroup -Nodes $ArcNodeNames -Cloud $arcCloud -ProxyUrl $effProxy
+    $arcInfra = $null
+    if ($infraDoc) { $arcInfra = $cfg }
+    $arcIn = Get-ArcInputs -Subscription $ArcSubscriptionId -Tenant $ArcTenantId -ResourceGroup $ArcResourceGroup -Nodes $ArcNodeNames -Cloud $arcCloud -ProxyUrl $effProxy -Infrastructure $arcInfra
     Invoke-Category6Arc -ArcInputs $arcIn -SkipChecks:$SkipArc
 }
 
@@ -690,7 +798,7 @@ $doc = New-BeaconResultsDocument -Results $script:AllResults -Context @{
     RunId = (New-BeaconRunId); Started = $script:StartTimeUtc; Finished = [DateTime]::UtcNow; Node = $node
     Region = $epSet.Region; RegionRequested = $effRegion; Oem = $cfg.oem
     ArcGatewayMode = [bool]$effGateway; ProxyConfigured = [bool]$effProxy
-    Categories = $runCategories; EndpointSource = $epSet.SourceUrl
+    Categories = $runCategories; EndpointSource = $epSet.SourceUrl; Infrastructure = $infraContext
 }
 if ($Redact) { $doc = Invoke-BeaconRedaction -Document $doc -Map (Get-RedactionMap -Config $cfg -Node $node) }
 

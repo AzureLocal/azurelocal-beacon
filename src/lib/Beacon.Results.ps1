@@ -46,7 +46,8 @@ function New-BeaconResultsDocument {
     <#
     Builds the results document. Pure given its inputs.
     $Context keys: RunId, Started (DateTime), Finished (DateTime), Node, Region, RegionRequested, Oem,
-    ArcGatewayMode (bool), ProxyConfigured (bool), Categories (int[]), EndpointSource.
+    ArcGatewayMode (bool), ProxyConfigured (bool), Categories (int[]), EndpointSource, and optionally
+    Infrastructure (fileName, sha256, schemaVersion, clusterName of the infrastructure.yml the run read).
     #>
     param([object[]]$Results = @(), [Parameter(Mandatory)] [hashtable]$Context)
     $items = @($Results | ForEach-Object {
@@ -63,6 +64,23 @@ function New-BeaconResultsDocument {
             }
         })
     $dur = [math]::Round(($Context.Finished - $Context.Started).TotalSeconds, 1)
+    $ctx = [pscustomobject][ordered]@{
+        region          = "$($Context.Region)"
+        regionRequested = "$($Context.RegionRequested)"
+        oem             = "$($Context.Oem)"
+        arcGatewayMode  = [bool]$Context.ArcGatewayMode
+        proxyConfigured = [bool]$Context.ProxyConfigured
+        categories      = @($Context.Categories)
+        endpointSource  = "$($Context.EndpointSource)"
+    }
+    if ($Context.ContainsKey('Infrastructure') -and $null -ne $Context.Infrastructure) {
+        $ctx | Add-Member -MemberType NoteProperty -Name infrastructure -Value ([pscustomobject][ordered]@{
+                fileName      = "$($Context.Infrastructure.fileName)"
+                sha256        = "$($Context.Infrastructure.sha256)"
+                schemaVersion = "$($Context.Infrastructure.schemaVersion)"
+                clusterName   = "$($Context.Infrastructure.clusterName)"
+            })
+    }
     return [pscustomobject][ordered]@{
         schemaVersion   = $script:BeaconSchemaVersion
         tool            = [pscustomobject][ordered]@{ name = 'AzL Beacon'; version = $script:BeaconVersion; releaseTrain = $script:BeaconReleaseTrain }
@@ -72,16 +90,8 @@ function New-BeaconResultsDocument {
         durationSeconds = $dur
         redacted        = $false
         node            = $Context.Node
-        context         = [pscustomobject][ordered]@{
-            region          = "$($Context.Region)"
-            regionRequested = "$($Context.RegionRequested)"
-            oem             = "$($Context.Oem)"
-            arcGatewayMode  = [bool]$Context.ArcGatewayMode
-            proxyConfigured = [bool]$Context.ProxyConfigured
-            categories      = @($Context.Categories)
-            endpointSource  = "$($Context.EndpointSource)"
-        }
-        summary         = Get-ResultSummary -Results $items
+        context         = $ctx
+        summary        = Get-ResultSummary -Results $items
         results         = $items
     }
 }
@@ -141,6 +151,10 @@ function Invoke-BeaconRedaction {
         })
     $red = $json | ConvertFrom-Json
     $red.redacted = $true
+    # The infrastructure file's name can carry a site or customer name the map does not know.
+    if ($red.PSObject.Properties.Name -contains 'context' -and $red.context -and ($red.context.PSObject.Properties.Name -contains 'infrastructure') -and $red.context.infrastructure) {
+        $red.context.infrastructure.fileName = '<infrastructure-file>'
+    }
     return $red
 }
 

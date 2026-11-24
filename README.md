@@ -21,11 +21,34 @@ categories of these 6, grounded in Microsoft Learn:
 | 2 | DNS | Forward and reverse lookups, TCP/UDP 53, AD domain resolution |
 | 3 | Active Directory | TCP 53/88/135/389/445/464/636/3268/3269/9389, UDP 88/389/464 where testable, DC SRV record (AD path only) |
 | 4 | Azure endpoint sweep | The per-region endpoint list Learn links to (9 regions + optional Dell OEM), Arc gateway and proxy aware; Arc endpoints must resolve publicly; HTTPS-inspection detection |
-| 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` and `Invoke-AzStackHciNetworkValidation` (Microsoft's validators), failed checks itemised |
+| 5 | Environment Checker | `Invoke-AzStackHciConnectivityValidation` and `Invoke-AzStackHciNetworkValidation` (Microsoft's validators), failed checks itemised. Bundled `AzStackHci.EnvironmentChecker` 10.2605.0.2006: the latest on the PowerShell Gallery (checked 2026-11-24; Microsoft has published no newer build for 12.2611) |
 | 6 | Arc readiness | Device-code sign-in and Azure REST checks: resource providers, resource group, Arc roles, existing Arc machines. No Az modules, nothing stored |
 
 Results land in `X:\results\` on the WinPE RAM drive as JSON (schema: `docs/reference/results.schema.json`), a log and an HTML report.
 Export them from the menu (USB drive, SMB share or HTTPS) before reboot, optionally redacted.
+
+### Input: infrastructure.yml
+
+Every engagement value Beacon tests comes from the Azure Local `infrastructure.yml`, the one environment file of the
+[azurelocal-toolkit variables registry](https://github.com/AzureLocal/azurelocal-toolkit/tree/main/config/variables) (schema 5):
+region, DNS, NTP, the domain and its controllers, the management network and infrastructure pool, the machines, the cluster
+Key Vault, the proxy and the Network ATC intents.
+
+```powershell
+# On a Windows host (needs the powershell-yaml module): show what would be tested and where each value comes from
+.\src\Start-AzlValidation.ps1 -InfrastructureFile D:\azl\infrastructure.yml -Plan
+.\src\Start-AzlValidation.ps1 -InfrastructureFile D:\azl\infrastructure.yml -SkipArc
+
+# WinPE has no YAML parser: bake the values into the image at build time
+.\src\Build-WinPEImage.ps1 -InfrastructureFile D:\azl\infrastructure.yml
+.\src\ConvertTo-BeaconValidationConfig.ps1 -InfrastructureFile D:\azl\infrastructure.yml -ShowSources   # the same conversion on its own
+```
+
+`validation-config.json` keeps only Beacon's own settings (`oem`, `arcGatewayFqdn`, `tlsInspectionHosts`, timeouts, `brand`) when a
+run reads `infrastructure.yml`; it is the whole config only on an image built without one (the menu collects the values at boot).
+With `-InfrastructureFile` the results go to `<provisioning.simplified.evidence_path>\discovery\beacon` (or `hardware.discovery.output_directory\beacon`),
+next to the hardware discovery files that Sonar's Discovery view reads, and the JSON records the file's name, SHA-256, schema version and
+cluster name (`context.infrastructure`). See [Results schema](docs/reference/results-schema.md).
 
 See a full run with sample output: [walkthrough](docs/getting-started/walkthrough.md) and [examples/](examples/).
 
@@ -110,6 +133,7 @@ azurelocal-beacon/
 │   ├── Start-AzlValidation.ps1       # Validation engine
 │   ├── Start-NetworkBootstrap.ps1    # DHCP / static address at boot
 │   ├── Convert-EndpointsToJson.ps1   # Strict converter: Learn-linked lists -> endpoints.json
+│   ├── ConvertTo-BeaconValidationConfig.ps1  # infrastructure.yml -> validation-config.json (build host)
 │   ├── startnet.cmd                  # WinPE boot entry point (template)
 │   ├── lib/                          # Shared functions (version, net probes, Arc REST, results, ...)
 │   └── config/                       # validation-config.example.json, endpoints.json (generated)

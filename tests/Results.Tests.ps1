@@ -69,7 +69,7 @@ Describe 'Results document and schema' {
     It 'carries run id, node identity, schema version, tool version and UTC timestamps' {
         $script:Doc.runId | Should -Match '^[0-9a-f-]{36}$'
         $script:Doc.node.serialNumber | Should -Be 'SN12345'
-        $script:Doc.schemaVersion | Should -Be '1.1'
+        $script:Doc.schemaVersion | Should -Be '1.2'
         $script:Doc.tool.version | Should -Be $script:BeaconVersion
         $script:Doc.startedUtc | Should -Match 'Z$'
         $script:Doc.summary.fail | Should -Be 1

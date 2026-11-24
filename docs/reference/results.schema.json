@@ -46,7 +46,19 @@
         "arcGatewayMode": { "type": "boolean" },
         "proxyConfigured": { "type": "boolean" },
         "categories": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 6 } },
-        "endpointSource": { "type": "string", "description": "URL of the Learn-linked endpoint list." }
+        "endpointSource": { "type": "string", "description": "URL of the Learn-linked endpoint list." },
+        "infrastructure": {
+          "type": "object",
+          "description": "Schema 1.2. Present when the run read infrastructure.yml (-InfrastructureFile): which file, so Sonar and the evidence can tie the results to it.",
+          "additionalProperties": false,
+          "required": ["fileName", "sha256", "schemaVersion", "clusterName"],
+          "properties": {
+            "fileName": { "type": "string", "description": "File name only; <infrastructure-file> when redacted." },
+            "sha256": { "type": "string", "pattern": "^([0-9a-f]{64})?$" },
+            "schemaVersion": { "type": "string", "description": "_metadata.schema_version of the file." },
+            "clusterName": { "type": "string", "description": "cluster.name of the file." }
+          }
+        }
       }
     },
     "summary": {

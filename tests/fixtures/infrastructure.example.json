@@ -1,0 +1,917 @@
+{
+  "_metadata": {
+    "schema_version": "5.6.0",
+    "file_version": "1.0.0",
+    "last_updated": "2026-11-06",
+    "generated_by": ""
+  },
+  "scenario": {
+    "identity": "active_directory",
+    "storage_architecture": "s2d",
+    "storage_connectivity": "switched",
+    "topology": "standard",
+    "connectivity": "connected",
+    "cloud": "public",
+    "outbound_path": "direct",
+    "os_install": "simplified",
+    "deploy_method": "arm",
+    "environment_class": "production"
+  },
+  "site": {
+    "code": "IIC",
+    "name": "IIC Dallas",
+    "location": "Dallas, TX",
+    "datacenter": "dal-01",
+    "customer": "Infinite Improbability Corp",
+    "owner": "platform-team@improbability.cloud",
+    "time_zone": "Central Standard Time"
+  },
+  "environment": {
+    "name": "iic-azl-01",
+    "type": "lab",
+    "owner": "platform-team@improbability.cloud",
+    "description": "Example two-machine Azure Local instance."
+  },
+  "tags": {
+    "Owner": "platform-team@improbability.cloud",
+    "Project": "azure-local",
+    "Environment": "dev",
+    "CostCenter": "iic-it",
+    "ManagedBy": "azurelocal-toolkit"
+  },
+  "azure": {
+    "tenant_id": "00000000-0000-0000-0000-000000000000",
+    "location": "eastus",
+    "subscription_id": "00000000-0000-0000-0000-000000000000",
+    "resource_group": "rg-iic-azl-01",
+    "hci_resource_provider_object_id": "00000000-0000-0000-0000-000000000000",
+    "custom_location": "cl-iic-azl-01",
+    "automation_identity": {
+      "type": "managed_identity",
+      "name": "id-iic-cicd-01",
+      "object_id": "00000000-0000-0000-0000-000000000000",
+      "subscription_id": "00000000-0000-0000-0000-000000000000",
+      "resource_group": "rg-iic-devops-01"
+    }
+  },
+  "key_vaults": [
+    {
+      "name": "kv-iic-mgmt-01",
+      "subscription_id": "00000000-0000-0000-0000-000000000000",
+      "resource_group": "rg-iic-mgmt-01",
+      "purpose": "management"
+    }
+  ],
+  "cluster": {
+    "name": "iic-azl-01",
+    "naming_prefix": "iicazl01",
+    "deployment_mode": "validate",
+    "witness": {
+      "type": "cloud",
+      "storage_account": "stiicazl01wit"
+    },
+    "key_vault": {
+      "name": "kv-iic-azl-01",
+      "create_new": true,
+      "soft_delete_retention_days": 30
+    },
+    "diagnostics": {
+      "storage_account": "stiicazl01diag",
+      "logs_retention_days": 30,
+      "storage_account_type": "Standard_LRS"
+    }
+  },
+  "nodes": [
+    {
+      "name": "iic-azl-n01",
+      "arc_machine_name": "iic-azl-n01",
+      "management": {
+        "ip_address": "192.0.2.11",
+        "mac_address": "00:00:5E:00:53:11",
+        "adapter_name": "Port1"
+      },
+      "serial_number": "SERIAL01",
+      "bmc": {
+        "ip_address": "198.51.100.11",
+        "type": "idrac"
+      },
+      "rack": "R01",
+      "rack_position": "24"
+    },
+    {
+      "name": "iic-azl-n02",
+      "arc_machine_name": "iic-azl-n02",
+      "management": {
+        "ip_address": "192.0.2.12",
+        "mac_address": "00:00:5E:00:53:12",
+        "adapter_name": "Port1"
+      },
+      "serial_number": "SERIAL02",
+      "bmc": {
+        "ip_address": "198.51.100.12",
+        "type": "idrac"
+      },
+      "rack": "R01",
+      "rack_position": "26"
+    }
+  ],
+  "hardware": {
+    "vendor": "Dell",
+    "model": "AX-760",
+    "cpu_cores": 64,
+    "memory_gib": 1024,
+    "gpu": {
+      "enabled": false
+    },
+    "bmc": {
+      "username": "keyvault://kv-iic-mgmt-01/bmc-username",
+      "password": "keyvault://kv-iic-mgmt-01/bmc-password",
+      "rfs_write_attribute": true,
+      "verify_certificate": false
+    },
+    "sbe": {
+      "publisher": "Dell",
+      "family": "",
+      "version": "",
+      "bundle_path": "D:\\sbe\\dell",
+      "delivery": "node_pull",
+      "node_pull_url": "https://sbe.iic.example/sbe/dell",
+      "allow_unvalidated": false
+    },
+    "bios": {
+      "EmbNic1Nic2": "Enabled"
+    },
+    "network_cards": [
+      {
+        "label": "Onboard",
+        "ports": [
+          {
+            "name": "Port1",
+            "speed_gbps": 25,
+            "rdma": "none",
+            "role": "intent:management"
+          },
+          {
+            "name": "Port2",
+            "speed_gbps": 25,
+            "rdma": "none",
+            "role": "intent:management"
+          }
+        ]
+      },
+      {
+        "label": "Slot 3",
+        "ports": [
+          {
+            "name": "Port3",
+            "speed_gbps": 25,
+            "rdma": "roce_v2",
+            "role": "intent:compute_storage"
+          },
+          {
+            "name": "Port4",
+            "speed_gbps": 25,
+            "rdma": "roce_v2",
+            "role": "intent:compute_storage"
+          }
+        ]
+      }
+    ],
+    "drives": {
+      "capacity": {
+        "media": "nvme",
+        "count": 8,
+        "size_tb": 3.84
+      }
+    }
+  },
+  "networking": {
+    "management": {
+      "subnet": "192.0.2.0/24",
+      "gateway": "192.0.2.1",
+      "vlan_id": 0,
+      "dns_servers": [
+        "192.0.2.4",
+        "192.0.2.5"
+      ],
+      "ip_assignment": "static",
+      "static_method": "device",
+      "provisioning_dhcp_range": {
+        "start": "192.0.2.100",
+        "end": "192.0.2.199"
+      },
+      "use_dhcp": false,
+      "provisioning_network": "dhcp",
+      "infrastructure_pool": {
+        "start": "192.0.2.20",
+        "end": "192.0.2.29"
+      }
+    },
+    "oob": {
+      "subnet": "198.51.100.0/24",
+      "gateway": "198.51.100.1"
+    },
+    "ntp_servers": [
+      "192.0.2.4",
+      "192.0.2.5"
+    ],
+    "intents": [
+      {
+        "name": "management",
+        "traffic": [
+          "management"
+        ],
+        "adapters": [
+          "Port1",
+          "Port2"
+        ]
+      },
+      {
+        "name": "compute_storage",
+        "traffic": [
+          "compute",
+          "storage"
+        ],
+        "adapters": [
+          "Port3",
+          "Port4"
+        ]
+      }
+    ],
+    "storage": {
+      "auto_ip": true,
+      "tor_switches": 2,
+      "layout": "converged",
+      "networks": [
+        {
+          "name": "StorageNetwork1",
+          "adapter": "Port3",
+          "vlan_id": 711
+        },
+        {
+          "name": "StorageNetwork2",
+          "adapter": "Port4",
+          "vlan_id": 712
+        }
+      ]
+    },
+    "vlans": [
+      {
+        "name": "storage-1",
+        "id": 711
+      },
+      {
+        "name": "storage-2",
+        "id": 712
+      },
+      {
+        "name": "workloads",
+        "id": 2204,
+        "subnet": "203.0.113.0/24"
+      }
+    ],
+    "logical_networks": [
+      {
+        "name": "lnet-workloads",
+        "purpose": "compute",
+        "vlan_id": 2204,
+        "address_prefix": "203.0.113.0/24",
+        "gateway": "203.0.113.1",
+        "dns_servers": [
+          "192.0.2.4",
+          "192.0.2.5"
+        ],
+        "ip_pool": {
+          "start": "203.0.113.100",
+          "end": "203.0.113.200"
+        }
+      }
+    ]
+  },
+  "identity": {
+    "local_admin": {
+      "username": "azl-admin",
+      "password": "keyvault://kv-iic-mgmt-01/local-admin-password"
+    },
+    "active_directory": {
+      "domain_fqdn": "improbability.cloud",
+      "netbios_name": "IIC",
+      "ou_path": "OU=iic-azl-01,OU=AzureLocal,DC=improbability,DC=cloud",
+      "lcm_user": {
+        "username": "lcm-iic-azl-01",
+        "password": "keyvault://kv-iic-mgmt-01/lcm-password"
+      },
+      "join_options": {
+        "allow_ou_move": false
+      },
+      "domain_controllers": [
+        "192.0.2.4",
+        "192.0.2.5"
+      ],
+      "precreate_computer_objects": false,
+      "security_groups": [
+        {
+          "name": "sg-iic-azl-01-admins",
+          "purpose": "Administrators of the instance",
+          "local_groups": [
+            "Administrators"
+          ]
+        }
+      ]
+    },
+    "entra": {
+      "groups": [
+        {
+          "name": "grp-iic-azl-operators",
+          "purpose": "Operate the instance",
+          "roles": [
+            "Azure Stack HCI Administrator"
+          ],
+          "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-iic-azl-01"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "configuration_mode": "express",
+    "volumes": [
+      {
+        "name": "vol-workloads-01",
+        "size_gib": 4096,
+        "resiliency": "two_way"
+      }
+    ]
+  },
+  "security": {
+    "level": "recommended",
+    "drift_control": true,
+    "credential_guard": true,
+    "smb_signing": true,
+    "smb_cluster_encryption": false,
+    "bitlocker_boot_volume": true,
+    "bitlocker_data_volumes": true,
+    "wdac": true,
+    "telemetry": {
+      "streaming_data": true,
+      "episodic_data_upload": true,
+      "eu_location": false
+    }
+  },
+  "sdn": {
+    "enabled": false
+  },
+  "operations": {
+    "update_method": "portal",
+    "monitoring": {
+      "enabled": true,
+      "log_analytics_workspace": "log-iic-azl-01",
+      "workspace_resource_group": "rg-iic-mgmt-01",
+      "retention_days": 30,
+      "data_collection_endpoint": "dce-iic-azl-01",
+      "data_collection_rule": "AzureStackHCI-iic-azl-01",
+      "action_group": "ag-iic-azl-01"
+    },
+    "notifications": {
+      "emails": [
+        "noc@improbability.cloud"
+      ]
+    },
+    "backup": {
+      "enabled": false
+    },
+    "disaster_recovery": {
+      "method": "none"
+    },
+    "licensing": {
+      "azure_hybrid_benefit": true,
+      "windows_server_subscription": false
+    }
+  },
+  "provisioning": {
+    "os_version": "12.2611.1004.9",
+    "simplified": {
+      "site_name": "iic-site-01",
+      "maintenance_iso": "latest",
+      "admin": {
+        "username": "administrator",
+        "password": "keyvault://kv-iic-mgmt-01/provisioning-admin-password"
+      },
+      "media_share": {
+        "name": "ztp-virtual-usb",
+        "host": "198.51.100.5",
+        "account_name": "svc-ztp-media",
+        "keep": false
+      },
+      "media_path": "D:\\Data\\azl-ztp\\iic-azl-01\\media",
+      "evidence_path": "D:\\Data\\azl-ztp\\iic-azl-01\\evidence",
+      "enable_embedded_nics": true,
+      "retry_provision_os": true,
+      "skip_azure_check": false,
+      "include_preview": false,
+      "usb_image": {
+        "size_gb": 4,
+        "name_prefix": "ztp-usb-"
+      },
+      "maintenance_environment": {
+        "port": 20001,
+        "username": "edgeuser"
+      },
+      "timeouts": {
+        "bootstrap_minutes": 120,
+        "bootstrap_voucher_minutes": 90,
+        "bootstrap_stall_minutes": 20,
+        "voucher_wait_minutes": 120,
+        "device_minutes": 30,
+        "ready_minutes": 180,
+        "network_minutes": 60,
+        "adapters_minutes": 10,
+        "restore_settle_minutes": 5,
+        "bios_minutes": 30,
+        "poll_interval_seconds": 60
+      },
+      "create_resource_group": true,
+      "configuration_name": "default",
+      "apply_site_settings": true,
+      "use_key_vault_configuration": true,
+      "assign_provisioning_roles": true,
+      "assign_hci_rp_role": true,
+      "network_kind": "LAN",
+      "ntp": {
+        "configuration": "Automatic"
+      },
+      "site_mode": "Auto"
+    }
+  },
+  "network_devices": [
+    {
+      "hostname": "sw01-iic",
+      "type": "switch",
+      "role": "primary",
+      "vendor": "Dell",
+      "model": "S5248F-ON",
+      "management": {
+        "ip_address": "198.51.100.6",
+        "protocol": "ssh"
+      },
+      "credentials": {
+        "username": "admin",
+        "password": "keyvault://kv-iic-mgmt-01/switch-admin-password"
+      },
+      "mtu": 9216,
+      "ports": {
+        "uplinks": [
+          "ethernet1/1/1"
+        ],
+        "node_ports": [
+          "ethernet1/1/2",
+          "ethernet1/1/3"
+        ],
+        "peer_link": [
+          "ethernet1/1/13",
+          "ethernet1/1/14"
+        ],
+        "native_vlan_id": 2201
+      },
+      "ha": {
+        "domain_id": 1,
+        "peer_address": "198.51.100.7",
+        "priority": 100,
+        "system_mac": "00-00-5E-00-53-01"
+      }
+    },
+    {
+      "hostname": "sw02-iic",
+      "type": "switch",
+      "role": "secondary",
+      "vendor": "Dell",
+      "model": "S5248F-ON",
+      "management": {
+        "ip_address": "198.51.100.7",
+        "protocol": "ssh"
+      },
+      "credentials": {
+        "username": "admin",
+        "password": "keyvault://kv-iic-mgmt-01/switch-admin-password"
+      },
+      "mtu": 9216,
+      "ports": {
+        "uplinks": [
+          "ethernet1/1/1"
+        ],
+        "node_ports": [
+          "ethernet1/1/2",
+          "ethernet1/1/3"
+        ],
+        "peer_link": [
+          "ethernet1/1/13",
+          "ethernet1/1/14"
+        ],
+        "native_vlan_id": 2201
+      },
+      "ha": {
+        "domain_id": 1,
+        "peer_address": "198.51.100.6",
+        "priority": 200,
+        "system_mac": "00-00-5E-00-53-01"
+      }
+    }
+  ],
+  "landing_zone": {
+    "management_groups": [
+      {
+        "name": "mg-iic",
+        "display_name": "IIC",
+        "role": "root"
+      },
+      {
+        "name": "mg-iic-platform",
+        "display_name": "IIC Platform",
+        "parent": "mg-iic",
+        "role": "platform"
+      },
+      {
+        "name": "mg-iic-identity",
+        "parent": "mg-iic-platform",
+        "role": "identity"
+      },
+      {
+        "name": "mg-iic-connectivity",
+        "parent": "mg-iic-platform",
+        "role": "connectivity"
+      },
+      {
+        "name": "mg-iic-management",
+        "parent": "mg-iic-platform",
+        "role": "management"
+      },
+      {
+        "name": "mg-iic-security",
+        "parent": "mg-iic-platform",
+        "role": "security"
+      },
+      {
+        "name": "mg-iic-landing-zones",
+        "display_name": "IIC Landing Zones",
+        "parent": "mg-iic",
+        "role": "landing_zones"
+      }
+    ],
+    "subscriptions": [
+      {
+        "name": "sub-iic-connectivity",
+        "id": "00000000-0000-0000-0000-000000000000",
+        "role": "connectivity",
+        "management_group": "mg-iic-platform"
+      },
+      {
+        "name": "sub-iic-identity",
+        "id": "00000000-0000-0000-0000-000000000000",
+        "role": "identity",
+        "management_group": "mg-iic-platform"
+      },
+      {
+        "name": "sub-iic-management",
+        "id": "00000000-0000-0000-0000-000000000000",
+        "role": "management",
+        "management_group": "mg-iic-platform"
+      },
+      {
+        "name": "sub-iic-devops",
+        "id": "00000000-0000-0000-0000-000000000000",
+        "role": "devops",
+        "management_group": "mg-iic-platform"
+      },
+      {
+        "name": "sub-iic-azure-local",
+        "id": "00000000-0000-0000-0000-000000000000",
+        "role": "azure_local",
+        "management_group": "mg-iic"
+      }
+    ],
+    "resource_groups": [
+      {
+        "name": "rg-iic-conn-01",
+        "subscription": "sub-iic-connectivity",
+        "location": "eastus",
+        "purpose": "hub network"
+      },
+      {
+        "name": "rg-iic-mgmt-01",
+        "subscription": "sub-iic-management",
+        "location": "eastus",
+        "purpose": "management"
+      },
+      {
+        "name": "rg-iic-runners-01",
+        "subscription": "sub-iic-devops",
+        "location": "eastus",
+        "purpose": "CI/CD runners"
+      },
+      {
+        "name": "rg-iic-azl-01",
+        "subscription": "sub-iic-azure-local",
+        "location": "eastus",
+        "purpose": "Azure Local instance"
+      }
+    ],
+    "budgets": [
+      {
+        "name": "budget-iic-azl-monthly",
+        "subscription": "sub-iic-azure-local",
+        "amount": 1000,
+        "time_grain": "Monthly",
+        "thresholds": [
+          80,
+          100
+        ],
+        "forecast_thresholds": [
+          100
+        ],
+        "contact_emails": [
+          "cloud-costs@example.com"
+        ]
+      }
+    ],
+    "networks": [
+      {
+        "name": "vnet-iic-hub-01",
+        "subscription": "sub-iic-connectivity",
+        "resource_group": "rg-iic-conn-01",
+        "location": "eastus",
+        "role": "hub",
+        "allow_gateway_transit": true,
+        "address_space": [
+          "10.20.0.0/22"
+        ],
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "prefix": "10.20.0.0/27"
+          },
+          {
+            "name": "AzureBastionSubnet",
+            "prefix": "10.20.0.64/26"
+          },
+          {
+            "name": "snet-iic-hub-mgmt-01",
+            "prefix": "10.20.0.128/26"
+          }
+        ]
+      },
+      {
+        "name": "vnet-iic-mgmt-01",
+        "subscription": "sub-iic-management",
+        "resource_group": "rg-iic-mgmt-01",
+        "location": "eastus",
+        "role": "spoke",
+        "address_space": [
+          "10.20.4.0/24"
+        ],
+        "dns_servers": [
+          "192.0.2.4",
+          "192.0.2.5"
+        ],
+        "subnets": [
+          {
+            "name": "snet-iic-mgmt-01",
+            "prefix": "10.20.4.0/26"
+          }
+        ],
+        "peer_with": [
+          "vnet-iic-hub-01"
+        ],
+        "allow_forwarded_traffic": true,
+        "use_remote_gateways": true
+      }
+    ],
+    "connectivity": {
+      "vpn_gateway": {
+        "name": "vpng-iic-hub-01",
+        "resource_group": "rg-iic-conn-01",
+        "network": "vnet-iic-hub-01",
+        "sku": "VpnGw1AZ",
+        "public_ip_name": "pip-iic-vpng-hub-01",
+        "bgp_asn": 65515,
+        "site_to_site": [
+          {
+            "connection_name": "cn-iic-dal-01",
+            "local_gateway_name": "lgw-iic-dal-01",
+            "peer_public_ip": "203.0.113.1",
+            "peer_address_prefixes": [
+              "192.0.2.0/24",
+              "198.51.100.0/24"
+            ],
+            "shared_key": "keyvault://kv-iic-mgmt-01/vpn-shared-key"
+          }
+        ]
+      },
+      "bastion": {
+        "name": "bas-iic-hub-01",
+        "resource_group": "rg-iic-conn-01",
+        "sku": "Standard",
+        "public_ip_name": "pip-iic-bas-hub-01"
+      }
+    },
+    "virtual_machines": [
+      {
+        "name": "vm-iic-dc-01",
+        "hostname": "iic-dc01",
+        "role": "domain_controller",
+        "deploy_target": "azure",
+        "subscription": "sub-iic-management",
+        "resource_group": "rg-iic-mgmt-01",
+        "network": "vnet-iic-hub-01",
+        "subnet": "snet-iic-hub-mgmt-01",
+        "private_ip": "10.20.0.134",
+        "size": "Standard_D2s_v5",
+        "os": "windows_server_2025",
+        "admin_username": "iic-vmadmin",
+        "admin_password": "keyvault://kv-iic-mgmt-01/vm-admin-password",
+        "dc_promotion": "new_forest",
+        "dsrm_password": "keyvault://kv-iic-mgmt-01/dsrm-password"
+      }
+    ],
+    "log_analytics": {
+      "name": "log-iic-azl-01"
+    },
+    "storage_accounts": [
+      {
+        "name": "stiicazl01wit",
+        "resource_group": "rg-iic-azl-01",
+        "sku": "Standard_LRS",
+        "purpose": "cloud witness"
+      }
+    ]
+  },
+  "devops": {
+    "platform": "github",
+    "url": "https://github.com",
+    "organization": "improbability-cloud",
+    "project": "iic-azure-local",
+    "subscription": "sub-iic-devops",
+    "resource_group": "rg-iic-runners-01",
+    "create_resource_group": false,
+    "api_token": "keyvault://kv-iic-mgmt-01/devops-admin-token",
+    "repository": {
+      "name": "iic-azurelocal",
+      "template": "AzureLocal/azurelocal-template",
+      "visibility": "private",
+      "default_branch": "main"
+    },
+    "settings": {
+      "required_approvals": 2,
+      "reviewers": "improbability-cloud/platform-team",
+      "squash_only": true,
+      "secret_scanning": true,
+      "resolve_conversations": true,
+      "required_status_checks": []
+    },
+    "environments": [
+      {
+        "name": "azr-prod-us",
+        "approval_required": true,
+        "approvers": [
+          "platform-lead"
+        ],
+        "deployment_branch": "main"
+      },
+      {
+        "name": "azr-dev-us",
+        "approval_required": false
+      },
+      {
+        "name": "ztp-reinstall",
+        "approval_required": true,
+        "approvers": [
+          "platform-lead"
+        ],
+        "deployment_branch": "main"
+      }
+    ],
+    "pipelines": {
+      "runner_label": "azure-local",
+      "environments": {
+        "os_configuration": "azr-prod-us",
+        "os_configuration_clear_storage": "azr-prod-us",
+        "arm_deployment": "azr-prod-us",
+        "cicd_infra": "azr-prod-us",
+        "terraform_deployment": "azr-prod-us"
+      },
+      "service_connection": "iic-azure-local",
+      "variable_group": "iic-azure-credentials",
+      "infrastructure_file": "config/infrastructure.yml",
+      "handoff_path": "ztp-state",
+      "tool_versions": {
+        "terraform": "1.16.3",
+        "python": "3.12",
+        "ansible_core": "2.21.5",
+        "ansible_lint": "26.10.1",
+        "az_powershell": "16.3.0",
+        "powershell_yaml": "0.4.12",
+        "az_keyvault": "6.6.1"
+      }
+    },
+    "authentication": {
+      "method": "oidc",
+      "roles": [
+        "Contributor",
+        "User Access Administrator"
+      ],
+      "grant_graph_role_management": false,
+      "register_encryption_at_host": true
+    },
+    "runners": [
+      {
+        "name": "vm-iic-runner-lnx",
+        "os_type": "linux",
+        "purpose": "general",
+        "count": 1,
+        "admin_username": "runneradmin",
+        "size": "Standard_D2s_v5",
+        "labels": [
+          "azure-local"
+        ],
+        "registration_secret": "keyvault://kv-iic-mgmt-01/github-runner-token",
+        "subnet": {
+          "name": "snet-iic-runner-lnx-01",
+          "prefix": "10.20.10.0/26"
+        },
+        "private_ips": [
+          "10.20.10.4"
+        ],
+        "nsg_name": "nsg-iic-runner-lnx-01",
+        "managed_identity_name": "id-iic-runner-lnx-01"
+      },
+      {
+        "name": "vm-iic-runner-ztp",
+        "os_type": "windows",
+        "purpose": "ztp",
+        "size": "Standard_D4s_v5",
+        "registration_secret": "keyvault://kv-iic-mgmt-01/github-runner-token",
+        "pool": "azurelocal-ztp",
+        "subnet": {
+          "name": "snet-iic-runner-ztp-01",
+          "prefix": "10.20.10.64/26"
+        },
+        "private_ips": [
+          "10.20.10.68"
+        ],
+        "data_disk_gb": 512,
+        "nsg_name": "nsg-iic-runner-ztp-01",
+        "managed_identity_name": "id-iic-runner-ztp-01"
+      }
+    ],
+    "runner_network": {
+      "vnet_name": "vnet-iic-devops-01",
+      "address_space": [
+        "10.20.10.0/24"
+      ],
+      "hub_peering": {
+        "enabled": true,
+        "hub_network": "vnet-iic-hub-01",
+        "use_remote_gateways": true,
+        "create_hub_side": true,
+        "spoke_name": "peer-vnet-iic-devops-01-to-hub",
+        "hub_name": "peer-hub-to-vnet-iic-devops-01"
+      },
+      "reachable_cidrs": [
+        "192.0.2.0/24",
+        "198.51.100.0/24"
+      ],
+      "bmc_cidrs": [
+        "198.51.100.0/24"
+      ],
+      "admin_source_cidrs": []
+    },
+    "runner_access": {
+      "resource_groups": [
+        "rg-iic-azl-01"
+      ],
+      "rbac_administrator": true,
+      "arc_run_command": true,
+      "key_vaults": [
+        "kv-iic-mgmt-01"
+      ]
+    },
+    "state": {
+      "storage_account": "stiictfstate01",
+      "container": "tfstate",
+      "resource_group": "rg-iic-mgmt-01",
+      "key": "cicd-infra.tfstate",
+      "azure_local_key": "azure-local.tfstate"
+    }
+  },
+  "os_configuration": {
+    "clear_storage": false,
+    "remoting": {
+      "transport": "winrm",
+      "bootstrap_transport": "none",
+      "allowed_source_cidrs": [
+        "198.51.100.10/32"
+      ],
+      "trusted_hosts": "auto",
+      "use_https": "auto"
+    }
+  },
+  "extensions": {}
+}
